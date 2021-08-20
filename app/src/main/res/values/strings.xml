@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ANIMALL</string>
+    <string name="login_logo_content_desc">Logo</string>
+    <string name="login_caption">The Community Forum \n just got <b>better</b></string>
+    <string name="login_sign_in_tips">Sign in using your <b>DLSU email</b> and get access to exclusive offers and more</string>
+    <string name="login_sign_in_btn">Sign In</string>
 </resources>
