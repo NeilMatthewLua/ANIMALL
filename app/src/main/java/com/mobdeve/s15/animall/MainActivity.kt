@@ -46,20 +46,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_listing)
 
-        storage = Firebase.storage
-        storageReference = storage.reference
-
-        files = ArrayList()
-        status = ArrayList()
-
-        btn_upload = findViewById(R.id.btn_upload);
-
-        // on pressing btnSelect SelectImage() is called
-        btn_upload.setOnClickListener {
-            SelectImages();
-        };
+//        storage = Firebase.storage
+//        storageReference = storage.reference
+//
+//        files = ArrayList()
+//        status = ArrayList()
+//
+//        btn_upload = findViewById(R.id.btn_upload);
+//
+//        // on pressing btnSelect SelectImage() is called
+//        btn_upload.setOnClickListener {
+//            SelectImages();
+//        };
     }
 
     // Select Image method
