@@ -33,6 +33,9 @@ android {
 }
 
 dependencies {
+    // Navbar dependencies
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    def nav_version = "2.3.5"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -42,9 +45,7 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-<<<<<<< Updated upstream
-}
-=======
+
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:28.3.1')
 
@@ -53,7 +54,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
 
     implementation("androidx.cardview:cardview:1.0.0")
+
+    // Kotlin navbar
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
->>>>>>> Stashed changes
