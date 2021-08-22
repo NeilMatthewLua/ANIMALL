@@ -2,26 +2,29 @@ package com.mobdeve.s15.animall
 
 import android.content.Intent
 import android.database.Cursor
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
-import androidx.annotation.Nullable
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController.ClickListener
+import com.smarteist.autoimageslider.SliderAnimations
+import com.smarteist.autoimageslider.SliderView
 import java.util.*
-import kotlin.collections.ArrayList
-
 
 class MainActivity : AppCompatActivity() {
+    val TAG = "MainActivity"
 
     // views for button
-//    private lateinit var btnSelect: Button
+    private lateinit var btnSelect: Button
     private lateinit var btnUpload: Button
 
     // view for image view
@@ -44,6 +47,23 @@ class MainActivity : AppCompatActivity() {
     lateinit var recview: RecyclerView
     lateinit var btn_upload: ImageView
 
+    //AniMall
+    lateinit var listingDescriptionTv: TextView
+    lateinit var listingSellerTv: TextView
+
+    lateinit var sliderView: SliderView
+    lateinit var adapter: SliderAdapter
+
+    private fun getYukino(): MutableList<Listing> {
+        val items = mutableListOf<Listing>()
+        items.add(Listing("1", R.drawable.yukino1))
+        items.add(Listing("2", R.drawable.yukino2))
+        items.add(Listing("3", R.drawable.yukino3))
+        items.add(Listing("4", R.drawable.yukino4))
+        items.add(Listing("5", R.drawable.yukino5))
+        return items
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listing)
@@ -60,126 +80,60 @@ class MainActivity : AppCompatActivity() {
 //        btn_upload.setOnClickListener {
 //            SelectImages();
 //        };
-    }
 
-    // Select Image method
-    private fun SelectImages() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(
-                intent,
-                "Please Select Multiple Files"
-            ), 101
-        )
-    }
+        //AniMall
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(
-            requestCode,
-            resultCode,
-            data
-        )
+        sliderView = findViewById<SliderView>(R.id.imageSlider)
 
-        if (requestCode == 101 && resultCode == RESULT_OK) {
-            if (data!!.clipData != null) {
-                for (i in 0 until data.clipData!!.itemCount) {
-                    val fileuri = data.clipData!!.getItemAt(i).uri
-                    val filename: String = getfilenamefromuri(fileuri)
-                    files.add(filename)
-                    status.add("loading")
-//                    adapter.notifyDataSetChanged()
-//                    val uploader: StorageReference =
-//                        CellTypeState.ref.child("/multiuploads").child(filename)
-                    val uploader: StorageReference = storageReference
-                        .child(
-                            "images/69696969/"
-                                    + UUID.randomUUID().toString()
-                        )
-                    uploader.putFile(fileuri)
-                        .addOnSuccessListener {
-                            status.removeAt(i)
-                            status.add(i, "done")
-//                            adapter.notifyDataSetChanged()
-                        }
-                }
-            }
-        }
-    }
+        adapter = SliderAdapter(this)
+        sliderView.setSliderAdapter(adapter)
+        sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 
-    fun getfilenamefromuri(filepath: Uri): String {
-        var result: String? = null
-        if (filepath.scheme == "content") {
-            val cursor: Cursor? = contentResolver.query(filepath, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor!!.close()
-            }
-        }
-        if (result == null) {
-            result = filepath.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result.substring(cut + 1)
-            }
-        }
-        return result
-    }
-//        {
-//        val actionBar: ActionBar?
-//        actionBar = supportActionBar
-//        val colorDrawable = ColorDrawable(
-//            Color.parseColor("#0F9D58")
-//        )
-//        actionBar!!.setBackgroundDrawable(colorDrawable)
-//
-//        // initialise views
-//
-//        // initialise views
-//        btnSelect = findViewById(R.id.btnChoose)
-//        btnUpload = findViewById(R.id.btnUpload)
-//        imageView = findViewById(R.id.imgView)
-//
-//        // get the Firebase  storage reference
-//        storage = Firebase.storage
-//        storageReference = storage.reference
-//
-//        // on pressing btnSelect SelectImage() is called
-//        btnSelect.setOnClickListener{
-//            SelectImage();
-//        };
-//
-//        // on pressing btnUpload uploadImage() is called
-//        btnUpload.setOnClickListener{
-//            uploadImage();
-//        };
-    }
+        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+//        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH)
+        sliderView.setIndicatorSelectedColor(Color.WHITE)
+        sliderView.setIndicatorUnselectedColor(Color.GRAY)
+//        sliderView.setScrollTimeInSec(3)
+//        sliderView.setAutoCycle(true)
+//        sliderView.startAutoCycle()
+
+
+        sliderView.setOnIndicatorClickListener(ClickListener {
+            Log.i(
+                "GGG",
+                "onIndicatorClicked: " + sliderView.getCurrentPagePosition()
+            )
+        })
+
+        adapter.renewItems(getYukino())
+
+        listingDescriptionTv = findViewById(R.id.listingDescriptionTv)
+        listingSellerTv = findViewById(R.id.listingSellerTv)
+
+
+        listingDescriptionTv.text = "The greatest side character you’ll ever encounter\n" +
+                "Will never:\n" +
+                "Give you up \n" +
+                "Let you down\n" +
+                "*Something something*\n" +
+                "Desert you\n" +
+                "I actually don’t know what’s next "
+    }}
 
 //    // Select Image method
-//    private fun SelectImage() {
-//        // Defining Implicit Intent to mobile gallery
+//    private fun SelectImages() {
 //        val intent = Intent()
 //        intent.type = "image/*"
+//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
 //        intent.action = Intent.ACTION_GET_CONTENT
 //        startActivityForResult(
 //            Intent.createChooser(
 //                intent,
-//                "Select Image from here..."
-//            ),
-//            PICK_IMAGE_REQUEST
+//                "Please Select Multiple Files"
+//            ), 101
 //        )
 //    }
-
-//    // Override onActivityResult method
+//
 //    override fun onActivityResult(
 //        requestCode: Int,
 //        resultCode: Int,
@@ -191,81 +145,52 @@ class MainActivity : AppCompatActivity() {
 //            data
 //        )
 //
-//        // checking request code and result code
-//        // if request code is PICK_IMAGE_REQUEST and
-//        // resultCode is RESULT_OK
-//        // then set image in the image view
-//        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
-//
-//            // Get the Uri of data
-//            filePath = data.data!!
-//            try {
-//
-//                // Setting image on image view using Bitmap
-//                val bitmap = MediaStore.Images.Media
-//                    .getBitmap(
-//                        contentResolver,
-//                        filePath
-//                    )
-//                imageView.setImageBitmap(bitmap)
-//            } catch (e: IOException) {
-//                // Log the exception
-//                e.printStackTrace()
+//        if (requestCode == 101 && resultCode == RESULT_OK) {
+//            if (data!!.clipData != null) {
+//                for (i in 0 until data.clipData!!.itemCount) {
+//                    val fileuri = data.clipData!!.getItemAt(i).uri
+//                    val filename: String = getfilenamefromuri(fileuri)
+//                    files.add(filename)
+//                    status.add("loading")
+////                    adapter.notifyDataSetChanged()
+////                    val uploader: StorageReference =
+////                        CellTypeState.ref.child("/multiuploads").child(filename)
+//                    val uploader: StorageReference = storageReference
+//                        .child(
+//                            "images/69696969/"
+//                                    + UUID.randomUUID().toString()
+//                        )
+//                    uploader.putFile(fileuri)
+//                        .addOnSuccessListener {
+//                            status.removeAt(i)
+//                            status.add(i, "done")
+////                            adapter.notifyDataSetChanged()
+//                        }
+//                }
 //            }
 //        }
 //    }
 //
-//    // UploadImage method
-//    private fun uploadImage() {
-//        if (filePath != null) {
-//
-//            // Code for showing progressDialog while uploading
-//            val progressDialog = ProgressDialog(this)
-//            progressDialog.setTitle("Uploading...")
-//            progressDialog.show()
-//
-//            // Defining the child of storageReference
-//            val ref: StorageReference = storageReference
-//                .child(
-//                    "images/69696969/"
-//                            + UUID.randomUUID().toString()
-//                )
-//
-//            // adding listeners on upload
-//            // or failure of image
-//            ref.putFile(filePath)
-//                .addOnSuccessListener { // Image uploaded successfully
-//                    // Dismiss dialog
-//                    progressDialog.dismiss()
-//                    Toast
-//                        .makeText(
-//                            this@MainActivity,
-//                            "Image Uploaded!!",
-//                            Toast.LENGTH_SHORT
-//                        )
-//                        .show()
+//    fun getfilenamefromuri(filepath: Uri): String {
+//        var result: String? = null
+//        if (filepath.scheme == "content") {
+//            val cursor: Cursor? = contentResolver.query(filepath, null, null, null, null)
+//            try {
+//                if (cursor != null && cursor.moveToFirst()) {
+//                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
 //                }
-//                .addOnFailureListener { e -> // Error, Image not uploaded
-//                    progressDialog.dismiss()
-//                    Toast
-//                        .makeText(
-//                            this@MainActivity,
-//                            "Failed " + e.message,
-//                            Toast.LENGTH_SHORT
-//                        )
-//                        .show()
-//                }
-//                .addOnProgressListener { taskSnapshot ->
-//
-//                    // Progress Listener for loading
-//                    // percentage on the dialog box
-//                    val progress = (100.0
-//                            * taskSnapshot.bytesTransferred
-//                            / taskSnapshot.totalByteCount)
-//                    progressDialog.setMessage(
-//                        "Uploaded "
-//                                + progress.toInt() + "%"
-//                    )
-//                }
+//            } finally {
+//                cursor!!.close()
+//            }
 //        }
+//        if (result == null) {
+//            result = filepath.path
+//            val cut = result!!.lastIndexOf('/')
+//            if (cut != -1) {
+//                result = result.substring(cut + 1)
+//            }
+//        }
+//        return result
+//    }
+
 //    }
