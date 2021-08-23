@@ -1,5 +1,6 @@
 package com.mobdeve.s15.animall
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
@@ -19,6 +20,5 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         findViewById<BottomNavigationView>(R.id.bottom_navigatin_view)
             .setupWithNavController(navController)
-
     }
 }

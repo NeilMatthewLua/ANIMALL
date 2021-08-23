@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/landingFragment">
 
     <fragment
         android:id="@+id/messagesFragment"
@@ -16,8 +16,7 @@
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.mobdeve.s15.animall.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/landingFragment"
+        android:name="com.mobdeve.s15.animall.LandingFragment"
+        android:label="fragment_landing" />
 </navigation>
