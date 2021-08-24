@@ -23,26 +23,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
 
-    // views for button
-    private lateinit var btnSelect: Button
-    private lateinit var btnUpload: Button
-
-    // view for image view
-    private lateinit var imageView: ImageView
-
-    // Uri indicates, where the image will be picked from
-    private lateinit var filePath: Uri
-
-    // instance for firebase storage and StorageReference
-    lateinit var storage: FirebaseStorage
-    lateinit var storageReference: StorageReference
-
-    lateinit var files: ArrayList<String>
-    lateinit var status: ArrayList<String>
-
-    lateinit var recview: RecyclerView
-    lateinit var btn_upload: ImageView
-
     //AniMall
     lateinit var listingDescriptionTv: TextView
     lateinit var listingSellerTv: TextView
@@ -106,7 +86,6 @@ class MainActivity : AppCompatActivity() {
         listingDescriptionTv = findViewById(R.id.listingDescriptionTv)
         listingSellerTv = findViewById(R.id.listingSellerTv)
 
-
         listingDescriptionTv.text = "The greatest side character you’ll ever encounter\n" +
                 "Will never:\n" +
                 "Give you up \n" +
@@ -114,79 +93,5 @@ class MainActivity : AppCompatActivity() {
                 "*Something something*\n" +
                 "Desert you\n" +
                 "I actually don’t know what’s next "
-    }}
-
-//    // Select Image method
-//    private fun SelectImages() {
-//        val intent = Intent()
-//        intent.type = "image/*"
-//        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-//        intent.action = Intent.ACTION_GET_CONTENT
-//        startActivityForResult(
-//            Intent.createChooser(
-//                intent,
-//                "Please Select Multiple Files"
-//            ), 101
-//        )
-//    }
-//
-//    override fun onActivityResult(
-//        requestCode: Int,
-//        resultCode: Int,
-//        data: Intent?
-//    ) {
-//        super.onActivityResult(
-//            requestCode,
-//            resultCode,
-//            data
-//        )
-//
-//        if (requestCode == 101 && resultCode == RESULT_OK) {
-//            if (data!!.clipData != null) {
-//                for (i in 0 until data.clipData!!.itemCount) {
-//                    val fileuri = data.clipData!!.getItemAt(i).uri
-//                    val filename: String = getfilenamefromuri(fileuri)
-//                    files.add(filename)
-//                    status.add("loading")
-////                    adapter.notifyDataSetChanged()
-////                    val uploader: StorageReference =
-////                        CellTypeState.ref.child("/multiuploads").child(filename)
-//                    val uploader: StorageReference = storageReference
-//                        .child(
-//                            "images/69696969/"
-//                                    + UUID.randomUUID().toString()
-//                        )
-//                    uploader.putFile(fileuri)
-//                        .addOnSuccessListener {
-//                            status.removeAt(i)
-//                            status.add(i, "done")
-////                            adapter.notifyDataSetChanged()
-//                        }
-//                }
-//            }
-//        }
-//    }
-//
-//    fun getfilenamefromuri(filepath: Uri): String {
-//        var result: String? = null
-//        if (filepath.scheme == "content") {
-//            val cursor: Cursor? = contentResolver.query(filepath, null, null, null, null)
-//            try {
-//                if (cursor != null && cursor.moveToFirst()) {
-//                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-//                }
-//            } finally {
-//                cursor!!.close()
-//            }
-//        }
-//        if (result == null) {
-//            result = filepath.path
-//            val cut = result!!.lastIndexOf('/')
-//            if (cut != -1) {
-//                result = result.substring(cut + 1)
-//            }
-//        }
-//        return result
-//    }
-
-//    }
+    }
+}
