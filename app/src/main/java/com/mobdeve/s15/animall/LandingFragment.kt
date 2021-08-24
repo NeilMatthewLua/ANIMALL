@@ -1,6 +1,8 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,22 +10,44 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_landing.*
+import kotlinx.coroutines.*
+import org.w3c.dom.Text
 import java.util.*
 
 class LandingFragment : Fragment() {
-    private var data: ArrayList<ListingModel>? = null
+    lateinit var data: ArrayList<ListingModel>
     // RecyclerView components
-    private var recyclerView: RecyclerView? = null
-    private var myAdapter: MyAdapter? = null
+    lateinit var recyclerView: RecyclerView
+    lateinit var myAdapter: MyAdapter
     // Sort/Filter Adapters
     private var filterAdapter: ArrayAdapter<String>? = null
     private var sortAdapter: ArrayAdapter<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch {
+            val dataInit = async(Dispatchers.IO) {
+                data = DataHelper.initializeData()
+            }
+            dataInit.await()
+
+            initializeSpinners()
+            // Layout manager
+            val linearLayoutManager = LinearLayoutManager(activity)
+            linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+            landingRecyclerView!!.layoutManager = linearLayoutManager
+
+            Log.d("LANDING: ", "pass to adapter")
+            Log.d("LANDING: ", data.size.toString())
+            // Adapter
+            myAdapter = MyAdapter(data!!)
+            landingRecyclerView!!.adapter = myAdapter
+            myAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onCreateView(
@@ -36,18 +60,6 @@ class LandingFragment : Fragment() {
 
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(itemView, savedInstanceState)
-        data = DataHelper.initializeData()
-
-        // Adapter
-        myAdapter = MyAdapter(data!!)
-        landingRecyclerView!!.adapter = myAdapter
-
-        // Layout manager
-        val linearLayoutManager = LinearLayoutManager(activity)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        landingRecyclerView!!.layoutManager = linearLayoutManager
-
-        initializeSpinners()
     }
 
     fun initializeSpinners() {
@@ -131,9 +143,5 @@ class LandingFragment : Fragment() {
             sortSpinner.setSelection(0)
             clearSelectionChip.visibility = View.GONE
         }
-    }
-
-    fun retrieveListing() {
-
     }
 }

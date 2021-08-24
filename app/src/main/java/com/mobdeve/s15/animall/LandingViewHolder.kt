@@ -23,26 +23,28 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(listing: ListingModel) {
         productNameTv.text = listing.name
-        productPriceTv.text = listing.unitPrice.toString()
+        productPriceTv.text = "₱" + listing.unitPrice.toString()
         productLocationChip.text = listing.preferredLocation
         productCategoryChip.text = listing.category
         // TODO: update when hooking to db
-        Picasso.get().
-        load(listing.photos[0])
-            .error(R.drawable.ic_error)
-            .placeholder( R.drawable.progress_animation)
-            .into(productImageIv);
+        if (listing.photos.size > 0) {
+            Picasso.get().
+            load(listing.photos[0])
+                .error(R.drawable.ic_error)
+                .placeholder( R.drawable.progress_animation)
+                .into(productImageIv);
 
-        // Create rounded bottom image
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val curveRadius = 20F
-            productImageIv.outlineProvider = object : ViewOutlineProvider() {
-                @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-                override fun getOutline(view: View?, outline: Outline?) {
-                    outline?.setRoundRect(0, 0, view!!.width, view.height, curveRadius)
+            // Create rounded bottom image
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val curveRadius = 20F
+                productImageIv.outlineProvider = object : ViewOutlineProvider() {
+                    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+                    override fun getOutline(view: View?, outline: Outline?) {
+                        outline?.setRoundRect(0, 0, view!!.width, view.height, curveRadius)
+                    }
                 }
+                productImageIv.clipToOutline = true
             }
-            productImageIv.clipToOutline = true
         }
     }
 

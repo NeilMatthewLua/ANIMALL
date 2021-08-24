@@ -19,4 +19,9 @@
         android:id="@+id/landingFragment"
         android:name="com.mobdeve.s15.animall.LandingFragment"
         android:label="fragment_landing" />
+    <fragment
+        android:id="@+id/addListingFragment"
+        android:name="com.mobdeve.s15.animall.AddListingFragment"
+        android:label="fragment_add_listing"
+        tools:layout="@layout/fragment_add_listing" />
 </navigation>

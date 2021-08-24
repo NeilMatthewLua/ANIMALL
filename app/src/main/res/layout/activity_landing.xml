@@ -15,6 +15,7 @@
         android:background="@drawable/curved_rectangle"
         android:elevation="10dp"
         android:orientation="horizontal"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -40,8 +41,8 @@
             android:background="@null"
             android:ems="10"
             android:fontFamily="@font/futura_light_bt"
-            android:inputType="textPersonName"
             android:hint="Search for a product"
+            android:inputType="textPersonName"
             android:textColor="#AE000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,11 +55,14 @@
         android:id="@+id/landingRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:paddingBottom="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clearSelectionChip" />
+        app:layout_constraintTop_toBottomOf="@+id/clearSelectionChip" >
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <Spinner
         android:id="@+id/filterSpinner"
@@ -69,6 +73,7 @@
         android:background="@drawable/curved_rectangle"
         android:elevation="10dp"
         android:padding="4dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sortSpinner" />
 
@@ -81,6 +86,7 @@
         android:background="@drawable/curved_rectangle"
         android:elevation="10dp"
         android:padding="4dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBarLayout" />
 
@@ -95,7 +101,7 @@
         android:outlineProvider="bounds"
         android:text="Clear Filter/Sort"
         android:textSize="12sp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:chipBackgroundColor="#FFFFFF"
         app:chipIcon="@drawable/ic_cancel"
         app:chipStrokeWidth="1dp"

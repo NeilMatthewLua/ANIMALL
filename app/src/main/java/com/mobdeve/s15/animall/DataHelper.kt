@@ -1,34 +1,45 @@
 package com.mobdeve.s15.animall
 
+import android.util.Log
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.tasks.await
+
 object DataHelper {
-    fun initializeData(): ArrayList<ListingModel> {
-        val usernames = arrayOf("Cool", "Beans")
-        val listingImages = arrayOf("https://images.unsplash.com/photo-1627735754418-3b581127eab1?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80",
-            "https://images.unsplash.com/photo-1629658742161-74f6fa2a9576?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80")
-        val listingImages2 = arrayOf("https://images.unsplash.com/photo-1629368713374-31b95085d63e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80")
+    const val TAG = "FIRESTORE"
+    val db = Firebase.firestore
 
+    suspend fun initializeData(): ArrayList<ListingModel> = coroutineScope {
+        val listingRef = db.collection("listings")
         val data = ArrayList<ListingModel>()
-        data.add(ListingModel(
-            "Clothing",
-            "These are socks.",
-            "Sock on Deez",
-            "Makati City",
-            usernames[0],
-            69,
-            128.68,
-            listingImages
-        ))
-        data.add(ListingModel(
-            "Clothing",
-            "These are socks.",
-            "Sock on Deez",
-            "Makati City",
-            usernames[1],
-            69,
-            128.70,
-            listingImages2
-        ))
+        try {
+            val job = listingRef.get().await()
+            for (document in job.documents) {
+                var photoArray = document["photos"] as ArrayList<String>
+                // Convert to Long
+                var unitPrice = document["unitPrice"]
+                if (unitPrice is Long)
+                    unitPrice = unitPrice.toDouble()
+                data.add(ListingModel(
+                    document["category"].toString(),
+                    document["description"].toString(),
+                    document["name"].toString(),
+                    document["preferredLocation"].toString(),
+                    document["seller"].toString(),
+                    document["stock"] as Long,
+                    unitPrice as Double,
+                    photoArray.toTypedArray()
+                ))
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
+        }
 
-        return data;
+        data
     }
 }
