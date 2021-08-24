@@ -33,7 +33,7 @@ object DataHelper {
                     document["seller"].toString(),
                     document["stock"] as Long,
                     unitPrice as Double,
-                    photoArray.toTypedArray()
+                    photoArray
                 ))
             }
         } catch (e: Exception) {
