@@ -1,6 +1,6 @@
 package com.mobdeve.s15.animall
 
-import android.support.annotation.DrawableRes
+import android.graphics.Bitmap
+import android.net.Uri
 
-class Listing(val id: String, @field:DrawableRes
-val posterId: Int)
+class Listing(val filename: String, val imageURI: Uri, val imageBitmap: Bitmap)
