@@ -1,18 +1,14 @@
 package com.mobdeve.s15.animall
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
 
-class SliderAdapter(context: Context) :
-    SliderViewAdapter<SliderViewHolder>() {
+class ListingSliderAdapter(context: Context) :
+    SliderViewAdapter<ListingSliderViewHolder>() {
 
     private var mSliderItems: MutableList<Listing> = ArrayList()
     private var context:Context = context
@@ -33,13 +29,13 @@ class SliderAdapter(context: Context) :
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup): SliderViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup): ListingSliderViewHolder {
         val inflate: View =
             LayoutInflater.from(parent.context).inflate(R.layout.anime_promotion, null)
-        return SliderViewHolder(inflate, context)
+        return ListingSliderViewHolder(inflate, context)
     }
 
-    override fun onBindViewHolder(viewHolder: SliderViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: ListingSliderViewHolder, position: Int) {
         val sliderItem: Listing = mSliderItems[position]
         viewHolder.bindData(sliderItem)
 //        viewHolder.textViewDescription.setText(sliderItem.getDescription())

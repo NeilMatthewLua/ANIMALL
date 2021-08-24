@@ -1,34 +1,25 @@
 package com.mobdeve.s15.animall
 
-import android.content.Intent
-import android.database.Cursor
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController.ClickListener
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
-    val TAG = "MainActivity"
+class ViewListingActivity : AppCompatActivity() {
+    val TAG = "ViewListingActivity"
 
     //AniMall
     lateinit var listingDescriptionTv: TextView
     lateinit var listingSellerTv: TextView
 
     lateinit var sliderView: SliderView
-    lateinit var adapter: SliderAdapter
+    lateinit var adapterListing: ListingSliderAdapter
 
     private fun getYukino(): MutableList<Listing> {
         val items = mutableListOf<Listing>()
@@ -61,8 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         sliderView = findViewById<SliderView>(R.id.imageSlider)
 
-        adapter = SliderAdapter(this)
-        sliderView.setSliderAdapter(adapter)
+        adapterListing = ListingSliderAdapter(this)
+        sliderView.setSliderAdapter(adapterListing)
         sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
@@ -81,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             )
         })
 
-        adapter.renewItems(getYukino())
+        adapterListing.renewItems(getYukino())
 
         listingDescriptionTv = findViewById(R.id.listingDescriptionTv)
         listingSellerTv = findViewById(R.id.listingSellerTv)

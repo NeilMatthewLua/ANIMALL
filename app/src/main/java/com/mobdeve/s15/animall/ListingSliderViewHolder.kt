@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
 
-class SliderViewHolder(itemView: View, context: Context) : SliderViewAdapter.ViewHolder(itemView)  {
+class ListingSliderViewHolder(itemView: View, context: Context) : SliderViewAdapter.ViewHolder(itemView)  {
     private val imageViewBackground: ImageView = itemView.findViewById(R.id.imageView3)
     private var context:Context = context
 
