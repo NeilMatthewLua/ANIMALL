@@ -49,7 +49,6 @@ class ViewListingActivity : AppCompatActivity() {
 //        };
 
         //AniMall
-
         sliderView = findViewById<SliderView>(R.id.imageSlider)
 
         adapterListing = ListingSliderAdapter(this)
@@ -63,7 +62,6 @@ class ViewListingActivity : AppCompatActivity() {
 //        sliderView.setScrollTimeInSec(3)
 //        sliderView.setAutoCycle(true)
 //        sliderView.startAutoCycle()
-
 
         sliderView.setOnIndicatorClickListener(ClickListener {
             Log.i(

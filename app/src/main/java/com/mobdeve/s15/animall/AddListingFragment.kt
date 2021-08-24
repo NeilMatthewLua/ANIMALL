@@ -120,30 +120,41 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     fun loadCategories() {
-        val db = Firebase.firestore
-        var categories: ArrayList<String> = ArrayList<String>()
-
-        db.collection("categories")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    Log.i(TAG, "${document.id} => ${document.data}")
-                    categories.add(document.data.get("category").toString())
-                    categoriesHashMap.put(document.data.get("category").toString(), document.id)
-                }
-
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_spinner_item,
-                    categories
-                )
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                productCategorySp.adapter = adapter
-                productCategorySp.onItemSelectedListener = this
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+//        val db = Firebase.firestore
+//        var categories: ArrayList<String> = ArrayList<String>()
+//
+//        db.collection("categories")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (document in result) {
+//                    Log.i(TAG, "${document.id} => ${document.data}")
+//                    categories.add(document.data.get("category").toString())
+//                    categoriesHashMap.put(document.data.get("category").toString(), document.id)
+//                }
+//
+//                val adapter = ArrayAdapter(
+//                    requireContext(),
+//                    android.R.layout.simple_spinner_item,
+//                    categories
+//                )
+//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                productCategorySp.adapter = adapter
+//                productCategorySp.onItemSelectedListener = this
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.w(TAG, "Error getting documents.", exception)
+//            }
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.category_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            productCategorySp.adapter = adapter
+            productCategorySp.onItemSelectedListener = this
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
