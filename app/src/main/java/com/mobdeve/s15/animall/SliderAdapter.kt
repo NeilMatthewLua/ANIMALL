@@ -13,7 +13,6 @@ class SliderAdapter(context: Context) :
     private var context:Context = context
 
     fun renewItems(sliderItems: MutableList<Listing>) {
-//        mSliderItems.clear()
         mSliderItems = sliderItems
         notifyDataSetChanged()
     }
@@ -33,7 +32,6 @@ class SliderAdapter(context: Context) :
         notifyDataSetChanged()
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup): SliderViewHolder {
         val inflate: View =
             LayoutInflater.from(parent.context).inflate(R.layout.listing_image_display, null)
@@ -43,6 +41,9 @@ class SliderAdapter(context: Context) :
     override fun onBindViewHolder(viewHolder: SliderViewHolder, position: Int) {
         val sliderItem: Listing = mSliderItems[position]
         viewHolder.bindData(sliderItem)
+        viewHolder.setDeleteBtnOnClickListener {
+            deleteItem(position)
+        }
 //        viewHolder.textViewDescription.setText(sliderItem.getDescription())
 //        viewHolder.textViewDescription.textSize = 16f
 //        viewHolder.textViewDescription.setTextColor(Color.WHITE)

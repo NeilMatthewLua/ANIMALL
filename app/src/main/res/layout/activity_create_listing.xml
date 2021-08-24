@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,9 +26,9 @@
 
         <Button
             android:id="@+id/cancelBtn"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="58dp"
             android:layout_height="52dp"
-            style="?android:attr/borderlessButtonStyle"
             android:backgroundTint="@android:color/transparent"
             android:text="X"
             android:textColor="#000000"
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="900dp"
             android:text="TextView"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/productNameTv"
             tools:layout_editor_absoluteX="42dp" />
 
@@ -69,7 +71,9 @@
             android:background="@drawable/edit_text_border"
             android:ems="10"
             android:fontFamily="@font/futura_light_bt"
+            android:hint="Product name (Max 30 Characters)"
             android:inputType="textPersonName"
+            android:maxLength="30"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
@@ -94,54 +98,41 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productNameEtv" />
 
+        <TextView
+            android:id="@+id/productPriceTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/futura_medium_bt"
+            android:text="Price per Item"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productNameErrorTv" />
+
         <EditText
-            android:id="@+id/productQuantityEtv"
+            android:id="@+id/productPriceEtv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/edit_text_border"
+            android:digits="0123456789."
             android:ems="10"
             android:fontFamily="@font/futura_light_bt"
-            android:inputType="textPersonName"
+            android:hint="Price (Max 100,000)"
+            android:inputType="numberDecimal"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:paddingBottom="8dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/productPriceEtv"
-            app:layout_constraintTop_toBottomOf="@+id/productQuantityTv" />
-
-        <TextView
-            android:id="@+id/productQuantityTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="96dp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/futura_medium_bt"
-            android:text="Quantity"
-            android:textColor="#000000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/productPriceTv"
-            app:layout_constraintTop_toBottomOf="@+id/productNameErrorTv" />
-
-        <TextView
-            android:id="@+id/productQuantityErrorTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:text="Product quantity is required."
-            android:textColor="#D60101"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/productPriceEtv"
-            app:layout_constraintTop_toBottomOf="@+id/productQuantityEtv" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productPriceTv" />
 
         <TextView
             android:id="@+id/productPriceErrorTv"
@@ -155,65 +146,57 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productPriceEtv" />
 
+        <TextView
+            android:id="@+id/productQuantityTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/futura_medium_bt"
+            android:text="Quantity"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productPriceErrorTv" />
+
         <EditText
-            android:id="@+id/productPriceEtv"
+            android:id="@+id/productQuantityEtv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:background="@drawable/edit_text_border"
+            android:digits="0123456789"
             android:ems="10"
             android:fontFamily="@font/futura_light_bt"
-            android:inputType="textPersonName"
+            android:hint="Quantity (Max 1,000)"
+            android:inputType="number"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:paddingBottom="8dp"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productPriceTv" />
-
-        <TextView
-            android:id="@+id/productPriceTv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/futura_medium_bt"
-            android:text="Price per Item"
-            android:textColor="#000000"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productNameErrorTv" />
-
-        <TextView
-            android:id="@+id/productCategoryTv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/futura_medium_bt"
-            android:text="Category"
-            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productQuantityErrorTv" />
+            app:layout_constraintTop_toBottomOf="@+id/productQuantityTv" />
 
         <TextView
-            android:id="@+id/productCategoryErrorTv"
+            android:id="@+id/productQuantityErrorTv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
-            android:text="Product category is required."
+            android:text="Product quantity is required."
             android:textColor="#D60101"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.057"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productCategorySp" />
+            app:layout_constraintTop_toBottomOf="@+id/productQuantityEtv" />
 
         <TextView
             android:id="@+id/productDescriptionTv"
@@ -240,7 +223,9 @@
             android:background="@drawable/edit_text_border"
             android:ems="10"
             android:fontFamily="@font/futura_light_bt"
+            android:hint="Product description (Max 200 Characters)"
             android:inputType="textMultiLine"
+            android:maxLength="200"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
@@ -260,11 +245,26 @@
             android:layout_marginEnd="16dp"
             android:text="Product description is required."
             android:textColor="#D60101"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productDescriptionEtv"
-            android:visibility="gone" />
+            app:layout_constraintTop_toBottomOf="@+id/productDescriptionEtv" />
+
+        <TextView
+            android:id="@+id/productCategoryTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/futura_medium_bt"
+            android:text="Category"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productQuantityErrorTv" />
 
         <Spinner
             android:id="@+id/productCategorySp"
@@ -273,16 +273,98 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/edit_text_border"
             android:paddingLeft="8dp"
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:paddingBottom="8dp"
             android:textSize="14sp"
-            android:background="@drawable/edit_text_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productCategoryTv" />
+
+        <TextView
+            android:id="@+id/productCategoryErrorTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="Product category is required."
+            android:textColor="#D60101"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.057"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productCategorySp" />
+
+        <TextView
+            android:id="@+id/productLocationTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/futura_medium_bt"
+            android:text="Meetup Location"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productDescriptionErrorTv" />
+
+        <EditText
+            android:id="@+id/productLocationEtv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/edit_text_border"
+            android:ems="10"
+            android:fontFamily="@font/futura_light_bt"
+            android:inputType="textMultiLine"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="8dp"
+            android:text="Sample Location"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productLocationTv" />
+
+        <TextView
+            android:id="@+id/productLocationErrorTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="Meetup location is required."
+            android:textColor="#D60101"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productLocationEtv" />
+
+        <TextView
+            android:id="@+id/productPhotosTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/futura_medium_bt"
+            android:text="Product Photos"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productLocationErrorTv" />
 
         <Button
             android:id="@+id/productUploadBtn"
@@ -290,15 +372,32 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
+            android:background="@drawable/edit_text_border"
             android:backgroundTint="@android:color/transparent"
             android:text="Upload Photos"
             android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productDescriptionEtv" />
+            app:layout_constraintTop_toBottomOf="@+id/productPhotosTv" />
+
+        <TextView
+            android:id="@+id/productUploadErrorTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="Product photos are required."
+            android:textAlignment="center"
+            android:textColor="#D60101"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productUploadBtn" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/imageSliderCv"
@@ -306,11 +405,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_margin="16dp"
-            android:visibility="gone"
+            android:layout_marginTop="16dp"
             app:cardCornerRadius="8dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.04"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productUploadBtn">
+            app:layout_constraintTop_toBottomOf="@+id/productUploadErrorTv">
 
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSlider"
@@ -335,11 +436,45 @@
             android:id="@+id/addListingBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="36dp"
             android:text="Post Listing"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageSliderCv" />
+
+        <ProgressBar
+            android:id="@+id/listingProcessPb"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <View-->
+<!--            android:id="@+id/dimBackgroundV"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="#7A000000"-->
+<!--            android:translationZ="90dp"/>-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/dimBackgroundV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#7A000000"
+            android:translationZ="90dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
