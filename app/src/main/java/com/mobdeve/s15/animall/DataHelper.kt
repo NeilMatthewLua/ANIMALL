@@ -20,21 +20,24 @@ object DataHelper {
         try {
             val job = listingRef.get().await()
             for (document in job.documents) {
-                var photoArray = document["photos"] as ArrayList<String>
-                // Convert to Long
-                var unitPrice = document["unitPrice"]
-                if (unitPrice is Long)
-                    unitPrice = unitPrice.toDouble()
-                data.add(ListingModel(
-                    document["category"].toString(),
-                    document["description"].toString(),
-                    document["name"].toString(),
-                    document["preferredLocation"].toString(),
-                    document["seller"].toString(),
-                    document["stock"] as Long,
-                    unitPrice as Double,
-                    photoArray
-                ))
+                if (document["isOpen"] as Boolean) {
+                    var photoArray = document["photos"] as ArrayList<String>
+                    // Convert to Long
+                    var unitPrice = document["unitPrice"]
+                    if (unitPrice is Long)
+                        unitPrice = unitPrice.toDouble()
+                    data.add(ListingModel(
+                        true,
+                        document["category"].toString(),
+                        document["description"].toString(),
+                        document["name"].toString(),
+                        document["preferredLocation"].toString(),
+                        document["seller"].toString(),
+                        document["stock"] as Long,
+                        unitPrice as Double,
+                        photoArray
+                    ))
+                }
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
