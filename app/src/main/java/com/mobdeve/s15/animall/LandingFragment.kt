@@ -66,7 +66,7 @@ class LandingFragment : Fragment() {
 
     fun initializeSpinners() {
         // Filter spinner
-        val filterOptions = resources.getStringArray(R.array.filter_options).toList()
+        val filterOptions = resources.getStringArray(R.array.category_options).toList()
         filterAdapter = object: ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,filterOptions) {
             override fun isEnabled(position: Int): Boolean {
                 // Disable the first item from Spinner
