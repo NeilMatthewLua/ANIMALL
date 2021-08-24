@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">ANIMALL</string>
+    <string name="product_name">Carlos Shi Real PNG</string>
+    <string name="product_price_unit">₱</string>
+    <string name="product_stock">42 in Stock</string>
+    <string name="product_price">9,999,999</string>
+    <string name="product_partition">|</string>
+    <string name="product_category">Electronics</string>
+    <string name="seller_location">Sus, France</string>
+    <string name="listing_closed">Closed</string>
+    <string name="listing_description_title">Description:</string>
+    <string name="listing_description">Description</string>
+    <string name="listing_seller_title">Seller:</string>
+    <string name="listing_seller">Seller</string>
+    <string name="listing_order">Make an Order</string>
+    <string name="listing_contact">Contact Seller</string>
 </resources>

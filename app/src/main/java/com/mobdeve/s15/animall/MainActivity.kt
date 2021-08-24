@@ -33,13 +33,9 @@ class MainActivity : AppCompatActivity() {
     // Uri indicates, where the image will be picked from
     private lateinit var filePath: Uri
 
-    // request code
-    private var PICK_IMAGE_REQUEST = 22
-
     // instance for firebase storage and StorageReference
     lateinit var storage: FirebaseStorage
     lateinit var storageReference: StorageReference
-
 
     lateinit var files: ArrayList<String>
     lateinit var status: ArrayList<String>
