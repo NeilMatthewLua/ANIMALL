@@ -6,7 +6,7 @@
 
     <!-- add some padding for text inside -->
     <padding
-        android:bottom="15dp"
+        android:bottom="20dp"
         android:left="15dp"
         android:right="15dp"
         android:top="10dp" />

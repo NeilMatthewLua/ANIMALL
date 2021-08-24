@@ -8,4 +8,6 @@
     <string name="location_title">Please set your current location</string>
     <string name="location_tips">This location will be used as reference for pickups &amp; deliveries</string>
     <string name="location_confirm">Confirm</string>
+    <string name="location_search_hint">Enter City</string>
+    <string name="location_dialog_title">Confirm</string>
 </resources>
