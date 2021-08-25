@@ -5,8 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-
-class MyAdapter(private val data: ArrayList<ListingModel>) :
+class LandingAdapter(private val data: ArrayList<ListingModel>) :
     RecyclerView.Adapter<LandingViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LandingViewHolder {
         val v =

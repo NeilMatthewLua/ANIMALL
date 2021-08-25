@@ -410,22 +410,18 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     fun postListing(listingID: String) {
         val db = Firebase.firestore
 
-        photoURLs.forEach{
-            Log.i(TAG, it.toString())
-        }
-        Log.i("POSTING", "POSTING")
         val listing = hashMapOf(
-            "category" to categoryId,
-            "description" to productDescriptionEtv.text.toString(),
-            "name" to productNameEtv.text.toString(),
-            "preferredLocation" to productLocationEtv.text.toString(),
-            "seller" to "7igRri2b0HUHIxCKNWGGIVbuvbu2",
-            "stock" to productQuantityEtv.text.toString().toInt(),
-            "unitPrice" to productPriceEtv.text.toString().toDouble(),
-            "photos" to photoURLs
+            MyFirestoreReferences.CATEGORY_FIELD to categoryId,
+            MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
+            MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
+            MyFirestoreReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirestoreReferences.SELLER_FIELD to "7igRri2b0HUHIxCKNWGGIVbuvbu2",
+            MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
+            MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
+            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
         )
 
-        db.collection("listings").document(listingID)
+        db.collection(MyFirestoreReferences.LISTINGS_COLLECTION).document(listingID)
             .set(listing)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "Listing added")
@@ -441,6 +437,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 listingProcessPb.visibility = View.GONE
                 dimBackgroundV.visibility = View.GONE
             }
+
 //      //Upload File (Won't be used since if we're downsizing images if needed so we use the bytes instead)
 //        uploader.putFile(fileuri)
 //            .addOnSuccessListener {

@@ -23,7 +23,7 @@ import java.util.*
 class LandingFragment : Fragment() {
     lateinit var data: ArrayList<ListingModel>
     // RecyclerView components
-    lateinit var myAdapter: MyAdapter
+    lateinit var myAdapter: LandingAdapter
     // Sort/Filter Adapters
     private var filterAdapter: ArrayAdapter<String>? = null
     private var sortAdapter: ArrayAdapter<String>? = null
@@ -33,7 +33,7 @@ class LandingFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
-                data = DataHelper.initializeData()
+                data = DataHelper.initializeListingData()
             }
             dataInit.await()
 
@@ -44,7 +44,7 @@ class LandingFragment : Fragment() {
             landingRecyclerView!!.layoutManager = linearLayoutManager
 
             // Adapter
-            myAdapter = MyAdapter(data!!)
+            myAdapter = LandingAdapter(data!!)
             landingRecyclerView!!.adapter = myAdapter
             myAdapter.notifyDataSetChanged()
             dimBackgroundV.visibility = View.GONE

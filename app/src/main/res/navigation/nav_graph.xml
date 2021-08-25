@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/messagesFragment"
-        android:name="com.mobdeve.s15.animall.MessagesFragment"
+        android:name="com.mobdeve.s15.animall.ConversationFragment"
         android:label="fragment_messages"
         tools:layout="@layout/fragment_messages" />
     <fragment
