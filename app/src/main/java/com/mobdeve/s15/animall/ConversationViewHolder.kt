@@ -33,6 +33,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
             val sdf3: SimpleDateFormat =
                 SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
+            sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
             var date = conversation.messages[0].timestamp
 

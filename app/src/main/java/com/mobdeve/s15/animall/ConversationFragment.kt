@@ -23,7 +23,7 @@ class ConversationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
-                data = DataHelper.initializeConversationData()
+                data = DatabaseManager.initializeConversationData()
             }
             dataInit.await()
 

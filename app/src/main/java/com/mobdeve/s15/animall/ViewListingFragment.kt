@@ -6,18 +6,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.lifecycleScope
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.fragment_view_listing.*
-import java.util.Observer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class ViewListingFragment : Fragment() {
     val TAG = "ViewListingActivity"
@@ -27,6 +26,7 @@ class ViewListingFragment : Fragment() {
     private val viewModel: ListingSharedViewModel by activityViewModels()
     lateinit var sliderView: SliderView
     lateinit var adapterListing: ListingSliderAdapter
+    var user: UserModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,22 +63,34 @@ class ViewListingFragment : Fragment() {
 
             sliderView.setOnIndicatorClickListener(DrawController.ClickListener {
                 Log.i(
-                    "GGG",
+                    "SliderView:",
                     "onIndicatorClicked: " + sliderView.getCurrentPagePosition()
                 )
             })
 
             // Update details
             listingNameTv.text = it.name
-            listingStockTv.text = it.stock.toString()
+            listingStockTv.text = "${it.stock} in Stock"
             listingPriceTv.text = it.unitPrice.toString()
             listingCategoryC.text = it.category
             listingLocationTv.text = it.preferredLocation
-            listingClosedC.text = if(it.isOpen) "Open" else "Closed"
+            listingClosedC.visibility = if(it.isOpen) View.GONE else View.VISIBLE
             listingDescriptionTv.text = it.description
-            listingSellerTv.text = it.seller
+
+            lifecycleScope.launch {
+                val userInit = async(Dispatchers.IO) {
+                    user = DatabaseManager.getUser(it.seller)
+                }
+                userInit.await()
+
+                if(user != null) {
+                    //TODO get seller name
+                    listingSellerTv.text = user!!.name
+
+                }
+            }
+
             adapterListing.renewItems(it.photos)
         })
-
     }
 }

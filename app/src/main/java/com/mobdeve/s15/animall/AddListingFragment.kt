@@ -18,6 +18,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -28,6 +29,11 @@ import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnima
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.fragment_add_listing.*
+import kotlinx.android.synthetic.main.fragment_add_listing.imageSliderCv
+import kotlinx.android.synthetic.main.fragment_view_listing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
@@ -146,7 +152,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //            }
         ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.category_options,
+            R.array.listing_category_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -215,6 +221,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         else {
             productQuantityErrorTv.visibility = View.GONE
         }
+
 //        //Category will always have a preset value on dropdown so cannot be empty
 //        if(TextUtils.isEmpty(productCategorySp.selectedItem.toString())) {
 //            productCategoryErrorTv.visibility = View.VISIBLE
@@ -421,33 +428,40 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     fun postListing(listingID: String) {
         val db = Firebase.firestore
 
-        val listing = hashMapOf(
-            MyFirestoreReferences.CATEGORY_FIELD to categoryId,
-            MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
-            MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
-            MyFirestoreReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
-            MyFirestoreReferences.SELLER_FIELD to "7igRri2b0HUHIxCKNWGGIVbuvbu2",
-            MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
-            MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
-            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
+        //TODO Change user, for now use static
+        val listing = ListingModel (
+            true,
+            categoryId,
+            productDescriptionEtv.text.toString(),
+            productNameEtv.text.toString(),
+            productLocationEtv.text.toString(),
+            "carlos_shi@dlsu.edu.ph",
+            productQuantityEtv.text.toString().toLong(),
+            productPriceEtv.text.toString().toDouble(),
+            photoURLs
         )
 
-        db.collection(MyFirestoreReferences.LISTINGS_COLLECTION).document(listingID)
-            .set(listing)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "Listing added")
-                listingProcessPb.visibility = View.GONE
-                dimBackgroundV.visibility = View.GONE
-                getActivity()?.getWindow()?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
-                // Redirect back to home
-                (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+        lifecycleScope.launch {
+            var success = false
+            val postingJob = async(Dispatchers.IO) {
+                success = DatabaseManager.postListing(listing, listingID)
+                Log.i("AddListing", "$success")
+                successPosting(success)
+
             }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-                listingProcessPb.visibility = View.GONE
-                dimBackgroundV.visibility = View.GONE
+            postingJob.await()
+            if(success) {
+                listingProcessPb.post(Runnable() {
+                    listingProcessPb.visibility = View.GONE
+                }
+                )
+//            dimBackgroundV.visibility = View.GONE
+//            getActivity()?.getWindow()?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//            Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
+//            // Redirect back to home
+//            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
             }
+        }
 
 //      //Upload File (Won't be used since if we're downsizing images if needed so we use the bytes instead)
 //        uploader.putFile(fileuri)
@@ -455,6 +469,24 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //                status.removeAt(i)
 //                status.add(i, "done")
 //                adapter.notifyDataSetChanged()
+//        }
+    }
+    //TODO Uploads but does not confirms the upload
+    fun successPosting(success: Boolean) {
+        if(success) {
+            listingProcessPb.post(Runnable() {
+                listingProcessPb.visibility = View.GONE
+            }
+            )
+//            dimBackgroundV.visibility = View.GONE
+//            getActivity()?.getWindow()?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//            Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
+//            // Redirect back to home
+//            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+        }
+//        else {
+//            listingProcessPb.visibility = View.GONE
+//            dimBackgroundV.visibility = View.GONE
 //        }
     }
 }

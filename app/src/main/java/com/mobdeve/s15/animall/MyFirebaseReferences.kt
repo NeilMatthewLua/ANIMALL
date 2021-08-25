@@ -8,6 +8,7 @@ object MyFirestoreReferences {
     const val LISTINGS_COLLECTION = "listings"
 
     //Listing
+    const val LISTING_IS_OPEN = "isOpen"
     const val CATEGORY_FIELD = "category"
     const val DESCRIPTION_FIELD = "description"
     const val PRODUCT_NAME_FIELD = "name"

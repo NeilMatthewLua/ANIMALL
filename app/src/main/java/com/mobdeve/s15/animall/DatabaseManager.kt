@@ -1,15 +1,21 @@
 package com.mobdeve.s15.animall
 
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
+import android.widget.Toast
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_add_listing.*
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
 
-object DataHelper {
+object DatabaseManager {
     const val TAG = "FIRESTORE"
     val db = Firebase.firestore
 
@@ -20,19 +26,19 @@ object DataHelper {
             val job = listingRef.get().await()
             for (document in job.documents) {
                 if (document["isOpen"] as Boolean) {
-                    var photoArray = document["photos"] as ArrayList<String>
+                    var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
                     // Convert to Long
-                    var unitPrice = document["unitPrice"]
+                    var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
                     if (unitPrice is Long)
                         unitPrice = unitPrice.toDouble()
                     data.add(ListingModel(
                         true,
-                        document["category"].toString(),
-                        document["description"].toString(),
-                        document["name"].toString(),
-                        document["preferredLocation"].toString(),
-                        document["seller"].toString(),
-                        document["stock"] as Long,
+                        document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
+                        document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
+                        document[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
+                        document[MyFirestoreReferences.LOCATION_FIELD].toString(),
+                        document[MyFirestoreReferences.SELLER_FIELD].toString(),
+                        document[MyFirestoreReferences.STOCK_FIELD] as Long,
                         unitPrice as Double,
                         photoArray
                     ))
@@ -86,9 +92,9 @@ object DataHelper {
                         .whereEqualTo(MyFirestoreReferences.RECEIPIENT_FIELD, "carlos_shi@dlsu.edu.ph")
                         .get()
                         .await()
-            Log.i("DataHelper", "Getting conversations")
+            Log.i("`DatabaseManager`", "Getting conversations")
             for (document in receive_job.documents) {
-                Log.i("DataHelper", "Got one")
+                Log.i("`DatabaseManager`", "Got one")
                 var messageArray = document[MyFirestoreReferences.MESSAGES_FIELD] as ArrayList<MessageModel>
                 var receipientEmail = document[MyFirestoreReferences.RECEIPIENT_FIELD] as String
                 var senderEmail = document[MyFirestoreReferences.SENDER_FIELD] as String
@@ -110,22 +116,22 @@ object DataHelper {
                 .whereEqualTo(MyFirestoreReferences.SENDER_FIELD, "carlos_shi@dlsu.edu.ph")
                 .get()
                 .await()
-            Log.i("DataHelper", "Getting conversations")
+            Log.i("`DatabaseManager`", "Getting conversations")
             for (document in sent_job.documents) {
-                Log.i("DataHelper", "Got one")
+                Log.i("`DatabaseManager`", "Got one")
                 var receipientEmail = document[MyFirestoreReferences.RECEIPIENT_FIELD] as String
-                Log.i("DataHelper", "Got rece")
+                Log.i("`DatabaseManager`", "Got rece")
                 var senderEmail = document[MyFirestoreReferences.SENDER_FIELD] as String
-                Log.i("DataHelper", "Got send")
+                Log.i("`DatabaseManager`", "Got send")
                 val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
-                Log.i("DataHelper", "Got id")
+                Log.i("`DatabaseManager`", "Got id")
                 val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
-                Log.i("DataHelper", "Got name")
+                Log.i("`DatabaseManager`", "Got name")
                 val listingPhoto = document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String
-                Log.i("DataHelper", "Got photo")
+                Log.i("`DatabaseManager`", "Got photo")
                 //https://medium.com/firebase-tips-tricks/how-to-map-an-array-of-objects-from-cloud-firestore-to-a-list-of-objects-122e579eae10
                 var messageList = document[MyFirestoreReferences.MESSAGES_FIELD] as List<Map<String, Any>>
-                Log.i("DataHelper", "Got messages")
+                Log.i("`DatabaseManager`", "Got messages")
 
                 var messageArray = ArrayList<MessageModel>()
                 messageList.forEach{
@@ -156,5 +162,64 @@ object DataHelper {
         }
 
         data
+    }
+
+    suspend fun getUser(userId: String): UserModel? = coroutineScope {
+        val conversationRef = db.collection(MyFirestoreReferences.USERS_COLLECTION)
+        var user: UserModel? = null
+        try {
+            Log.i("FIREBASE", "UserID ${userId}")
+            //WHERE DocumentID (PK) is userId
+            val job = conversationRef
+                .whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userId)
+                .get()
+                .await()
+            Log.i("`DatabaseManager`", "Getting the user")
+            for (document in job.documents) {
+                var userEmail = document[MyFirestoreReferences.EMAIL_FIELD] as String
+                var userName = document[MyFirestoreReferences.NAME_FIELD] as String
+                var userPrefLoc = document[MyFirestoreReferences.PREF_LOCATION_FIELD] as String
+                user = UserModel(
+                    userEmail,
+                    userName,
+                    userPrefLoc
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING USER")
+        }
+
+        user
+    }
+
+    suspend fun postListing(listing: ListingModel, listingID: String): Boolean = coroutineScope {
+        var success = false
+        try {
+            val listing = hashMapOf(
+                MyFirestoreReferences.LISTING_IS_OPEN to listing.isOpen,
+                MyFirestoreReferences.CATEGORY_FIELD to listing.category,
+                MyFirestoreReferences.DESCRIPTION_FIELD to listing.description,
+                MyFirestoreReferences.PRODUCT_NAME_FIELD to listing.name,
+                MyFirestoreReferences.LOCATION_FIELD to listing.preferredLocation,
+                MyFirestoreReferences.SELLER_FIELD to listing.seller,
+                MyFirestoreReferences.STOCK_FIELD to listing.stock,
+                MyFirestoreReferences.PRICE_FIELD to listing.unitPrice,
+                MyFirestoreReferences.PHOTOS_FIELD to listing.photos
+            )
+
+            db.collection(MyFirestoreReferences.LISTINGS_COLLECTION).document(listingID)
+                .set(listing)
+                .addOnSuccessListener { documentReference ->
+                    Log.d(TAG, "Listing added")
+                    success = true
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING USER")
+        }
+
+        success
     }
 }

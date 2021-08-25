@@ -1,7 +1,6 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.activity_landing.dimBackgroundV
 import kotlinx.android.synthetic.main.fragment_add_listing.*
 import kotlinx.coroutines.*
-import org.w3c.dom.Text
 import java.util.*
 
 class LandingFragment : Fragment() {
@@ -35,7 +33,7 @@ class LandingFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
-                data = DataHelper.initializeListingData()
+                data = DatabaseManager.initializeListingData()
             }
             Log.d(TAG, "ON CREATE")
             dataInit.await()
@@ -70,7 +68,7 @@ class LandingFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         landingRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        myAdapter = MyAdapter(data!!, this@LandingFragment)
+        myAdapter = LandingAdapter(data!!, this@LandingFragment)
         landingRecyclerView!!.adapter = myAdapter
     }
 
