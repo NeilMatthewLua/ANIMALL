@@ -1,10 +1,13 @@
 package com.mobdeve.s15.animall
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -47,9 +50,6 @@ class LoginActivity : AppCompatActivity() {
         signInBtn.setOnClickListener {
             signIn()
         }
-
-        val int = Intent(this, LocationActivity::class.java)
-        startActivity(int)
     }
 
     private fun signIn() {
@@ -104,6 +104,24 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    private val getLocation = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            val value = intent?.getStringExtra("PREF_LOC")
+
+            val userRef = auth.currentUser?.let { db.collection("users").document(it.uid) }
+            userRef?.get()?.addOnCompleteListener { documentTask ->
+                if (documentTask.isSuccessful) {
+                    if (documentTask.result.data != null) {
+                        userRef.update("preferredLocation", value)
+                    }
+                }
+            }
+        }
+    }
+
     /*
         Checks if there is an existing user.
         If the user does not exist in firestore,
@@ -116,9 +134,10 @@ class LoginActivity : AppCompatActivity() {
             if (documentTask.isSuccessful) {
                 if (documentTask.result.data != null) {
                     Log.d(TAG, "DocumentSnapshot data: ${documentTask.result.data}")
-                    if (documentTask.result.get("preferredLocation") == "")
+                    if (documentTask.result.get("preferredLocation") == "") {
                         Log.d(TAG, "Missing pref location")
-                        // go to pref location activity
+                        getLocation.launch(Intent(this, LocationActivity::class.java))
+                    }
                     // return to landing
                 } else {
                     Log.d(TAG, "No such document")
@@ -128,7 +147,7 @@ class LoginActivity : AppCompatActivity() {
                         "preferredLocation" to ""
                     )
                     userRef.set(userHash)
-                    // go to pref location activity
+                    getLocation.launch(Intent(this, LocationActivity::class.java))
                 }
             }
         }

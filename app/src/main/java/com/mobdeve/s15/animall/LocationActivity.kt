@@ -2,6 +2,7 @@ package com.mobdeve.s15.animall
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -106,7 +107,12 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             builder.setMessage(str)
             builder.setIcon(android.R.drawable.ic_dialog_alert)
 
-            builder.setPositiveButton("Confirm"){ _, _ -> }
+            builder.setPositiveButton("Confirm"){ _, _ ->
+                val returnIntent = Intent()
+                returnIntent.putExtra("PREF_LOC", address)
+                setResult(Activity.RESULT_OK, returnIntent)
+                finish()
+            }
             builder.setNeutralButton("Cancel"){ _, _ -> }
 
             val alertDialog: AlertDialog = builder.create()
