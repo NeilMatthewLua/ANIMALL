@@ -35,7 +35,6 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
 
             var date = conversation.messages[0].timestamp
-            System.out.println(date.javaClass.kotlin)
 
             var dateString = sdf3.format(date)
 

@@ -42,6 +42,7 @@ object DataHelper {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
 
+        //TODO Currently placed to add conversation messages, remove when no longer needed
         val messageRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
         val messageData = ArrayList<MessageModel>()
 
