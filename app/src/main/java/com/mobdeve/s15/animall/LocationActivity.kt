@@ -26,10 +26,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener
-
-
-
 
 
 class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -57,7 +53,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         // Set the layout file as the content view.
         setContentView(R.layout.activity_location)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         bottomSheet = findViewById(R.id.bottom_sheet_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
