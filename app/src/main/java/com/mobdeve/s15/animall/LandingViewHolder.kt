@@ -8,12 +8,16 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.squareup.picasso.Picasso
 
 
 class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    lateinit var listingData: ListingModel
+    var itemContainerLayout: ConstraintLayout
     var productNameTv: TextView
     var productPriceTv: TextView
     var productLocationChip: Chip
@@ -22,11 +26,12 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(listing: ListingModel) {
+        listingData = listing
         productNameTv.text = listing.name
         productPriceTv.text = "₱" + listing.unitPrice.toString()
         productLocationChip.text = listing.preferredLocation
         productCategoryChip.text = listing.category
-        // TODO: update when hooking to db
+
         if (listing.photos.size > 0) {
             Picasso.get().
             load(listing.photos[0])
@@ -54,5 +59,6 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         productLocationChip = itemView.findViewById(R.id.productLocationChip)
         productCategoryChip = itemView.findViewById(R.id.productCategoryChip)
         productImageIv = itemView.findViewById(R.id.productImageIv)
+        itemContainerLayout = itemView.findViewById(R.id.itemContainerLayout)
     }
 }

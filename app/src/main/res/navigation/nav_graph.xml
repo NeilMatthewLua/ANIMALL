@@ -18,10 +18,19 @@
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.mobdeve.s15.animall.LandingFragment"
-        android:label="fragment_landing" />
+        android:label="fragment_landing" >
+        <action
+            android:id="@+id/action_landingFragment_to_viewListingFragment"
+            app:destination="@id/viewListingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addListingFragment"
         android:name="com.mobdeve.s15.animall.AddListingFragment"
         android:label="fragment_add_listing"
         tools:layout="@layout/fragment_add_listing" />
+    <fragment
+        android:id="@+id/viewListingFragment"
+        android:name="com.mobdeve.s15.animall.ViewListingFragment"
+        android:label="ViewListingFragment"
+        tools:layout="@layout/fragment_view_listing"/>
 </navigation>
