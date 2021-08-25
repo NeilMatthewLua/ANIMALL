@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">ANIMALL</string>
+    <string name="web_client_id">340958678333-5719a01js4bp86i7nvhla4t2egsdffe4.apps.googleusercontent.com</string>
+    <string name="login_logo_content_desc">Logo</string>
+    <string name="login_caption">The Community Forum \n just got <b>better</b></string>
+    <string name="login_sign_in_tips">Sign in using your <b>DLSU email</b> and get access to exclusive offers and more</string>
+    <string name="login_sign_in_btn">Sign In</string>
+    <string name="location_title">Please set your current location</string>
+    <string name="location_tips">This location will be used as reference for pickups &amp; deliveries</string>
+    <string name="location_confirm">Confirm</string>
+    <string name="location_search_hint">Enter City</string>
+    <string name="location_dialog_title">Confirm</string>
     <string name="product_name">Carlos Shi Real PNG</string>
     <string name="product_price_unit">₱</string>
     <string name="product_stock">42 in Stock</string>
