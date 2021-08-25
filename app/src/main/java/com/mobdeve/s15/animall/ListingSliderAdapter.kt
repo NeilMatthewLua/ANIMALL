@@ -10,10 +10,10 @@ import com.smarteist.autoimageslider.SliderViewAdapter
 class ListingSliderAdapter(context: Context) :
     SliderViewAdapter<ListingSliderViewHolder>() {
 
-    private var mSliderItems: MutableList<Listing> = ArrayList()
+    private var mSliderItems: MutableList<String> = ArrayList()
     private var context:Context = context
 
-    fun renewItems(sliderItems: MutableList<Listing>) {
+    fun renewItems(sliderItems: MutableList<String>) {
         mSliderItems = sliderItems
         notifyDataSetChanged()
     }
@@ -23,7 +23,7 @@ class ListingSliderAdapter(context: Context) :
         notifyDataSetChanged()
     }
 
-    fun addItem(sliderItem: Listing) {
+    fun addItem(sliderItem: String) {
         mSliderItems.add(sliderItem)
         notifyDataSetChanged()
     }
@@ -31,12 +31,12 @@ class ListingSliderAdapter(context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup): ListingSliderViewHolder {
         val inflate: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.anime_promotion, null)
+            LayoutInflater.from(parent.context).inflate(R.layout.listing_slider_layout, null)
         return ListingSliderViewHolder(inflate, context)
     }
 
     override fun onBindViewHolder(viewHolder: ListingSliderViewHolder, position: Int) {
-        val sliderItem: Listing = mSliderItems[position]
+        val sliderItem: String = mSliderItems[position]
         viewHolder.bindData(sliderItem)
 //        viewHolder.textViewDescription.setText(sliderItem.getDescription())
 //        viewHolder.textViewDescription.textSize = 16f
