@@ -26,6 +26,10 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener
+
+
+
 
 
 class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -101,20 +105,15 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
 
         confirmLocationBtn.setOnClickListener {
             val builder = AlertDialog.Builder(this)
-            //set title for alert dialog
             builder.setTitle(R.string.location_dialog_title)
-            //set message for alert dialog
             val str = "Your selected location is $address.\nPlease confirm your selection."
             builder.setMessage(str)
             builder.setIcon(android.R.drawable.ic_dialog_alert)
 
-            //performing positive action
             builder.setPositiveButton("Confirm"){ _, _ -> }
-            //performing cancel action
             builder.setNeutralButton("Cancel"){ _, _ -> }
-            // Create the AlertDialog
+
             val alertDialog: AlertDialog = builder.create()
-            // Set other dialog properties
             alertDialog.setCancelable(false)
             alertDialog.show()
         }
@@ -123,10 +122,19 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     // Get a handle to the GoogleMap object and display marker.
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.setOnMapClickListener { location ->
+            currentLocation = LatLng(location.latitude, location.longitude)
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(currentLocation))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+
+            setAddressString(currentLocation)
+        }
+
         mMap.addMarker(
             MarkerOptions()
                 .position(LatLng(14.5995, 120.9842))
-                .title("Marker")
+                .title("Selected Location")
         )
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(14.5995, 120.9842), 16F))
         locationSearchActv.setText(address)
@@ -135,19 +143,23 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setAddressString (currentLocation: LatLng) {
         val list = gcd.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1)
         if (list.size > 0) {
-            val city = list[0].locality
-            city.replace(" City", "")
-
-            val filtered = cities.filter {
-                it.contains(city)
+            address = when {
+                list[0].adminArea == "Metro Manila" -> {
+                    "${list[0].locality}, ${list[0].adminArea}"
+                }
+                list[0].countryName == "Philippines" -> {
+                    "${list[0].locality}, ${list[0].subAdminArea}"
+                }
+                else -> {
+                    "Manila, Metro Manila"
+                }
             }
 
-            address = if (filtered.isNotEmpty()) {
-                filtered[0]
-            } else {
-                "Manila, Metro Manila"
+            if (list[0].countryName != "Philippines") {
+                Toast.makeText(this, "This service is only available for users in the Philippines.", Toast.LENGTH_SHORT).show()
             }
-            locationSearchActv.setText(address)
+
+            locationSearchActv.setText(address, false)
         }
     }
 
@@ -170,7 +182,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Turn on Location", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }

@@ -63,9 +63,9 @@
         android:layout_marginTop="16dp"
         android:hint="@string/location_search_hint"
         android:minHeight="48dp"
+        android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView2"
-        />
+        app:layout_constraintTop_toBottomOf="@id/textView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
