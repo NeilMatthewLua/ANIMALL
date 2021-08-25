@@ -15,9 +15,41 @@
     <string name="listing_order">Make an Order</string>
     <string name="listing_contact">Contact Seller</string>
 
+    <string name="create_listing">Create Listing</string>
+    <string name="cancel_listing">X</string>
+    <string name="create_product_name">Product Name</string>
+    <string name="create_product_name_hint">Product name (Max 30 Characters)</string>
+    <string name="create_product_name_error">Product name is required.</string>
+    <string name="create_price">Price per Item</string>
+    <string name="create_price_error">Product price is required.</string>
+    <string name="create_quantity">Quantity</string>
+    <string name="create_quantity_error">Product quantity is required.</string>
+    <string name="create_quantity_hint">Quantity (Max 1,000)</string>
+    <string name="create_description">Description</string>
+    <string name="create_description_hint">Product description (Max 200 Characters)</string>
+    <string name="create_description_error">Product description is required.</string>
+    <string name="create_category">Category</string>
+    <string name="create_category_error">Product category is required.</string>
+    <string name="create_location">Meetup Location</string>
+    <string name="create_location_hint">Sample Location</string>
+    <string name="create_location_error">Meetup location is required.</string>
+    <string name="create_photo">Product Photos</string>
+    <string name="create_photo_error">Product photos are required.</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="category_options">
+        <item>Filter by:</item>
+        <item>Clothing</item>
+        <item>Food</item>
+        <item>Electronics</item>
+        <item>Books</item>
+        <item>Stationery</item>
+        <item>Health &amp; Fitness</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="listing_category_options">
         <item>Filter by:</item>
         <item>Clothing</item>
         <item>Food</item>
@@ -41,4 +73,7 @@
     <string name="listing_location">Product City</string>
     <string name="listing_category">Product Category</string>
     <string name="listing_image">Listing Image</string>
+
+    <string name="message">You: Boi I am tired</string>
+    <string name="message_time">August 15, 2021 6:09PM</string>
 </resources>
