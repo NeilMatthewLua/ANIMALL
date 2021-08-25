@@ -33,12 +33,19 @@
         <item>Price: High to Low</item>
         <item>Location: Closer First</item>
     </string-array>
+
     <string name="search_icon">Search Icon</string>
     <string name="search_hint">Search for a product</string>
     <string name="clear_selection">Clear Filter/Sort</string>
-    <string name="listing_name">Product Name</string>
-    <string name="listing_price">Product Price</string>
-    <string name="listing_location">Product City</string>
-    <string name="listing_category">Product Category</string>
+    <string name="listing_name">Listing Name</string>
+    <string name="listing_price">Listing Price</string>
+    <string name="listing_location">Listing City</string>
+    <string name="listing_category">Listing Category</string>
     <string name="listing_image">Listing Image</string>
+    <string name="listing_quantity">Listing Quantity</string>
+
+    <string name="profile_delete_listing">Delete Listing</string>
+    <string name="profile_edit_listing">Edit Listing</string>
+    <string name="profile_close_listing">Close Listing</string>
+    <string name="profile_confirm_order">Confirm Order</string>
 </resources>

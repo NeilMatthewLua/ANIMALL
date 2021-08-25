@@ -454,7 +454,7 @@
         <!--            android:translationZ="90dp"/>-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/dimBackgroundV"
+            android:id="@+id/listingDimBackgroundV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="#7A000000"

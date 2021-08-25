@@ -22,23 +22,5 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         findViewById<BottomNavigationView>(R.id.bottom_navigatin_view)
             .setupWithNavController(navController)
-
-//        bottom_navigatin_view.setOnItemSelectedListener {
-//            when(it.itemId) {
-//                R.id.landingFragment -> {
-//                    val transaction = supportFragmentManager.beginTransaction()
-//                    transaction.replace(R.id.nav_host_fragment, ViewListingFragment())
-//                    transaction.commit()
-//
-//                }
-//                else {
-//
-//                }
-//            }
-//        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }

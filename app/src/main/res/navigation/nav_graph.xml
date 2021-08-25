@@ -12,9 +12,12 @@
         tools:layout="@layout/fragment_messages" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.mobdeve.s15.animall.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        android:name="com.mobdeve.s15.animall.UserProfileFragment"
+        android:label="fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_viewListingFragment"
+            app:destination="@id/viewListingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/landingFragment"
         android:name="com.mobdeve.s15.animall.LandingFragment"
@@ -32,5 +35,9 @@
         android:id="@+id/viewListingFragment"
         android:name="com.mobdeve.s15.animall.ViewListingFragment"
         android:label="ViewListingFragment"
-        tools:layout="@layout/fragment_view_listing"/>
+        tools:layout="@layout/fragment_view_listing">
+        <action
+            android:id="@+id/action_viewListingFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

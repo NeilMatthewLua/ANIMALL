@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_landing_layout.view.*
 import java.util.*
 
 
-class MyAdapter(private val data: ArrayList<ListingModel>, private val fragment: LandingFragment) :
+class LandingAdapter(private val data: ArrayList<ListingModel>, private val fragment: LandingFragment) :
     RecyclerView.Adapter<LandingViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LandingViewHolder {

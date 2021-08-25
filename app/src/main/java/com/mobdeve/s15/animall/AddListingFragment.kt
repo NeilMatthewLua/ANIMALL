@@ -85,7 +85,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             Log.i("Valid: ", valid.toString())
 
             if(valid) {
-                dimBackgroundV.visibility = View.VISIBLE
+                listingDimBackgroundV.visibility = View.VISIBLE
                 listingProcessPb.visibility = View.VISIBLE
                 getActivity()?.getWindow()?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -441,7 +441,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "Listing added")
                 listingProcessPb.visibility = View.GONE
-                dimBackgroundV.visibility = View.GONE
+                listingDimBackgroundV.visibility = View.GONE
                 getActivity()?.getWindow()?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
                 // Redirect back to home
@@ -450,7 +450,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)
                 listingProcessPb.visibility = View.GONE
-                dimBackgroundV.visibility = View.GONE
+                listingDimBackgroundV.visibility = View.GONE
             }
 //      //Upload File (Won't be used since if we're downsizing images if needed so we use the bytes instead)
 //        uploader.putFile(fileuri)

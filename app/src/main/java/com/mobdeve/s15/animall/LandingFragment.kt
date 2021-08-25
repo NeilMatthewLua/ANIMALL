@@ -1,7 +1,6 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,11 +12,8 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_landing.*
-import kotlinx.android.synthetic.main.activity_landing.dimBackgroundV
-import kotlinx.android.synthetic.main.fragment_add_listing.*
+import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.coroutines.*
-import org.w3c.dom.Text
 import java.util.*
 
 class LandingFragment : Fragment() {
@@ -25,7 +21,7 @@ class LandingFragment : Fragment() {
     var data: ArrayList<ListingModel> = ArrayList<ListingModel>()
     var hasRetrieved: Boolean = false
     // RecyclerView components
-    lateinit var myAdapter: MyAdapter
+    lateinit var landingAdapter: LandingAdapter
     // Sort/Filter Adapters
     private var filterAdapter: ArrayAdapter<String>? = null
     private var sortAdapter: ArrayAdapter<String>? = null
@@ -35,17 +31,17 @@ class LandingFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
-                data = DataHelper.initializeData()
+                data = DatabaseManager.initializeData()
             }
             Log.d(TAG, "ON CREATE")
             dataInit.await()
             initializeSpinners()
             // Adapter
-            myAdapter = MyAdapter(data!!, this@LandingFragment)
-            landingRecyclerView!!.adapter = myAdapter
-            myAdapter.notifyDataSetChanged()
+            landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+            landingRecyclerView!!.adapter = landingAdapter
+            landingAdapter.notifyDataSetChanged()
             hasRetrieved = true
-            dimBackgroundV.visibility = View.GONE
+            landingDimBackgroundV.visibility = View.GONE
             landingPb.visibility = View.GONE
         }
     }
@@ -55,14 +51,14 @@ class LandingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_landing, container, false)
+        return inflater.inflate(R.layout.fragment_landing, container, false)
     }
 
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(itemView, savedInstanceState)
         if (hasRetrieved) {
             initializeSpinners()
-            dimBackgroundV.visibility = View.GONE
+            landingDimBackgroundV.visibility = View.GONE
             landingPb.visibility = View.GONE
         }
         // Layout manager
@@ -70,8 +66,8 @@ class LandingFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         landingRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        myAdapter = MyAdapter(data!!, this@LandingFragment)
-        landingRecyclerView!!.adapter = myAdapter
+        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+        landingRecyclerView!!.adapter = landingAdapter
     }
 
     fun initializeSpinners() {

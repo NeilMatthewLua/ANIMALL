@@ -49,7 +49,7 @@ class ViewListingFragment : Fragment() {
             sliderView = requireActivity().findViewById<SliderView>(R.id.imageSlider)
 
             adapterListing = ListingSliderAdapter(requireContext())
-
+            adapterListing.renewItems(it.photos)
             sliderView.setSliderAdapter(adapterListing)
             sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 
@@ -77,7 +77,7 @@ class ViewListingFragment : Fragment() {
             listingClosedC.text = if(it.isOpen) "Open" else "Closed"
             listingDescriptionTv.text = it.description
             listingSellerTv.text = it.seller
-            adapterListing.renewItems(it.photos)
+
         })
 
     }
