@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_landing.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_listing.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_main.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_navbar.xml" value="0.1" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/anime_promotion.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_add_listing.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_home.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_messages.xml" value="0.16576086956521738" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_view_listing.xml" value="0.35820894502642775" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_landing_layout.xml" value="0.16576086956521738" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

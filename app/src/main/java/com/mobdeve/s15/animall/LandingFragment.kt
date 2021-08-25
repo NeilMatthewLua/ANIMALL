@@ -21,7 +21,9 @@ import org.w3c.dom.Text
 import java.util.*
 
 class LandingFragment : Fragment() {
-    lateinit var data: ArrayList<ListingModel>
+    val TAG: String = "LANDING FRAGMENT"
+    var data: ArrayList<ListingModel> = ArrayList<ListingModel>()
+    var hasRetrieved: Boolean = false
     // RecyclerView components
     lateinit var myAdapter: MyAdapter
     // Sort/Filter Adapters
@@ -35,18 +37,14 @@ class LandingFragment : Fragment() {
             val dataInit = async(Dispatchers.IO) {
                 data = DataHelper.initializeData()
             }
+            Log.d(TAG, "ON CREATE")
             dataInit.await()
-
             initializeSpinners()
-            // Layout manager
-            val linearLayoutManager = LinearLayoutManager(activity)
-            linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-            landingRecyclerView!!.layoutManager = linearLayoutManager
-
             // Adapter
-            myAdapter = MyAdapter(data!!)
+            myAdapter = MyAdapter(data!!, this@LandingFragment)
             landingRecyclerView!!.adapter = myAdapter
             myAdapter.notifyDataSetChanged()
+            hasRetrieved = true
             dimBackgroundV.visibility = View.GONE
             landingPb.visibility = View.GONE
         }
@@ -62,6 +60,18 @@ class LandingFragment : Fragment() {
 
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(itemView, savedInstanceState)
+        if (hasRetrieved) {
+            initializeSpinners()
+            dimBackgroundV.visibility = View.GONE
+            landingPb.visibility = View.GONE
+        }
+        // Layout manager
+        val linearLayoutManager = LinearLayoutManager(activity)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        landingRecyclerView!!.layoutManager = linearLayoutManager
+        // Adapter
+        myAdapter = MyAdapter(data!!, this@LandingFragment)
+        landingRecyclerView!!.adapter = myAdapter
     }
 
     fun initializeSpinners() {
