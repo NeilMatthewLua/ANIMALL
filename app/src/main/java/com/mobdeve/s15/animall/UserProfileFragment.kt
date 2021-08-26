@@ -16,10 +16,11 @@ import java.util.ArrayList
 class UserProfileFragment : Fragment() {
     // Db data
     var listingData: ArrayList<ListingModel> = ArrayList<ListingModel>()
-    var orderData: ArrayList<ListingModel> = ArrayList<ListingModel>()
+    var orderData: ArrayList<OrderModel> = ArrayList<OrderModel>()
 
     // RecyclerView components
     lateinit var profileListingAdapter: ProfileListingAdapter
+    lateinit var profileOrderAdapter: ProfileOrderAdapter
 
     var currentUser: String = ""
     var hasRetrieved: Boolean = false
@@ -31,6 +32,7 @@ class UserProfileFragment : Fragment() {
             val dataInit = async(Dispatchers.IO) {
                 currentUser = DatabaseManager.getUserName("carlos_shi@dlsu.edu.ph")
                 listingData = DatabaseManager.getUserListings("carlos_shi@dlsu.edu.ph")
+                orderData = DatabaseManager.getUserOrders("carlos_shi@dlsu.edu.ph")
             }
             dataInit.await()
             userProfileTv.text = currentUser
@@ -38,10 +40,27 @@ class UserProfileFragment : Fragment() {
             profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
             profileRecyclerView!!.adapter = profileListingAdapter
             profileListingAdapter.notifyDataSetChanged()
-//             Adapter
-//            myAdapter = MyAdapter(data!!, this@UserProfileFragment)
-//            landingRecyclerView!!.adapter = myAdapter
-//            myAdapter.notifyDataSetChanged()
+
+            profileListingBtn.setOnClickListener{
+                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                profileListingBtn.setTextColor(getResources().getColor(R.color.white))
+                profilePurchasesBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                profilePurchasesBtn.setTextColor(getResources().getColor(R.color.black))
+                profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
+                profileRecyclerView!!.adapter = profileListingAdapter
+                profileListingAdapter.notifyDataSetChanged()
+            }
+
+            profilePurchasesBtn.setOnClickListener{
+                profilePurchasesBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                profilePurchasesBtn.setTextColor(getResources().getColor(R.color.white))
+                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                profileListingBtn.setTextColor(getResources().getColor(R.color.black))
+                profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
+                profileRecyclerView!!.adapter = profileOrderAdapter
+                profileOrderAdapter.notifyDataSetChanged()
+            }
+
             hasRetrieved = true
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE

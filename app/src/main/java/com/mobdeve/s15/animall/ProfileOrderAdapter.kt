@@ -7,16 +7,16 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
 
-class ProfileOrderAdapter(private val data: ArrayList<ListingModel>, private val fragment: UserProfileFragment) :
-    RecyclerView.Adapter<LandingViewHolder>() {
+class ProfileOrderAdapter(private val data: ArrayList<OrderModel>, private val fragment: UserProfileFragment) :
+    RecyclerView.Adapter<ProfileOrderViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LandingViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileOrderViewHolder {
         val v =
             LayoutInflater.from(parent.context).inflate(R.layout.item_profile_order_layout, parent, false)
-        return LandingViewHolder(v)
+        return ProfileOrderViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: LandingViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProfileOrderViewHolder, position: Int) {
         holder.bindData(data[position])
     }
 

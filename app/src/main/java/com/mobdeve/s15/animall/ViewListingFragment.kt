@@ -50,6 +50,7 @@ class ViewListingFragment : Fragment() {
 
             adapterListing = ListingSliderAdapter(requireContext())
             adapterListing.renewItems(it.photos)
+
             sliderView.setSliderAdapter(adapterListing)
             sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 

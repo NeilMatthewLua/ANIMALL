@@ -91,30 +91,24 @@ object DatabaseManager {
         data
     }
 
-    suspend fun getUserOrders(): ArrayList<ListingModel> = coroutineScope {
-        val listingRef = db.collection("listings")
-        val data = ArrayList<ListingModel>()
+    suspend fun getUserOrders(customerEmail: String): ArrayList<OrderModel> = coroutineScope {
+        val listingRef = db.collection("orders")
+        val data = ArrayList<OrderModel>()
         try {
-            val job = listingRef.get().await()
+            val job = listingRef.whereEqualTo("customerId", customerEmail).get().await()
             for (document in job.documents) {
-                if (document["isOpen"] as Boolean) {
-                    var photoArray = document["photos"] as ArrayList<String>
-                    // Convert to Long
-                    var unitPrice = document["unitPrice"]
-                    if (unitPrice is Long)
-                        unitPrice = unitPrice.toDouble()
-                    data.add(ListingModel(
-                        true,
-                        document["category"].toString(),
-                        document["description"].toString(),
-                        document["name"].toString(),
-                        document["preferredLocation"].toString(),
-                        document["seller"].toString(),
-                        document["stock"] as Long,
-                        unitPrice as Double,
-                        photoArray
-                    ))
-                }
+                // Convert to Long
+                var unitPrice = document["soldPrice"]
+                if (unitPrice is Long)
+                    unitPrice = unitPrice.toDouble()
+                data.add(OrderModel(
+                    document["customerId"] as String,
+                    document["listingId"] as String,
+                    document["listingName"] as String,
+                    document["photosId"] as String,
+                    document["quantity"] as Long,
+                    unitPrice as Double
+                ))
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
