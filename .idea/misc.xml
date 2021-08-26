@@ -3,11 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/drawable/rounded_corner.xml" value="0.23378378378378378" />
-        <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/layout/activity_location.xml" value="0.2" />
-        <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/layout/activity_login.xml" value="0.4" />
-        <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.4" />
-        <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/mipmap-anydpi-v26/ic_animall_logo.xml" value="0.23378378378378378" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.20925925925925926" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_landing.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_listing.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_main.xml" value="0.16576086956521738" />
@@ -18,7 +14,7 @@
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_landing.xml" value="0.11094224924012158" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_messages.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_user_profile.xml" value="0.17910447251321387" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_user_profile.xml" value="0.2364179037174423" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_view_listing.xml" value="0.35820894502642775" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_landing_layout.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_order_listing_layout.xml" value="0.11094224924012158" />

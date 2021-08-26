@@ -31,7 +31,7 @@ class LandingFragment : Fragment() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
-                data = DatabaseManager.initializeData()
+                data = DatabaseManager.initializeListingData()
             }
             Log.d(TAG, "ON CREATE")
             dataInit.await()

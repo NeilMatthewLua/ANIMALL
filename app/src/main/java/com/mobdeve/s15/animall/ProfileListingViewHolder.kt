@@ -26,7 +26,7 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     fun bindData(listing: ListingModel) {
         listingData = listing
         profileListingNameTv.text = listing.name
-        profileListingQuantityTv.text = listing.stock.toString()
+        profileListingQuantityTv.text = listing.stock.toString() + " in stock"
         profileListingPriceTv.text = "₱" + listing.unitPrice.toString()
 
         if (listing.photos.size > 0) {

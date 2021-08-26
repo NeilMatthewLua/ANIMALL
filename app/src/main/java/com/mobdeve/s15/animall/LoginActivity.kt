@@ -81,7 +81,10 @@ class LoginActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         // if logged in go to landing activity
-
+        if (currentUser != null) {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         Log.w(TAG, currentUser.toString())
     }
 
@@ -139,6 +142,8 @@ class LoginActivity : AppCompatActivity() {
                         getLocation.launch(Intent(this, LocationActivity::class.java))
                     }
                     // return to landing
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 } else {
                     Log.d(TAG, "No such document")
                     val userHash = hashMapOf(

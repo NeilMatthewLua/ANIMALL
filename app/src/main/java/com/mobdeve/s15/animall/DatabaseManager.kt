@@ -165,12 +165,12 @@ object DatabaseManager {
     }
 
     suspend fun getUserName(userEmail: String): String = coroutineScope {
-        val userRef = db.collection("users")
+        val userRef = db.collection(MyFirestoreReferences.USERS_COLLECTION)
         var userName = ""
         try {
-            val job = userRef.whereEqualTo("email", userEmail).get().await()
+            val job = userRef.whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userEmail).get().await()
             for (document in job.documents) {
-                userName = document["name"] as String
+                userName = document[MyFirestoreReferences.NAME_FIELD] as String
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING USER NAME")
@@ -179,25 +179,24 @@ object DatabaseManager {
     }
 
     suspend fun getUserListings(userEmail: String): ArrayList<ListingModel> = coroutineScope {
-        val listingRef = db.collection("listings")
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         val data = ArrayList<ListingModel>()
         try {
-            val job = listingRef.whereEqualTo("seller", userEmail).get().await()
+            val job = listingRef.whereEqualTo(MyFirestoreReferences.SELLER_FIELD, userEmail).get().await()
             for (document in job.documents) {
-                Log.d("FIREBASE:", document["name"].toString())
-                var photoArray = document["photos"] as ArrayList<String>
+                var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
                 // Convert to Long
-                var unitPrice = document["unitPrice"]
+                var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
                 data.add(ListingModel(
-                    document["isOpen"] as Boolean,
-                    document["category"].toString(),
-                    document["description"].toString(),
-                    document["name"].toString(),
-                    document["preferredLocation"].toString(),
-                    document["seller"].toString(),
-                    document["stock"] as Long,
+                    document[MyFirestoreReferences.LISTING_IS_OPEN] as Boolean,
+                    document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
+                    document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
+                    document[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
+                    document[MyFirestoreReferences.LOCATION_FIELD].toString(),
+                    document[MyFirestoreReferences.SELLER_FIELD].toString(),
+                    document[MyFirestoreReferences.STOCK_FIELD] as Long,
                     unitPrice as Double,
                     photoArray
                 ))
@@ -210,21 +209,21 @@ object DatabaseManager {
     }
 
     suspend fun getUserOrders(customerEmail: String): ArrayList<OrderModel> = coroutineScope {
-        val listingRef = db.collection("orders")
+        val listingRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
         val data = ArrayList<OrderModel>()
         try {
-            val job = listingRef.whereEqualTo("customerId", customerEmail).get().await()
+            val job = listingRef.whereEqualTo(MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
             for (document in job.documents) {
                 // Convert to Long
-                var unitPrice = document["soldPrice"]
+                var unitPrice = document[MyFirestoreReferences.ORDER_SOLD_PRICE_FIELD]
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
                 data.add(OrderModel(
-                    document["customerId"] as String,
-                    document["listingId"] as String,
-                    document["listingName"] as String,
-                    document["photosId"] as String,
-                    document["quantity"] as Long,
+                    document[MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD] as String,
+                    document[MyFirestoreReferences.ORDER_LISTING_ID_FIELD] as String,
+                    document[MyFirestoreReferences.ORDER_LISTING_NAME_FIELD] as String,
+                    document[MyFirestoreReferences.ORDER_PHOTOS_ID_FIELD] as String,
+                    document[MyFirestoreReferences.ORDER_QUANTITY_FIELD] as Long,
                     unitPrice as Double
                 ))
             }

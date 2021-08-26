@@ -19,7 +19,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -30,7 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:fontFamily="@font/futura_medium_bt"
         android:text="@string/listing_name"
+        android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/profileListingImageIv"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,22 +42,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/futura_light_bt"
         android:text="@string/listing_quantity"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/profileListingImageIv"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/profileListingNameTv" />
 
     <TextView
         android:id="@+id/profileListingPriceTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
+        android:fontFamily="@font/futura_light_bt"
         android:text="@string/listing_price"
+        android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/profileListingNameTv" />
 
     <LinearLayout
         android:id="@+id/listingActionsLl"
@@ -75,7 +81,9 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/error_red"
+            android:fontFamily="@font/futura_light_bt"
             android:text="@string/profile_delete_listing"
+            android:textAllCaps="false"
             android:textSize="12sp" />
 
         <Button
@@ -84,7 +92,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
+            android:fontFamily="@font/futura_light_bt"
             android:text="@string/profile_close_listing"
+            android:textAllCaps="false"
             android:textSize="12sp" />
 
         <Button
@@ -93,7 +103,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
+            android:fontFamily="@font/futura_light_bt"
             android:text="@string/profile_edit_listing"
+            android:textAllCaps="false"
             android:textSize="12sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,19 +1,27 @@
 package com.mobdeve.s15.animall
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_user_profile.*
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class UserProfileFragment : Fragment() {
+    val TAG: String = "USER PROFILE"
     // Db data
     var listingData: ArrayList<ListingModel> = ArrayList<ListingModel>()
     var orderData: ArrayList<OrderModel> = ArrayList<OrderModel>()
@@ -35,6 +43,13 @@ class UserProfileFragment : Fragment() {
                 orderData = DatabaseManager.getUserOrders("carlos_shi@dlsu.edu.ph")
             }
             dataInit.await()
+            val userFromDb = Firebase.auth.currentUser
+            Picasso.get().
+            load(userFromDb?.photoUrl)
+                .error(R.drawable.ic_error)
+                .placeholder(R.drawable.progress_animation)
+                .into(profileImageIv);
+
             userProfileTv.text = currentUser
 
             profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
@@ -90,5 +105,22 @@ class UserProfileFragment : Fragment() {
         // Adapter
         profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
         profileRecyclerView!!.adapter = profileListingAdapter
+
+        profileLogoutBtn.setOnClickListener{
+            // Logout of auth
+            Firebase.auth.signOut()
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_client_id))
+                .requestEmail()
+                .build()
+
+            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+            googleSignInClient.signOut()
+            Log.d(TAG, Firebase.auth.currentUser?.displayName.toString())
+            // Redirect back to sign up page
+            val intent = Intent(context, LoginActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 }
