@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">ANIMALL</string>
+    <string name="web_client_id">340958678333-5719a01js4bp86i7nvhla4t2egsdffe4.apps.googleusercontent.com</string>
+    <string name="login_logo_content_desc">Logo</string>
+    <string name="login_caption">The Community Forum \n just got <b>better</b></string>
+    <string name="login_sign_in_tips">Sign in using your <b>DLSU email</b> and get access to exclusive offers and more</string>
+    <string name="login_sign_in_btn">Sign In</string>
+    <string name="location_title">Please set your current location</string>
+    <string name="location_tips">This location will be used as reference for pickups &amp; deliveries</string>
+    <string name="location_confirm">Confirm</string>
+    <string name="location_search_hint">Enter City</string>
+    <string name="location_dialog_title">Confirm</string>
     <string name="product_name">Carlos Shi Real PNG</string>
     <string name="product_price_unit">₱</string>
     <string name="product_stock">42 in Stock</string>
@@ -15,9 +25,41 @@
     <string name="listing_order">Make an Order</string>
     <string name="listing_contact">Contact Seller</string>
 
+    <string name="create_listing">Create Listing</string>
+    <string name="cancel_listing">X</string>
+    <string name="create_product_name">Product Name</string>
+    <string name="create_product_name_hint">Product name (Max 30 Characters)</string>
+    <string name="create_product_name_error">Product name is required.</string>
+    <string name="create_price">Price per Item</string>
+    <string name="create_price_error">Product price is required.</string>
+    <string name="create_quantity">Quantity</string>
+    <string name="create_quantity_error">Product quantity is required.</string>
+    <string name="create_quantity_hint">Quantity (Max 1,000)</string>
+    <string name="create_description">Description</string>
+    <string name="create_description_hint">Product description (Max 200 Characters)</string>
+    <string name="create_description_error">Product description is required.</string>
+    <string name="create_category">Category</string>
+    <string name="create_category_error">Product category is required.</string>
+    <string name="create_location">Meetup Location</string>
+    <string name="create_location_hint">Sample Location</string>
+    <string name="create_location_error">Meetup location is required.</string>
+    <string name="create_photo">Product Photos</string>
+    <string name="create_photo_error">Product photos are required.</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="category_options">
+        <item>Filter by:</item>
+        <item>Clothing</item>
+        <item>Food</item>
+        <item>Electronics</item>
+        <item>Books</item>
+        <item>Stationery</item>
+        <item>Health &amp; Fitness</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="listing_category_options">
         <item>Filter by:</item>
         <item>Clothing</item>
         <item>Food</item>
@@ -37,11 +79,14 @@
     <string name="search_icon">Search Icon</string>
     <string name="search_hint">Search for a product</string>
     <string name="clear_selection">Clear Filter/Sort</string>
-    <string name="listing_name">Listing Name</string>
-    <string name="listing_price">Listing Price</string>
-    <string name="listing_location">Listing City</string>
-    <string name="listing_category">Listing Category</string>
+    <string name="listing_name">Product Name</string>
+    <string name="listing_price">Product Price</string>
+    <string name="listing_location">Product City</string>
+    <string name="listing_category">Product Category</string>
     <string name="listing_image">Listing Image</string>
+
+    <string name="message">You: Boi I am tired</string>
+    <string name="message_time">August 15, 2021 6:09PM</string>
     <string name="listing_quantity">Listing Quantity</string>
 
     <string name="profile_delete_listing">Delete Listing</string>
