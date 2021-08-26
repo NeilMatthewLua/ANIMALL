@@ -45,9 +45,4 @@
         android:name="com.mobdeve.s15.animall.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
-        tools:layout="@layout/fragment_view_listing">
-        <action
-            android:id="@+id/action_viewListingFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-    </fragment>
 </navigation>

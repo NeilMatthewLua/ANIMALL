@@ -94,7 +94,7 @@
 
     <string name="profile_logout">Logout</string>
     <string name="profile_name">Name</string>
-    <string name="profile_edit_location">Edit Location</string>
+    <string name="profile_edit_location">Edit Current Location</string>
     <string name="profile_delete_listing">Delete</string>
     <string name="profile_edit_listing">Edit</string>
     <string name="profile_close_listing">Close</string>

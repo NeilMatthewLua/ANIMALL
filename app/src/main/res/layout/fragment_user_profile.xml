@@ -36,11 +36,12 @@
         android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+            android:id="@+id/profileImageContainerCv"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="36dp"
             android:elevation="10dp"
+            android:visibility="invisible"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,12 +59,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:fontFamily="@font/futura_medium_bt"
+            android:fontFamily="@font/futura_light_bt"
             android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView" />
+            app:layout_constraintTop_toBottomOf="@id/profileImageContainerCv" />
 
         <Button
             android:id="@+id/editLocationBtn"
@@ -73,6 +75,7 @@
             android:fontFamily="@font/futura_light_bt"
             android:text="@string/profile_edit_location"
             android:textAllCaps="false"
+            android:visibility="invisible"
             app:icon="@drawable/ic_baseline_edit_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,8 +91,10 @@
             android:elevation="10dp"
             android:outlineProvider="background"
             android:stateListAnimator="@null"
-            android:text="Edit Current Location"
-            android:visibility="gone"
+            android:text="@string/profile_edit_location"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userProfileTv" />
@@ -107,12 +112,13 @@
             android:stateListAnimator="@null"
             android:text="Listings"
             android:textAllCaps="false"
-            android:visibility="visible"
+            android:textSize="16sp"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editLocationBtn" />
 
         <Button
-            android:id="@+id/profilePurchasesBtn"
+            android:id="@+id/profileOrderBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -125,12 +131,14 @@
             android:text="Purchases"
             android:textAllCaps="false"
             android:textColor="#000000"
-            android:visibility="visible"
+            android:textSize="16sp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editLocationBtn" />
 
         <Button
             android:id="@+id/profileLogoutBtn"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -142,8 +150,8 @@
             android:stateListAnimator="@null"
             android:text="@string/profile_logout"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:visibility="visible"
+            android:textColor="@color/black"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

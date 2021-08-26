@@ -59,16 +59,16 @@ class UserProfileFragment : Fragment() {
             profileListingBtn.setOnClickListener{
                 profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
                 profileListingBtn.setTextColor(getResources().getColor(R.color.white))
-                profilePurchasesBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                profilePurchasesBtn.setTextColor(getResources().getColor(R.color.black))
+                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
                 profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
                 profileRecyclerView!!.adapter = profileListingAdapter
                 profileListingAdapter.notifyDataSetChanged()
             }
 
-            profilePurchasesBtn.setOnClickListener{
-                profilePurchasesBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                profilePurchasesBtn.setTextColor(getResources().getColor(R.color.white))
+            profileOrderBtn.setOnClickListener{
+                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
                 profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
                 profileListingBtn.setTextColor(getResources().getColor(R.color.black))
                 profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
@@ -79,6 +79,12 @@ class UserProfileFragment : Fragment() {
             hasRetrieved = true
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE
+
+            profileEditLocationBtn.visibility = View.VISIBLE
+            profileListingBtn.visibility = View.VISIBLE
+            profileOrderBtn.visibility = View.VISIBLE
+            profileLogoutBtn.visibility = View.VISIBLE
+            profileImageContainerCv.visibility = View.VISIBLE
         }
     }
 
@@ -97,6 +103,11 @@ class UserProfileFragment : Fragment() {
         if (hasRetrieved) {
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE
+            profileEditLocationBtn.visibility = View.VISIBLE
+            profileListingBtn.visibility = View.VISIBLE
+            profileOrderBtn.visibility = View.VISIBLE
+            profileLogoutBtn.visibility = View.VISIBLE
+            profileImageContainerCv.visibility = View.VISIBLE
         }
         // Layout manager
         val linearLayoutManager = LinearLayoutManager(activity)

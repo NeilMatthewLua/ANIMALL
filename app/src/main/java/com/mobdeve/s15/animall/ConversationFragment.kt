@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_landing.*
+import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
 import kotlinx.android.synthetic.main.fragment_messages.landingPb
