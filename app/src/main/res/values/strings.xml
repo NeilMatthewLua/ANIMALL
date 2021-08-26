@@ -87,6 +87,9 @@
 
     <string name="message">You: Boi I am tired</string>
     <string name="message_time">August 15, 2021 6:09PM</string>
+
+    <string name="message_make_offer">Make Offer</string>
+    <string name="message_make_order">Place Order</string>
     <string name="listing_quantity">Listing Quantity</string>
 
     <string name="profile_logout">Logout</string>
