@@ -7,15 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_landing.*
 import kotlinx.android.synthetic.main.fragment_messages.*
+import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
+import kotlinx.android.synthetic.main.fragment_messages.landingPb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class ConversationFragment : Fragment() {
-
-    lateinit var data: ArrayList<ConversationModel>
+    val TAG: String = "CONVERSATION FRAGMENT"
+    var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
+    var hasRetrieved: Boolean = false
     // RecyclerView components
     lateinit var myAdapter: ConversationAdapter
 
@@ -33,9 +37,10 @@ class ConversationFragment : Fragment() {
             conversationRecyclerView!!.layoutManager = linearLayoutManager
 
             // Adapter
-            myAdapter = ConversationAdapter(data!!)
+            myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
             conversationRecyclerView!!.adapter = myAdapter
             myAdapter.notifyDataSetChanged()
+            hasRetrieved = true
             dimBackgroundV.visibility = View.GONE
             landingPb.visibility = View.GONE
         }
@@ -48,5 +53,22 @@ class ConversationFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater
             .inflate(R.layout.fragment_messages, container, false)
+    }
+
+    override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(itemView, savedInstanceState)
+        if (hasRetrieved) {
+            dimBackgroundV.visibility = View.GONE
+            landingPb.visibility = View.GONE
+        }
+
+        // Layout manager
+        val linearLayoutManager = LinearLayoutManager(activity)
+        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+        conversationRecyclerView!!.layoutManager = linearLayoutManager
+
+        // Adapter
+        myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
+        conversationRecyclerView!!.adapter = myAdapter
     }
 }
