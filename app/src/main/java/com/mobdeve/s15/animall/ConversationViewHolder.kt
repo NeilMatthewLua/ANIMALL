@@ -4,12 +4,14 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    var conversationLayout: ConstraintLayout
     var conversationNameTv: TextView
     var conversationMessageTv: TextView
     var conversationTimeTv: TextView
@@ -45,6 +47,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     init {
+        conversationLayout = itemView.findViewById(R.id.conversationLayout)
         conversationNameTv = itemView.findViewById(R.id.conversationNameTv)
         conversationMessageTv = itemView.findViewById(R.id.conversationMessageTv)
         conversationTimeTv = itemView.findViewById(R.id.conversationTimeTv)
