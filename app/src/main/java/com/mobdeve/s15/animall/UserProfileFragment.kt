@@ -37,15 +37,15 @@ class UserProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
         // TODO: Compare firebase user with profile user
         lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
             val dataInit = async(Dispatchers.IO) {
-                currentUser = DatabaseManager.getUserName("carlos_shi@dlsu.edu.ph")
-                listingData = DatabaseManager.getUserListings("carlos_shi@dlsu.edu.ph")
-                orderData = DatabaseManager.getUserOrders("carlos_shi@dlsu.edu.ph")
+                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
+                listingData = DatabaseManager.getUserListings(loggedUser?.email!!)
+                orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
             }
             dataInit.await()
-            val userFromDb = Firebase.auth.currentUser
             Picasso.get().
-            load(userFromDb?.photoUrl)
+            load(loggedUser?.photoUrl)
                 .error(R.drawable.ic_error)
                 .placeholder(R.drawable.progress_animation)
                 .into(profileImageIv);
@@ -127,7 +127,6 @@ class UserProfileFragment : Fragment() {
 
             val googleSignInClient = GoogleSignIn.getClient(context, gso)
             googleSignInClient.signOut()
-            Log.d(TAG, Firebase.auth.currentUser?.displayName.toString())
             // Redirect back to sign up page
             val intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)

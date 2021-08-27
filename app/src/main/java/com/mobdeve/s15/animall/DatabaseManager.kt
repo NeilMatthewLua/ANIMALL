@@ -209,10 +209,10 @@ object DatabaseManager {
     }
 
     suspend fun getUserOrders(customerEmail: String): ArrayList<OrderModel> = coroutineScope {
-        val listingRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
         val data = ArrayList<OrderModel>()
         try {
-            val job = listingRef.whereEqualTo(MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
+            val job = orderRef.whereEqualTo(MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
             for (document in job.documents) {
                 // Convert to Long
                 var unitPrice = document[MyFirestoreReferences.ORDER_SOLD_PRICE_FIELD]
@@ -228,7 +228,7 @@ object DatabaseManager {
                 ))
             }
         } catch (e: Exception) {
-            Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
+            Log.d("FIREBASE:", e.toString())
         }
 
         data
