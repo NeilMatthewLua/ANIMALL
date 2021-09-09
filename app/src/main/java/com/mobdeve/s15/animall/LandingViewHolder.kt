@@ -3,6 +3,7 @@ package com.mobdeve.s15.animall
 import android.graphics.Outline
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
@@ -12,10 +13,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 
 
 class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val LANDING_VIEW_HOLDER_TAG = "LANDING_VIEW_HOLDER"
     lateinit var listingData: ListingModel
     var itemContainerLayout: ConstraintLayout
     var productNameTv: TextView
@@ -33,12 +36,21 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         productCategoryChip.text = listing.category
 
         if (listing.photos.size > 0) {
+//            productImageIv.scaleType = ImageView.ScaleType.FIT_CENTER
             Picasso.get().
             load(listing.photos[0])
                 .error(R.drawable.ic_error)
                 .placeholder( R.drawable.progress_animation)
-                .into(productImageIv);
+                .into(productImageIv, object : Callback {
+                    override fun onSuccess() {
+                        productImageIv.scaleType = ImageView.ScaleType.CENTER_CROP
+                    }
 
+                    override fun onError(e: Exception?) {
+                        Log.d(LANDING_VIEW_HOLDER_TAG, "Error in loading image")
+                    }
+                });
+//            productImageIv.scaleType = ImageView.ScaleType.CENTER_CROP
             // Create rounded bottom image
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val curveRadius = 20F
