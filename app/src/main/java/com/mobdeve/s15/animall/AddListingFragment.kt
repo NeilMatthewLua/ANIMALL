@@ -1,6 +1,8 @@
 package com.mobdeve.s15.animall
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -17,6 +19,7 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
@@ -96,7 +99,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // Photo upload button
         productUploadBtn.setOnClickListener {
-            selectImages()
+//            selectImages()
+            requestPermissions()
         }
 
         loadCategories()
@@ -244,6 +248,44 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         return invalid == 0
+    }
+
+    // Request permissions if not granted before
+    private fun requestPermissions() {
+//        // Requesting Permission to access External Storage
+//        ActivityCompat.requestPermissions(
+//            requireContext(),
+//            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+//            EXTERNAL_STORAGE_PERMISSION_CODE
+//        )
+
+        requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
+    }
+
+//    // What must happen when permission is granted
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
+//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+//                selectImages()
+//            }
+//        }
+//    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            selectImages()
+        }
     }
 
     private fun selectImages() {
