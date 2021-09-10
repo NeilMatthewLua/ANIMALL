@@ -13,7 +13,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.HashMap
+import java.util.*
 
 class MessageFragment : Fragment() {
     // Replacement of the base adapter view
@@ -58,24 +58,24 @@ class MessageFragment : Fragment() {
         super.onViewCreated(itemView, savedInstanceState)
 
         val linearLayoutManager = LinearLayoutManager(requireContext())
-//        linearLayoutManager.stackFromEnd = true
-//        linearLayoutManager.isSmoothScrollbarEnabled = true
         messageRecyclerView!!.layoutManager = linearLayoutManager
 
         myFirestoreRecyclerAdapter.registerAdapterDataObserver(
-            MyScrollToBottomObserver(messageRecyclerView, myFirestoreRecyclerAdapter, linearLayoutManager)
+            MyScrollToBottomObserver(messageRecyclerView, myFirestoreRecyclerAdapter)
         )
 
         messageRecyclerView.adapter = myFirestoreRecyclerAdapter
 
         sendMessageBtn.setOnClickListener{
             Log.i("Messages", "sending a message")
-            sendMessage()
+            if (messageEtv!!.text.toString().isNotEmpty()) {
+                sendMessage()
+            }
         }
     }
 
     fun sendMessage() {
-        val message = messageEtv!!.getText().toString()
+        val message = messageEtv!!.text.toString()
 
         // Ready the values of the message
         val data: MutableMap<String, Any?> = HashMap()
@@ -84,13 +84,13 @@ class MessageFragment : Fragment() {
         //TODO hardcoded convoId
         data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoId
         data[MyFirestoreReferences.MESSAGE_FIELD] = message
-        data[MyFirestoreReferences.TIME_FIELD] = FieldValue.serverTimestamp()
+        data[MyFirestoreReferences.TIME_FIELD] = Date()
 
         val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
 
         messageRef
             .add(data)
-            .addOnSuccessListener { documentReference ->
+            .addOnSuccessListener {
                 Log.d(
                     "DB SUCCESS",
                     "DocumentSnapshot updated"
@@ -98,8 +98,6 @@ class MessageFragment : Fragment() {
                 // "Reset" the message in the EditText
                 messageEtv!!.setText("")
 
-                // Check if the message was added with the right reference query above
-                checkQuery()
             }
             .addOnFailureListener { e ->
                 Log.w(
@@ -107,23 +105,6 @@ class MessageFragment : Fragment() {
                     "Error adding document",
                     e
                 )
-            }
-    }
-
-    fun checkQuery() {
-        val query = db!!
-            .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
-            .whereEqualTo(
-                MyFirestoreReferences.MESSAGE_CONVO_FIELD,
-                convoId)
-
-        query.get()
-            .addOnSuccessListener {
-                documents  ->
-                Log.i("Messages DB return from OG Query", "${documents.size()}")
-            }
-            .addOnFailureListener { exception ->
-                Log.w("Warning", "Error getting documents: ", exception)
             }
     }
 
