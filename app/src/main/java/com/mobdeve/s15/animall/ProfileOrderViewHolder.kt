@@ -2,6 +2,7 @@ package com.mobdeve.s15.animall
 
 import android.graphics.Outline
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
@@ -18,10 +20,13 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var profileOrderNameTv: TextView
     var profileOrderQuantityTv: TextView
     var receivedOrderBtn: Button
+    var profileOrderId: String = ""
+    val USER_PROFILE_FRAGMENT = 1
 
     // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(order: OrderModel) {
         orderData = order
+        profileOrderId = order.orderId
         val totalPrice = order.quantity * order.soldPrice
         profileOrderNameTv.text = order.listingName
         profileOrderQuantityTv.text = "₱" + order.soldPrice.toString() + " x " + order.quantity.toString() + " = " + totalPrice.toString()
@@ -42,6 +47,17 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 }
             }
             profileOrderImageIv.clipToOutline = true
+        }
+    }
+
+    fun setConfirmBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
+        receivedOrderBtn.setOnClickListener{
+            val dialog = CustomDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString("orderName", orderData.listingName)
+            dialog.arguments = args
+            dialog.show(manager, "Confirm Order")
         }
     }
 

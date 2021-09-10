@@ -109,4 +109,6 @@
     <string name="profile_close_listing">Close</string>
     <string name="profile_confirm_order">Confirm Order</string>
 
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
 </resources>

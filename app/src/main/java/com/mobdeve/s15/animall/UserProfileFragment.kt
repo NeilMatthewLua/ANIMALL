@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.ktx.auth
@@ -92,6 +93,14 @@ class UserProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "SETTING")
+        requireActivity().supportFragmentManager
+            .setFragmentResultListener("dialogResult", viewLifecycleOwner) { key, bundle ->
+                val result = bundle.getString("orderConfirmed")
+                if (result == "ok") {
+                    Log.d(TAG, "RESULT OK")
+                }
+            }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_profile, container, false)
     }

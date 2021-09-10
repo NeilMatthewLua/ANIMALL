@@ -19,6 +19,7 @@ object MyFirestoreReferences {
     const val PHOTOS_FIELD = "photos"
 
     //Order Model
+    const val ORDER_ID_FIELD = "orderId"
     const val ORDER_CUSTOMER_ID_FIELD = "customerId"
     const val ORDER_LISTING_ID_FIELD = "listingId"
     const val ORDER_LISTING_NAME_FIELD = "listingName"

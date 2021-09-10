@@ -74,7 +74,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
 
         // Set up cancel button
-        cancelBtn.setOnClickListener{
+        dialogCancelBtn.setOnClickListener{
             (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
         }
 

@@ -219,6 +219,7 @@ object DatabaseManager {
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
                 data.add(OrderModel(
+                    document[MyFirestoreReferences.ORDER_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_LISTING_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_LISTING_NAME_FIELD] as String,

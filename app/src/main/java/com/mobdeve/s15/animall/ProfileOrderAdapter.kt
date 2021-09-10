@@ -18,6 +18,7 @@ class ProfileOrderAdapter(private val data: ArrayList<OrderModel>, private val f
 
     override fun onBindViewHolder(holder: ProfileOrderViewHolder, position: Int) {
         holder.bindData(data[position])
+        holder.setConfirmBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
     }
 
     override fun getItemCount(): Int {
