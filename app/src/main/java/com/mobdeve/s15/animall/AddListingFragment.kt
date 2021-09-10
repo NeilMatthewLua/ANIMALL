@@ -18,7 +18,9 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -28,6 +30,9 @@ import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnima
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.fragment_add_listing.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
@@ -57,6 +62,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var categoryId: String
     lateinit var photoURLs: ArrayList<String>
 
+    lateinit var currentUser: UserModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setup database
@@ -73,42 +80,50 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Set up cancel button
-        cancelBtn.setOnClickListener{
-            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
-        }
-
-        // Set up add listing
-        addListingBtn.setOnClickListener{
-            var valid: Boolean = validateInformation()
-
-            Log.i("Valid: ", valid.toString())
-
-            if(valid) {
-                listingDimBackgroundV.visibility = View.VISIBLE
-                listingProcessPb.visibility = View.VISIBLE
-                getActivity()?.getWindow()?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                uploadPhotos()
-                Log.i(TAG, "Files Uploaded!")
+        lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
+            val dataInit = async(Dispatchers.IO) {
+                currentUser = DatabaseManager.getUserViaEmail(loggedUser?.email!!)!!
             }
+            dataInit.await()
+
+            // Set up cancel button
+            cancelBtn.setOnClickListener{
+                (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+            }
+
+            // Set up add listing
+            addListingBtn.setOnClickListener{
+                var valid: Boolean = validateInformation()
+
+                Log.i("Valid: ", valid.toString())
+
+                if(valid) {
+                    listingDimBackgroundV.visibility = View.VISIBLE
+                    listingProcessPb.visibility = View.VISIBLE
+                    getActivity()?.getWindow()?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    uploadPhotos()
+                    Log.i(TAG, "Files Uploaded!")
+                }
+            }
+
+            // Photo upload button
+            productUploadBtn.setOnClickListener {
+                selectImages()
+            }
+
+            loadCategories()
+            sliderView = activity?.findViewById(R.id.imageSlider)!!
+
+            sliderAdapter = SliderAdapter(requireContext())
+            sliderView.setSliderAdapter(sliderAdapter)
+            sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+
+            sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+            sliderView.indicatorSelectedColor = Color.WHITE
+            sliderView.indicatorUnselectedColor = Color.GRAY
         }
-
-        // Photo upload button
-        productUploadBtn.setOnClickListener {
-            selectImages()
-        }
-
-        loadCategories()
-        sliderView = activity?.findViewById(R.id.imageSlider)!!
-
-        sliderAdapter = SliderAdapter(requireContext())
-        sliderView.setSliderAdapter(sliderAdapter)
-        sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-
-        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
-        sliderView.indicatorSelectedColor = Color.WHITE
-        sliderView.indicatorUnselectedColor = Color.GRAY
     }
 
     override fun onCreateView(
@@ -120,33 +135,9 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     fun loadCategories() {
-//        val db = Firebase.firestore
-//        var categories: ArrayList<String> = ArrayList<String>()
-//
-//        db.collection("categories")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (document in result) {
-//                    Log.i(TAG, "${document.id} => ${document.data}")
-//                    categories.add(document.data.get("category").toString())
-//                    categoriesHashMap.put(document.data.get("category").toString(), document.id)
-//                }
-//
-//                val adapter = ArrayAdapter(
-//                    requireContext(),
-//                    android.R.layout.simple_spinner_item,
-//                    categories
-//                )
-//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                productCategorySp.adapter = adapter
-//                productCategorySp.onItemSelectedListener = this
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.w(TAG, "Error getting documents.", exception)
-//            }
         ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.category_options,
+            R.array.listing_category_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -162,7 +153,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         parent.getItemAtPosition(pos)
         Log.i(TAG, parent.getItemAtPosition(pos).toString())
         productCategorySp.setSelection(pos, true)
-//        categoryId = categoriesHashMap.get(parent.getItemAtPosition(pos).toString())!!
         categoryId = parent.getItemAtPosition(pos).toString()
     }
 
@@ -425,15 +415,17 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             Log.i(TAG, it.toString())
         }
         Log.i("POSTING", "POSTING")
+
         val listing = hashMapOf(
-            "category" to categoryId,
-            "description" to productDescriptionEtv.text.toString(),
-            "name" to productNameEtv.text.toString(),
-            "preferredLocation" to productLocationEtv.text.toString(),
-            "seller" to "7igRri2b0HUHIxCKNWGGIVbuvbu2",
-            "stock" to productQuantityEtv.text.toString().toInt(),
-            "unitPrice" to productPriceEtv.text.toString().toDouble(),
-            "photos" to photoURLs
+            MyFirestoreReferences.CATEGORY_FIELD to categoryId,
+            MyFirestoreReferences.LISTING_IS_OPEN to true,
+            MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
+            MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
+            MyFirestoreReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirestoreReferences.SELLER_FIELD to currentUser.email,
+            MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
+            MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
+            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
         )
 
         db.collection("listings").document(listingID)

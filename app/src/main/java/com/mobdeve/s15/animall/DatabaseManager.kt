@@ -47,7 +47,8 @@ object DatabaseManager {
                         document[MyFirestoreReferences.SELLER_FIELD].toString(),
                         document[MyFirestoreReferences.STOCK_FIELD] as Long,
                         unitPrice as Double,
-                        photoArray
+                        photoArray,
+                        document.id
                     ))
                 }
             }
@@ -55,74 +56,73 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
 
-        val convoID = "ppM1zG50BJypCp3frVEu"
-
-        //TODO Currently placed to add conversation messages, remove when no longer needed
-        val convoRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION).document(convoID)
-
-        val convData = hashMapOf(
-            MyFirestoreReferences.RECEIPIENT_FIELD to "neil_lua@dlsu.edu.ph",
-            MyFirestoreReferences.SENDER_FIELD to "carlos_shi@dlsu.edu.ph",
-            MyFirestoreReferences.LISTING_ID_FIELD to "7c72e01a-1582-463e-a685-138eda44c8e1",
-            MyFirestoreReferences.LISTING_NAME_FIELD to "Miko Iino Poster",
-            MyFirestoreReferences.LISTING_PHOTO_FIELD to "https://firebasestorage.googleapis.com/v0/b/animall-b7841.appspot.com/o/images%2F7c72e01a-1582-463e-a685-138eda44c8e1%2Fe239d3a3-18fa-4e75-ae3f-077c9e4b708e?alt=media&token=eb584791-a391-4551-aa80-cf5e222408e8"
-        )
-
-        try {
-            convoRef
-                .set(convData)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "DocumentSnapshot written, will add messages now")
-
-                    var messageRef = db.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
-
-                    //TODO Fate convoId, but check
-                    messageRef
-                        .add(
-                            MessageModel(
-                                convoID,
-                                Date(),
-                                "carlos_shi@dlsu.edu.ph",
-                                "Boy am I tired"
-                            )
-                        )
-
-                    messageRef
-                        .add(
-                            MessageModel(
-                                convoID,
-                                Date(),
-                                "neil_lua@dlsu.edu.ph",
-                                "Aren't we all"
-                            )
-                        )
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-
-                }.await()
-
-            Log.i("FIREBASE:", "SUCCESS UPLOAD MESSAGE")
-        } catch (e: Exception) {
-            Log.d("FIREBASE:", "ERROR UPLOADING MESSAGE")
-        }
+//        val convoID = "ppM1zG50BJypCp3frVEu"
+//
+//        //TODO Currently placed to add conversation messages, remove when no longer needed
+//        val convoRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION).document(convoID)
+//
+//        val convData = hashMapOf(
+//            MyFirestoreReferences.RECEIPIENT_FIELD to "neil_lua@dlsu.edu.ph",
+//            MyFirestoreReferences.SENDER_FIELD to "carlos_shi@dlsu.edu.ph",
+//            MyFirestoreReferences.LISTING_ID_FIELD to "7c72e01a-1582-463e-a685-138eda44c8e1",
+//            MyFirestoreReferences.LISTING_NAME_FIELD to "Miko Iino Poster",
+//            MyFirestoreReferences.LISTING_PHOTO_FIELD to "https://firebasestorage.googleapis.com/v0/b/animall-b7841.appspot.com/o/images%2F7c72e01a-1582-463e-a685-138eda44c8e1%2Fe239d3a3-18fa-4e75-ae3f-077c9e4b708e?alt=media&token=eb584791-a391-4551-aa80-cf5e222408e8"
+//        )
+//
+//        try {
+//            convoRef
+//                .set(convData)
+//                .addOnSuccessListener { documentReference ->
+//                    Log.d(TAG, "DocumentSnapshot written, will add messages now")
+//
+//                    var messageRef = db.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+//
+//                    //TODO Fake convoId, but check
+//                    messageRef
+//                        .add(
+//                            MessageModel(
+//                                convoID,
+//                                Date(),
+//                                "carlos_shi@dlsu.edu.ph",
+//                                "Boy am I tired"
+//                            )
+//                        )
+//
+//                    messageRef
+//                        .add(
+//                            MessageModel(
+//                                convoID,
+//                                Date(),
+//                                "neil_lua@dlsu.edu.ph",
+//                                "Aren't we all"
+//                            )
+//                        )
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.w(TAG, "Error adding document", e)
+//
+//                }.await()
+//
+//            Log.i("FIREBASE:", "SUCCESS UPLOAD MESSAGE")
+//        } catch (e: Exception) {
+//            Log.d("FIREBASE:", "ERROR UPLOADING MESSAGE")
+//        }
 
         data
     }
 
-    suspend fun initializeConversationData(): ArrayList<ConversationModel> = coroutineScope {
+    suspend fun initializeConversationData(email: String): ArrayList<ConversationModel> = coroutineScope {
         val conversationRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
         val data = ArrayList<ConversationModel>()
         try {
-            //TODO use logged in email, for now use carlos_shi
             val receive_job = conversationRef
-                        .whereEqualTo(MyFirestoreReferences.RECEIPIENT_FIELD, "carlos_shi@dlsu.edu.ph")
+                        .whereEqualTo(MyFirestoreReferences.RECIPIENT_FIELD, email)
                         .get()
                         .await()
             Log.i("`DatabaseManager`", "Getting conversations")
             for (document in receive_job.documents) {
-                Log.i("`DatabaseManager`", "Got one")
-                var receipientEmail = document[MyFirestoreReferences.RECEIPIENT_FIELD] as String
+                Log.i("`DatabaseManager`", "Got one as recipient")
+                var recipientEmail = document[MyFirestoreReferences.RECIPIENT_FIELD] as String
                 var senderEmail = document[MyFirestoreReferences.SENDER_FIELD] as String
                 val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
                 val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
@@ -131,7 +131,7 @@ object DatabaseManager {
 
                 data.add(
                     ConversationModel(
-                        receipientEmail,
+                        recipientEmail,
                         senderEmail,
                         listingId,
                         listingName,
@@ -142,21 +142,24 @@ object DatabaseManager {
             }
 
             val sent_job = conversationRef
-                .whereEqualTo(MyFirestoreReferences.SENDER_FIELD, "carlos_shi@dlsu.edu.ph")
+                .whereEqualTo(MyFirestoreReferences.SENDER_FIELD, email)
                 .get()
                 .await()
             Log.i("`DatabaseManager`", "Getting conversations")
             for (document in sent_job.documents) {
-                var receipientEmail = document[MyFirestoreReferences.RECEIPIENT_FIELD] as String
+                Log.i("`DatabaseManager`", "Got one as sender")
+                var recipientEmail = document[MyFirestoreReferences.RECIPIENT_FIELD] as String
                 var senderEmail = document[MyFirestoreReferences.SENDER_FIELD] as String
                 val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
+                Log.i("DBManager", listingId)
                 val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
                 val listingPhoto = document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String
                 val id = document.id
+                Log.i("DBManager", id)
 
                 data.add(
                     ConversationModel(
-                        receipientEmail,
+                        recipientEmail,
                         senderEmail,
                         listingId,
                         listingName,
@@ -169,6 +172,9 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING CONVERSATIONS")
         }
 
+        for (subdata in data) {
+            Log.i("initializeConvo", "${subdata.id}: ${subdata.listingName}")
+        }
         data
     }
 
@@ -206,7 +212,8 @@ object DatabaseManager {
                     document[MyFirestoreReferences.SELLER_FIELD].toString(),
                     document[MyFirestoreReferences.STOCK_FIELD] as Long,
                     unitPrice as Double,
-                    photoArray
+                    photoArray,
+                    document.id
                 ))
             }
             Log.d("FIREBASE:", job.documents.size.toString())
@@ -242,14 +249,44 @@ object DatabaseManager {
         data
     }
 
-    suspend fun getUser(userId: String): UserModel? = coroutineScope {
+//    suspend fun getUser(userId: String): UserModel? = coroutineScope {
+//        val conversationRef = db.collection(MyFirestoreReferences.USERS_COLLECTION)
+//        var user: UserModel? = null
+//        try {
+//            Log.i("FIREBASE", "UserID ${userId}")
+//
+//            //WHERE DocumentID (PK) is userId
+//            val job = conversationRef
+//                .whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userId)
+//                .get()
+//                .await()
+//            Log.i("`DatabaseManager`", "Getting the user")
+//            for (document in job.documents) {
+//                var userEmail = document[MyFirestoreReferences.EMAIL_FIELD] as String
+//                var userName = document[MyFirestoreReferences.NAME_FIELD] as String
+//                var userPrefLoc = document[MyFirestoreReferences.PREF_LOCATION_FIELD] as String
+//                user = UserModel(
+//                    userEmail,
+//                    userName,
+//                    userPrefLoc
+//                )
+//            }
+//        } catch (e: Exception) {
+//            Log.d("FIREBASE:", "ERROR RETRIEVING USER")
+//        }
+//
+//        user
+//    }
+
+    suspend fun getUserViaEmail(userEmail: String): UserModel? = coroutineScope {
         val conversationRef = db.collection(MyFirestoreReferences.USERS_COLLECTION)
         var user: UserModel? = null
         try {
-            Log.i("FIREBASE", "UserID ${userId}")
+            Log.i("FIREBASE", "UserID ${userEmail}")
+
             //WHERE DocumentID (PK) is userId
             val job = conversationRef
-                .whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userId)
+                .whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userEmail)
                 .get()
                 .await()
             Log.i("`DatabaseManager`", "Getting the user")
@@ -268,6 +305,37 @@ object DatabaseManager {
         }
 
         user
+    }
+
+    suspend fun getConversation(listingId: String, loggedUser: String): ConversationModel? = coroutineScope {
+        val conversationRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+        var conversation: ConversationModel? = null
+
+        try {
+            Log.i("FIREBASE", "UserID ${loggedUser} listingId ${listingId}")
+
+            val job = conversationRef
+                .whereEqualTo(MyFirestoreReferences.SENDER_FIELD, loggedUser)
+                .whereEqualTo(MyFirestoreReferences.LISTING_ID_FIELD, listingId)
+                .get()
+                .await()
+
+            Log.i("`DatabaseManager`", "Checking for conversations")
+            for (document in job.documents) {
+                conversation = ConversationModel(
+                    document[MyFirestoreReferences.RECIPIENT_FIELD] as String,
+                    document[MyFirestoreReferences.SENDER_FIELD] as String,
+                    document[MyFirestoreReferences.LISTING_ID_FIELD] as String,
+                    document[MyFirestoreReferences.LISTING_NAME_FIELD] as String,
+                    document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String,
+                    document.id,
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING USER")
+        }
+
+        conversation
     }
 
     suspend fun getLatestMessage(convoId: String): MessageModel? = coroutineScope {

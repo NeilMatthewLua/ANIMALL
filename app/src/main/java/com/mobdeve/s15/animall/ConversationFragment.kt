@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
@@ -28,8 +30,9 @@ class ConversationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
             val dataInit = async(Dispatchers.IO) {
-                data = DatabaseManager.initializeConversationData()
+                data = DatabaseManager.initializeConversationData(loggedUser?.email!!)
 //                message_data = DatabaseManager.initializeLatestMessageData()
             }
             dataInit.await()

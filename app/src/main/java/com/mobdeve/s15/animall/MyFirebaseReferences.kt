@@ -33,7 +33,7 @@ object MyFirestoreReferences {
     const val PREF_LOCATION_FIELD = "preferredLocation"
 
     //Conversation
-    const val RECEIPIENT_FIELD = "receipientEmail"
+    const val RECIPIENT_FIELD = "recipientEmail"
     const val SENDER_FIELD = "senderEmail"
     const val MESSAGES_FIELD = "messages"
     const val LISTING_ID_FIELD = "listingId"
