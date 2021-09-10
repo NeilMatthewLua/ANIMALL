@@ -109,4 +109,7 @@
     <string name="profile_close_listing">Close</string>
     <string name="profile_confirm_order">Confirm Order</string>
 
+    <string name="message_bubble_username">username</string>
+    <string name="message_bubble_message">message</string>
+
 </resources>

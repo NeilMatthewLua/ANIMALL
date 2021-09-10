@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/messageUsernameTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/futura_light_bt"
+        android:text="@string/message_bubble_username"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/messageMessageTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/futura_light_bt"
+        android:text="@string/message_bubble_message"
+        android:textSize="14sp" />
+</LinearLayout>

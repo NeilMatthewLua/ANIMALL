@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
@@ -19,6 +20,7 @@ import java.util.ArrayList
 class ConversationFragment : Fragment() {
     val TAG: String = "CONVERSATION FRAGMENT"
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
+    var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
     // RecyclerView components
     lateinit var myAdapter: ConversationAdapter
@@ -28,6 +30,7 @@ class ConversationFragment : Fragment() {
         lifecycleScope.launch {
             val dataInit = async(Dispatchers.IO) {
                 data = DatabaseManager.initializeConversationData()
+//                message_data = DatabaseManager.initializeLatestMessageData()
             }
             dataInit.await()
 

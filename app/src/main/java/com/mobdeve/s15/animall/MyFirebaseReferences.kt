@@ -6,6 +6,7 @@ object MyFirestoreReferences {
     const val CONVERSATIONS_COLLECTION = "conversations"
     const val ORDERS_COLLECTION = "orders"
     const val LISTINGS_COLLECTION = "listings"
+    const val MESSAGES_COLLECTION = "messages"
 
     //Listing
     const val LISTING_IS_OPEN = "isOpen"
@@ -40,7 +41,8 @@ object MyFirestoreReferences {
     const val LISTING_PHOTO_FIELD = "listingPhoto"
 
     //Message
-    const val TIME_FILED = "timestamp"
+    const val TIME_FIELD = "timestamp"
     const val MESSAGE_FIELD = "message"
     const val MESSAGE_SENDER_FIELD = "sender"
+    const val MESSAGE_CONVO_FIELD = "convoId"
 }

@@ -419,7 +419,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     fun postListing(listingID: String) {
-        val db = Firebase.firestore
+        val db = DatabaseManager.getInstance()
 
         photoURLs.forEach{
             Log.i(TAG, it.toString())
@@ -452,12 +452,5 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 listingProcessPb.visibility = View.GONE
                 listingDimBackgroundV.visibility = View.GONE
             }
-//      //Upload File (Won't be used since if we're downsizing images if needed so we use the bytes instead)
-//        uploader.putFile(fileuri)
-//            .addOnSuccessListener {
-//                status.removeAt(i)
-//                status.add(i, "done")
-//                adapter.notifyDataSetChanged()
-//        }
     }
 }
