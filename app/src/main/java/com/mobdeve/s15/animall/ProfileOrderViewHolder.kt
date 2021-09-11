@@ -19,6 +19,7 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var profileOrderImageIv: ImageView
     var profileOrderNameTv: TextView
     var profileOrderQuantityTv: TextView
+    var profileOrderConfirmedTv: TextView
     var receivedOrderBtn: Button
     var profileOrderId: String = ""
     val USER_PROFILE_FRAGMENT = 1
@@ -36,6 +37,11 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             .error(R.drawable.ic_error)
             .placeholder( R.drawable.progress_animation)
             .into(profileOrderImageIv)
+
+        if (order.isConfirmed) {
+            receivedOrderBtn.visibility = View.GONE
+            profileOrderConfirmedTv.visibility = View.VISIBLE
+        }
 
         // Create rounded bottom image
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -55,7 +61,9 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
-            args.putString("orderName", orderData.listingName)
+            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_ORDER_CONFIRM)
+            args.putString(CustomDialogFragment.MODAL_ORDER_ID_KEY, orderData.orderId)
+            args.putString(CustomDialogFragment.MODAL_ORDER_NAME_KEY, orderData.listingName)
             dialog.arguments = args
             dialog.show(manager, "Confirm Order")
         }
@@ -66,5 +74,6 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         profileOrderNameTv = itemView.findViewById(R.id.profileOrderNameTv)
         profileOrderQuantityTv = itemView.findViewById(R.id.profileOrderQuantityTv)
         receivedOrderBtn = itemView.findViewById(R.id.receivedOrderBtn)
+        profileOrderConfirmedTv = itemView.findViewById(R.id.profileOrderConfirmedTv)
     }
 }

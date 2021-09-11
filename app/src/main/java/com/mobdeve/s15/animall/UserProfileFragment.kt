@@ -93,14 +93,6 @@ class UserProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "SETTING")
-        requireActivity().supportFragmentManager
-            .setFragmentResultListener("dialogResult", viewLifecycleOwner) { key, bundle ->
-                val result = bundle.getString("orderConfirmed")
-                if (result == "ok") {
-                    Log.d(TAG, "RESULT OK")
-                }
-            }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_user_profile, container, false)
     }

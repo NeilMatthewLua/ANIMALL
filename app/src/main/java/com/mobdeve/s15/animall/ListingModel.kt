@@ -1,7 +1,8 @@
 package com.mobdeve.s15.animall
 
 class ListingModel(
-    val isOpen: Boolean,
+    val listingId: String,
+    var isOpen: Boolean,
     val category: String,
     val description: String,
     val name: String,

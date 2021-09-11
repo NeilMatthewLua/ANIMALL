@@ -2,6 +2,7 @@ package com.mobdeve.s15.animall
 
 import android.graphics.Outline
 import android.os.Build
+import android.os.Bundle
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.Button
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
@@ -29,6 +31,10 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         profileListingQuantityTv.text = listing.stock.toString() + " in stock"
         profileListingPriceTv.text = "₱" + listing.unitPrice.toString()
 
+        if (!listing.isOpen) {
+            profileEditListingBtn.visibility = View.INVISIBLE
+        }
+
         if (listing.photos.size > 0) {
             Picasso.get().load(listing.photos[0])
                 .error(R.drawable.ic_error)
@@ -46,6 +52,19 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
                 }
                 profileListingImageIv.clipToOutline = true
             }
+        }
+    }
+
+    fun setCloseBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
+        profileCloseListingBtn.setOnClickListener{
+            val dialog = CustomDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_CLOSE)
+            args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
+            args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
+            dialog.arguments = args
+            dialog.show(manager, "Close Listing")
         }
     }
 
