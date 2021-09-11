@@ -39,6 +39,7 @@ object DatabaseManager {
                     if (unitPrice is Long)
                         unitPrice = unitPrice.toDouble()
                     data.add(ListingModel(
+                        document.reference.id,
                         true,
                         document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
                         document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
@@ -168,6 +169,7 @@ object DatabaseManager {
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
                 data.add(ListingModel(
+                    document.reference.id,
                     document[MyFirestoreReferences.LISTING_IS_OPEN] as Boolean,
                     document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
                     document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
@@ -198,12 +200,14 @@ object DatabaseManager {
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
                 data.add(OrderModel(
+                    document.reference.id,
                     document[MyFirestoreReferences.ORDER_CUSTOMER_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_LISTING_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_LISTING_NAME_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_PHOTOS_ID_FIELD] as String,
                     document[MyFirestoreReferences.ORDER_QUANTITY_FIELD] as Long,
-                    unitPrice as Double
+                    unitPrice as Double,
+                    document[MyFirestoreReferences.ORDER_IS_CONFIRMED_FIELD] as Boolean
                 ))
             }
         } catch (e: Exception) {
@@ -308,5 +312,105 @@ object DatabaseManager {
 
 //        Log.i("Done", "${latestMessage == null}")
         latestMessage
+    }
+
+    suspend fun confirmOrder(orderId: String): Boolean = coroutineScope {
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var success = false
+        try {
+            val job = orderRef
+                .document(orderId)
+                .update("isConfirmed", true)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Order Confirmed")
+                    success = true
+                }
+                .await()
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR CONFIRMING ORDER")
+        }
+
+        success
+    }
+
+    suspend fun closeListing(listingId: String): String = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var result = "false"
+        try {
+            val pendingOrders = orderRef
+                .whereEqualTo("listingId", listingId)
+                .whereEqualTo("isConfirmed", false)
+                .get()
+                .await()
+            if (pendingOrders.documents.size == 0) {
+                val job = listingRef
+                    .document(listingId)
+                    .update("isOpen", false)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Listing closed")
+                        result = "true"
+                    }
+                    .await()
+            } else if (pendingOrders.documents.size > 0) {
+                result = "pending_orders"
+                Log.d(TAG, "FAILED TO CLOSE LISTING WITH PENDING ORDER")
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR CLOSING LISTING")
+        }
+
+        result
+    }
+
+    suspend fun deleteListing(listingId: String): String = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var result = "false"
+        try {
+            val pendingOrders = orderRef
+                .whereEqualTo("listingId", listingId)
+                .whereEqualTo("isConfirmed", false)
+                .get()
+                .await()
+            if (pendingOrders.documents.size == 0) {
+                val job = listingRef
+                    .document(listingId)
+                    .delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Listing deleted")
+                        result = "true"
+                    }
+                    .await()
+            } else if (pendingOrders.documents.size > 0) {
+                result = "pending_orders"
+                Log.d(TAG, "FAILED TO DELETE LISTING WITH PENDING ORDER")
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR DELETING LISTING")
+        }
+
+        result
+    }
+
+    // TODO UPDATE THIS AND ADAPTER
+    suspend fun editListing(listingId: String, newStock: Long): Boolean = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var result = false
+        try {
+            val job = listingRef
+                .document(listingId)
+                .update("stock", newStock)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Listing stock count edited")
+                    result = true
+                }
+                .await()
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR EDITING LISTING")
+        }
+
+        result
     }
 }

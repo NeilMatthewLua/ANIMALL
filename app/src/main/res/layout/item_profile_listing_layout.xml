@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/futura_medium_bt"
+        android:fontFamily="@font/futura_light_bt"
         android:text="@string/listing_name"
         android:textColor="@color/black"
         android:textSize="24sp"
@@ -81,7 +81,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/error_red"
-            android:fontFamily="@font/futura_light_bt"
+            android:fontFamily="@font/futura_medium_bt"
             android:text="@string/profile_delete_listing"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -92,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:fontFamily="@font/futura_light_bt"
+            android:fontFamily="@font/futura_medium_bt"
             android:text="@string/profile_close_listing"
             android:textAllCaps="false"
             android:textSize="16sp" />
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:fontFamily="@font/futura_light_bt"
+            android:fontFamily="@font/futura_medium_bt"
             android:text="@string/profile_edit_listing"
             android:textAllCaps="false"
             android:textSize="16sp" />

@@ -83,6 +83,10 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set up cancel button
+        dialogCancelBtn.setOnClickListener{
+            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+        }
         lifecycleScope.launch {
             val loggedUser = Firebase.auth.currentUser
             val dataInit = async(Dispatchers.IO) {

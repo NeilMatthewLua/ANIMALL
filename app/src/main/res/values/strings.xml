@@ -108,8 +108,12 @@
     <string name="profile_edit_listing">Edit</string>
     <string name="profile_close_listing">Close</string>
     <string name="profile_confirm_order">Confirm Order</string>
+    <string name="profile_order_confirmed">Order Confirmed</string>
+    <string name="profile_curr_stock_count">Current stock count: </string>
+    <string name="profile_new_stock_count">Updated stock count:</string>
 
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="message_bubble_username">username</string>
     <string name="message_bubble_message">message</string>
-
 </resources>
