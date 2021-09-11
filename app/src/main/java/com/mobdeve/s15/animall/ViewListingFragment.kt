@@ -130,7 +130,8 @@ class ViewListingFragment : Fragment() {
                                     loggedUser.email!!,
                                     listing.id,
                                     listing.name,
-                                    listing.photos[0]
+                                    listing.photos[0],
+                                    it.id
                                 ))
 
                                 view.findNavController().navigate(R.id.messageFragment)

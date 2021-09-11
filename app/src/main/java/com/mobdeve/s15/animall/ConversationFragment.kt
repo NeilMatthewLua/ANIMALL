@@ -43,7 +43,7 @@ class ConversationFragment : Fragment() {
             conversationRecyclerView!!.layoutManager = linearLayoutManager
 
             // Adapter
-            myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
+            myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
             conversationRecyclerView!!.adapter = myAdapter
             myAdapter.notifyDataSetChanged()
             hasRetrieved = true
@@ -74,7 +74,7 @@ class ConversationFragment : Fragment() {
         conversationRecyclerView!!.layoutManager = linearLayoutManager
 
         // Adapter
-        myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
+        myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
         conversationRecyclerView!!.adapter = myAdapter
     }
 }

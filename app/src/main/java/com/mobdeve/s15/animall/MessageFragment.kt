@@ -85,10 +85,10 @@ class MessageFragment : Fragment() {
                     Log.d("MessageFragment ", "OnViewWCreated2")
                     messageRecyclerView.adapter = myFirestoreRecyclerAdapter
                     Log.d("MessageFragment ", "OnViewWCreated3")
-                    sendMessageBtn.setOnClickListener {
+                    sendMessageBtn.setOnClickListener { view ->
                         Log.i("Messages", "sending a message")
                         if (messageEtv!!.text.toString().isNotEmpty()) {
-                            sendMessage()
+                            sendMessage(it.id)
                         }
                     }
 
@@ -105,11 +105,12 @@ class MessageFragment : Fragment() {
         })
     }
 
-    fun sendMessage() {
+    fun sendMessage(id: String) {
         val message = messageEtv!!.text.toString()
 
         // Ready the values of the message
         val data: MutableMap<String, Any?> = HashMap()
+        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = id
         //TODO change username to logged user, for now use carlos_shi
         data[MyFirestoreReferences.MESSAGE_SENDER_FIELD] = loggedUser.email
         //TODO hardcoded convoId

@@ -343,31 +343,35 @@ object DatabaseManager {
         var latestMessage: MessageModel? = null
 
         try {
+            Log.i("DatabaseManager", "conversation ID to retrieve: ${convoId} ${convoId.length}")
 
-            Log.i("manager", convoId)
-
-            val job = messageRef
-                .whereEqualTo(MyFirestoreReferences.MESSAGE_CONVO_FIELD, convoId)
+            messageRef
+                .whereEqualTo(MyFirestoreReferences.MESSAGES_COLLECTION, convoId)
                 .orderBy(MyFirestoreReferences.TIME_FIELD, Query.Direction.DESCENDING)
                 .limit(1)
                 .get()
+                .addOnSuccessListener { documents ->
+                    Log.i("DatabaseManager", "Document size: ${documents.size()}")
+                    for (document in documents) {
+                        Log.d("DatabaseManager", "${document.id} => ${document.data}")
+                        var convoId = document[MyFirestoreReferences.MESSAGE_CONVO_FIELD] as String
+                        var timestamp = document[MyFirestoreReferences.TIME_FIELD] as Timestamp
+                        var sender = document[MyFirestoreReferences.MESSAGE_SENDER_FIELD] as String
+                        var message = document[MyFirestoreReferences.MESSAGE_FIELD] as String
+
+                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message)
+                    }
+                }
+                .addOnFailureListener {
+                    Log.i("DatabaseManager", "Failed to retrieve latest message")
+                }
                 .await()
 
-            Log.i("manager", "${job.documents.size}")
-            for (document in job.documents) {
-                var convoId = document[MyFirestoreReferences.MESSAGE_CONVO_FIELD] as String
-                var timestamp = document[MyFirestoreReferences.TIME_FIELD] as Timestamp
-                Log.i("manager", "${document.data}")
-                var sender = document[MyFirestoreReferences.MESSAGE_SENDER_FIELD] as String
-                var message = document[MyFirestoreReferences.MESSAGE_FIELD] as String
-
-                latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message)
-
-            }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LATEST MESSAGE")
         }
 
+//        Log.i("Done", "${latestMessage == null}")
         latestMessage
     }
 }

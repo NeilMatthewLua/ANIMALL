@@ -1,18 +1,17 @@
 package com.mobdeve.s15.animall
 
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_landing.*
-import androidx.lifecycle.lifecycleScope
-import com.github.satoshun.coroutine.autodispose.view.autoDisposeScope
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var conversationLayout: ConstraintLayout
@@ -20,43 +19,48 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var conversationMessageTv: TextView
     var conversationTimeTv: TextView
     var conversationImageIv: ImageView
-    lateinit var message: MessageModel
+    var message: MessageModel? = null
 
-    fun bindData(conversation: ConversationModel) {
+    fun bindData(conversation: ConversationModel, message: MessageModel) {
         if (conversation.listingPhoto != null) {
             Picasso.get().load(conversation.listingPhoto)
                 .error(R.drawable.ic_error)
                 .placeholder(R.drawable.progress_animation)
                 .into(conversationImageIv);
         }
-
-//        itemView.lifecycleScope.launch {
+//        Log.i("CVHolder", "getting latest messageeeee")
+//        lifecycleScope.launch {
+//            Log.i("CVHolder", "getting latest message")
 //            val dataGet = async(Dispatchers.IO) {
-//                TODO query for the latest message for each present convoId
+////                TODO query for the latest message for each present convoId
 //                message = DatabaseManager.getLatestMessage(conversation.id)!!
 //            }
 //            dataGet.await()
 //
-//            val sdf3: SimpleDateFormat =
-//                SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
-//            sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 //
-//            var date = message.timestamp
-//
-//            var dateString = sdf3.format(date)
-//
-//            conversationTimeTv.text = dateString
-            conversationNameTv.text = conversation.listingName
-//        }
+//            Log.i("ConvoVHolder", "${message == null}")
+            if (message != null){
+                Log.i("ConvoVHolder", message!!.message)
 
-//        if(conversation.messages.size > 0) {
-//            //TODO Compare email with logged user, for now use carlos_shi
-//            if(conversation.messages[0].sender == "carlos_shi@dlsu.edu.ph") {
-//                conversationMessageTv.text = "You: ${conversation.messages[0].message}"
-//            }
-//            else {
-//                conversationMessageTv.text = "Seller: ${conversation.messages[0].message}"
-//            }
+                var date = message!!.timestamp
+
+                val sdf3: SimpleDateFormat =
+                    SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
+                sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
+
+                var dateString = sdf3.format(date)
+
+                conversationTimeTv.text = dateString
+                conversationNameTv.text = conversation.listingName
+
+                //TODO Compare email with logged user, for now use carlos_shi
+                if(message!!.sender == "carlos_shi@dlsu.edu.ph") {
+                    conversationMessageTv.text = "You: ${message!!.message}"
+                }
+                else {
+                    conversationMessageTv.text = "Seller: ${message!!.message}"
+                }
+            }
 //        }
     }
 
