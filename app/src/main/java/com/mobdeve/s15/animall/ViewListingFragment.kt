@@ -149,7 +149,7 @@ class ViewListingFragment : Fragment() {
                     }
                 }
                 else {
-                    listingContactBtn.visibility = View.GONE
+                    listingActionLinearLayout.visibility = View.GONE
                 }
             }
 
