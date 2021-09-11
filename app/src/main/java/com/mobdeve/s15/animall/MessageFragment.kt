@@ -87,8 +87,10 @@ class MessageFragment : Fragment() {
                     Log.d("MessageFragment ", "OnViewWCreated3")
                     sendMessageBtn.setOnClickListener { view ->
                         Log.i("Messages", "sending a message")
-                        if (messageEtv!!.text.toString().isNotEmpty()) {
+                        if (messageEtv!!.text.toString().trim().isNotEmpty()) {
+                            sendMessageBtn.isClickable = false
                             sendMessage(it.id)
+                            sendMessageBtn.isClickable = true
                         }
                     }
 
@@ -106,7 +108,7 @@ class MessageFragment : Fragment() {
     }
 
     fun sendMessage(id: String) {
-        val message = messageEtv!!.text.toString()
+        val message = messageEtv!!.text.toString().trim()
 
         val timeNow = Date()
 
