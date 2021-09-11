@@ -44,6 +44,7 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
                                     break
                                 }
                             }
+                            Toast.makeText(fragment.requireContext(),"Listing closed.", Toast.LENGTH_SHORT).show()
                             notifyDataSetChanged()
                         } else if (result == "false") {
                             Toast.makeText(fragment.requireContext(),"Server error. Please try again.", Toast.LENGTH_SHORT).show()

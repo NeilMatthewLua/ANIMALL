@@ -325,23 +325,20 @@ object DatabaseManager {
                 .whereEqualTo("listingId", listingId)
                 .whereEqualTo("isConfirmed", false)
                 .get()
-                .addOnSuccessListener {
-
-                }
                 .await()
-            val job = listingRef
-                .document(listingId)
-                .update("isOpen", false)
-                .addOnSuccessListener {
-                    if (pendingOrders.documents.size == 0) {
+            if (pendingOrders.documents.size == 0) {
+                val job = listingRef
+                    .document(listingId)
+                    .update("isOpen", false)
+                    .addOnSuccessListener {
                         Log.d(TAG, "Listing closed")
                         result = "true"
-                    } else if (pendingOrders.documents.size > 0) {
-                        result = "pending_orders"
-                        Log.d(TAG, "FAILED TO CLOSE LISTING WITH PENDING ORDER")
                     }
-                }
-                .await()
+                    .await()
+            } else if (pendingOrders.documents.size > 0) {
+                result = "pending_orders"
+                Log.d(TAG, "FAILED TO CLOSE LISTING WITH PENDING ORDER")
+            }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR CLOSING LISTING")
         }

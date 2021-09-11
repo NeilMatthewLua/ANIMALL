@@ -48,6 +48,7 @@ class ProfileOrderAdapter(private var data: ArrayList<OrderModel>, private val f
                                     break
                                 }
                             }
+                            Toast.makeText(fragment.requireContext(),"Order confirmed.", Toast.LENGTH_SHORT).show()
                             notifyDataSetChanged()
                         }
                     }
