@@ -39,7 +39,11 @@
         android:id="@+id/viewListingFragment"
         android:name="com.mobdeve.s15.animall.ViewListingFragment"
         android:label="ViewListingFragment"
-        tools:layout="@layout/fragment_view_listing"/>
+        tools:layout="@layout/fragment_view_listing">
+        <action
+            android:id="@+id/action_viewListingFragment_to_messageFragment"
+            app:destination="@id/messageFragment" />
+    </fragment>
     <fragment
         android:id="@+id/messageFragment"
         android:name="com.mobdeve.s15.animall.MessageFragment"

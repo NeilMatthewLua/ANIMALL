@@ -114,4 +114,6 @@
 
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_cancel">Cancel</string>
+    <string name="message_bubble_username">username</string>
+    <string name="message_bubble_message">message</string>
 </resources>

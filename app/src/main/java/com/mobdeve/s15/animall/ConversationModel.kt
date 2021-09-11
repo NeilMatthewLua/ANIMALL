@@ -1,10 +1,13 @@
 package com.mobdeve.s15.animall
 
+import java.util.*
+
 class ConversationModel(
-    val receipientEmail: String,
+    val recipientEmail: String,
     val senderEmail: String,
-    val messages: ArrayList<MessageModel>,
     val listingId: String,
     val listingName: String,
-    val listingPhoto: String
+    val listingPhoto: String,
+    val id: String = "",
+    val timestamp: Date = Date()
 )

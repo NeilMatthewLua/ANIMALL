@@ -10,5 +10,6 @@ class ListingModel(
     val seller: String,
     var stock: Long,
     val unitPrice: Double,
-    val photos: ArrayList<String>
+    val photos: ArrayList<String>,
+    val id: String = ""
 )

@@ -1,12 +1,16 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
@@ -19,6 +23,7 @@ import java.util.ArrayList
 class ConversationFragment : Fragment() {
     val TAG: String = "CONVERSATION FRAGMENT"
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
+    var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
     // RecyclerView components
     lateinit var myAdapter: ConversationAdapter
@@ -26,8 +31,10 @@ class ConversationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
             val dataInit = async(Dispatchers.IO) {
-                data = DatabaseManager.initializeConversationData()
+                data = DatabaseManager.initializeConversationData(loggedUser?.email!!)
+//                message_data = DatabaseManager.initializeLatestMessageData()
             }
             dataInit.await()
 
@@ -37,7 +44,7 @@ class ConversationFragment : Fragment() {
             conversationRecyclerView!!.layoutManager = linearLayoutManager
 
             // Adapter
-            myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
+            myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
             conversationRecyclerView!!.adapter = myAdapter
             myAdapter.notifyDataSetChanged()
             hasRetrieved = true
@@ -67,8 +74,13 @@ class ConversationFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         conversationRecyclerView!!.layoutManager = linearLayoutManager
 
+        data.sortByDescending { it.timestamp }
+
+        data.forEach {
+            Log.i("ConvoFragment Got a conversation", "Sender: ${it.senderEmail}: ${it.timestamp}")
+        }
         // Adapter
-        myAdapter = ConversationAdapter(data!!, this@ConversationFragment)
+        myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
         conversationRecyclerView!!.adapter = myAdapter
     }
 }

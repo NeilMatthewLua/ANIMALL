@@ -10,6 +10,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController
 import com.smarteist.autoimageslider.SliderAnimations
@@ -27,7 +31,10 @@ class ViewListingFragment : Fragment() {
     private val viewModel: ListingSharedViewModel by activityViewModels()
     lateinit var sliderView: SliderView
     lateinit var adapterListing: ListingSliderAdapter
+    lateinit var loggedUser: FirebaseUser
     var user: UserModel? = null
+    var conversation: ConversationModel? = null
+    lateinit var listing: ListingModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,20 +86,73 @@ class ViewListingFragment : Fragment() {
             listingClosedC.visibility = if(it.isOpen) View.GONE else View.VISIBLE
             listingDescriptionTv.text = it.description
 
+            listing = it
+
             lifecycleScope.launch {
                 val userInit = async(Dispatchers.IO) {
-                    user = DatabaseManager.getUser(it.seller)
+                    user = DatabaseManager.getUserViaEmail(it.seller)
                 }
                 userInit.await()
+                loggedUser = Firebase.auth.currentUser!!
 
                 if(user != null) {
-                    //TODO get seller name
                     listingSellerTv.text = user!!.name
+                }
+                adapterListing.renewItems(it.photos)
 
+                if (loggedUser.email!! != user!!.email) {
+                    listingContactBtn.setOnClickListener { view ->
+                        lifecycleScope.launch {
+                            val convoInit = async(Dispatchers.IO) {
+                                conversation = DatabaseManager.getConversation(it.id, loggedUser.email!!)
+                            }
+                            convoInit.await()
+
+                            //If no conversation has been made yet
+                            if (conversation == null) {
+                                val db = DatabaseManager.getInstance()
+
+                                db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                    .add(
+                                        ConversationModel(
+                                            user!!.email,
+                                            loggedUser.email!!,
+                                            listing.id,
+                                            listing.name,
+                                            listing.photos[0]
+                                        )
+                                    )
+                                    .addOnSuccessListener {
+                                        val viewModel : MessageSharedViewModel by activityViewModels()
+                                        viewModel.setListingData(ConversationModel(
+                                            user!!.email,
+                                            loggedUser.email!!,
+                                            listing.id,
+                                            listing.name,
+                                            listing.photos[0],
+                                            it.id
+                                        ))
+
+                                        view.findNavController().navigate(R.id.messageFragment)
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.i("ViewListingFragment", e.toString())
+                                    }
+                            }
+                            else {
+                                val viewModel : MessageSharedViewModel by activityViewModels()
+                                viewModel.setListingData(conversation!!)
+
+                                view.findNavController().navigate(R.id.messageFragment)
+                            }
+                        }
+                    }
+                }
+                else {
+                    listingActionLinearLayout.visibility = View.GONE
                 }
             }
 
-            adapterListing.renewItems(it.photos)
         })
 
     }
