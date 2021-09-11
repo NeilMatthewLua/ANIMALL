@@ -53,6 +53,73 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
                 }
             }
 
+        fragment.requireActivity().supportFragmentManager
+            .setFragmentResultListener(CustomDialogFragment.MODAL_LISTING_DELETE_RESULT, fragment.viewLifecycleOwner) { key, bundle ->
+                val result = bundle.getString(CustomDialogFragment.MODAL_SUCCESS_KEY)
+                val id = bundle.getString(CustomDialogFragment.MODAL_LISTING_ID_KEY)
+                if (result == "ok") {
+                    fragment.lifecycleScope.launch {
+                        fragment.profileDimBackgroundV.visibility = View.VISIBLE
+                        fragment.profilePb.visibility = View.VISIBLE
+                        var result = "false"
+                        val closeListing = async(Dispatchers.IO) {
+                            result = DatabaseManager.deleteListing(id!!)
+                        }
+                        closeListing.await()
+                        fragment.profileDimBackgroundV.visibility = View.GONE
+                        fragment.profilePb.visibility = View.GONE
+                        if (result == "pending_orders") {
+                            Toast.makeText(fragment.requireContext(),"Pending orders. Cannot delete listing.", Toast.LENGTH_LONG).show()
+                        } else if (result == "true") {
+                            for (i in 0..data.size) {
+                                var item = data.get(i)
+                                if (item.listingId == id) {
+                                    data.get(i).isOpen = false
+                                    break
+                                }
+                            }
+                            Toast.makeText(fragment.requireContext(),"Listing deleted.", Toast.LENGTH_LONG).show()
+                            notifyDataSetChanged()
+                        } else if (result == "false") {
+                            Toast.makeText(fragment.requireContext(),"Server error. Please try again.", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+
+        fragment.requireActivity().supportFragmentManager
+            .setFragmentResultListener(CustomDialogFragment.MODAL_LISTING_EDIT_RESULT, fragment.viewLifecycleOwner) { key, bundle ->
+                val result = bundle.getString(CustomDialogFragment.MODAL_SUCCESS_KEY)
+                val id = bundle.getString(CustomDialogFragment.MODAL_LISTING_ID_KEY)
+                val newStock = bundle.getLong(CustomDialogFragment.MODAL_LISTING_STOCK_KEY)
+                if (result == "ok") {
+                    fragment.lifecycleScope.launch {
+                        fragment.profileDimBackgroundV.visibility = View.VISIBLE
+                        fragment.profilePb.visibility = View.VISIBLE
+                        var result = false
+                        val closeListing = async(Dispatchers.IO) {
+                            result = DatabaseManager.editListing(id!!, newStock)
+                        }
+                        closeListing.await()
+                        fragment.profileDimBackgroundV.visibility = View.GONE
+                        fragment.profilePb.visibility = View.GONE
+                        if (result) {
+                            for (i in 0..data.size) {
+                                var item = data.get(i)
+                                if (item.listingId == id) {
+                                    data.get(i).stock = newStock
+                                    break
+                                }
+                            }
+                            Toast.makeText(fragment.requireContext(),"Listing edited.", Toast.LENGTH_LONG).show()
+                            notifyDataSetChanged()
+                        } else {
+                            Toast.makeText(fragment.requireContext(),"Server error. Please try again.", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+
         return ProfileListingViewHolder(v)
     }
 
@@ -60,6 +127,8 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
         holder.bindData(data[position])
         // TODO: Attach onclick listener to navigate to corresponding listing
         holder.setCloseBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
+        holder.setDeleteBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
+        holder.setEditBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
     }
 
     override fun getItemCount(): Int {

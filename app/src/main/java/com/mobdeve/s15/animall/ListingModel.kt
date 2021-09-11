@@ -8,7 +8,7 @@ class ListingModel(
     val name: String,
     val preferredLocation: String,
     val seller: String,
-    val stock: Long,
+    var stock: Long,
     val unitPrice: Double,
     val photos: ArrayList<String>
 )

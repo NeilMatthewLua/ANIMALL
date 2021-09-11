@@ -68,6 +68,33 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         }
     }
 
+    fun setDeleteBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
+        profileDeleteListingBtn.setOnClickListener{
+            val dialog = CustomDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_DELETE)
+            args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
+            args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
+            dialog.arguments = args
+            dialog.show(manager, "Delete Listing")
+        }
+    }
+
+    fun setEditBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
+        profileEditListingBtn.setOnClickListener{
+            val dialog = CustomDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_EDIT)
+            args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
+            args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
+            args.putLong(CustomDialogFragment.MODAL_LISTING_STOCK_KEY, listingData.stock)
+            dialog.arguments = args
+            dialog.show(manager, "Edit Listing")
+        }
+    }
+
     init {
         profileListingImageIv = itemView.findViewById(R.id.profileListingImageIv)
         profileListingNameTv = itemView.findViewById(R.id.profileListingNameTv)

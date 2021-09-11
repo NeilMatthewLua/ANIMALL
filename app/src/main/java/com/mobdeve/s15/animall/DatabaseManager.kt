@@ -49,38 +49,6 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
 
-        //TODO Currently placed to add conversation messages, remove when no longer needed
-        val messageRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
-        val messageData = ArrayList<MessageModel>()
-
-        messageData.add(0, MessageModel(
-            Date(),
-            "carlos_shi@dlsu.edu.ph",
-            "Boy am I tired"
-        ))
-
-        messageData.add(0, MessageModel(
-            Date(),
-            "neil_lua@dlsu.edu.ph",
-            "But why tho"
-        ))
-
-        val convData = hashMapOf(
-            MyFirestoreReferences.RECEIPIENT_FIELD to "neil_lua@dlsu.edu.ph",
-            MyFirestoreReferences.SENDER_FIELD to "carlos_shi@dlsu.edu.ph",
-            MyFirestoreReferences.MESSAGES_FIELD to messageData,
-            MyFirestoreReferences.LISTING_ID_FIELD to "7c72e01a-1582-463e-a685-138eda44c8e1",
-            MyFirestoreReferences.LISTING_NAME_FIELD to "Miko Iino Poster",
-            MyFirestoreReferences.LISTING_PHOTO_FIELD to "https://firebasestorage.googleapis.com/v0/b/animall-b7841.appspot.com/o/images%2F7c72e01a-1582-463e-a685-138eda44c8e1%2Fe239d3a3-18fa-4e75-ae3f-077c9e4b708e?alt=media&token=eb584791-a391-4551-aa80-cf5e222408e8"
-        )
-
-        try {
-            val job = messageRef.add(convData).await()
-            Log.i("FIREBASE:", "SUCCESS UPLOAD MESSAGE")
-        } catch (e: Exception) {
-            Log.d("FIREBASE:", "ERROR UPLOADING MESSAGE")
-        }
-
         data
     }
 
@@ -341,6 +309,57 @@ object DatabaseManager {
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR CLOSING LISTING")
+        }
+
+        result
+    }
+
+    suspend fun deleteListing(listingId: String): String = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var result = "false"
+        try {
+            val pendingOrders = orderRef
+                .whereEqualTo("listingId", listingId)
+                .whereEqualTo("isConfirmed", false)
+                .get()
+                .await()
+            if (pendingOrders.documents.size == 0) {
+                val job = listingRef
+                    .document(listingId)
+                    .delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "Listing deleted")
+                        result = "true"
+                    }
+                    .await()
+            } else if (pendingOrders.documents.size > 0) {
+                result = "pending_orders"
+                Log.d(TAG, "FAILED TO DELETE LISTING WITH PENDING ORDER")
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR DELETING LISTING")
+        }
+
+        result
+    }
+
+    // TODO UPDATE THIS AND ADAPTER
+    suspend fun editListing(listingId: String, newStock: Long): Boolean = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)
+        var result = false
+        try {
+            val job = listingRef
+                .document(listingId)
+                .update("stock", newStock)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Listing stock count edited")
+                    result = true
+                }
+                .await()
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR EDITING LISTING")
         }
 
         result
