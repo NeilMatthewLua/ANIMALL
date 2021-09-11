@@ -1,6 +1,7 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -73,6 +74,11 @@ class ConversationFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         conversationRecyclerView!!.layoutManager = linearLayoutManager
 
+        data.sortByDescending { it.timestamp }
+
+        data.forEach {
+            Log.i("ConvoFragment Got a conversation", "Sender: ${it.senderEmail}: ${it.timestamp}")
+        }
         // Adapter
         myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
         conversationRecyclerView!!.adapter = myAdapter

@@ -39,6 +39,7 @@ object MyFirestoreReferences {
     const val LISTING_ID_FIELD = "listingId"
     const val LISTING_NAME_FIELD = "listingName"
     const val LISTING_PHOTO_FIELD = "listingPhoto"
+    const val CONVO_TIMESTAMP_FIELD = "timestamp"
 
     //Message
     const val TIME_FIELD = "timestamp"

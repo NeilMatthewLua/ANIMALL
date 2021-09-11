@@ -108,6 +108,8 @@ class MessageFragment : Fragment() {
     fun sendMessage(id: String) {
         val message = messageEtv!!.text.toString()
 
+        val timeNow = Date()
+
         // Ready the values of the message
         val data: MutableMap<String, Any?> = HashMap()
         data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = id
@@ -116,7 +118,7 @@ class MessageFragment : Fragment() {
         //TODO hardcoded convoId
         data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoModel.id
         data[MyFirestoreReferences.MESSAGE_FIELD] = message
-        data[MyFirestoreReferences.TIME_FIELD] = Date()
+        data[MyFirestoreReferences.TIME_FIELD] = timeNow
 
         val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
 
@@ -130,6 +132,10 @@ class MessageFragment : Fragment() {
                 // "Reset" the message in the EditText
                 messageEtv!!.setText("")
 
+                //Update conversation timestamp
+                val convoRef = db!!.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION).document(id)
+
+                convoRef.update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
             }
             .addOnFailureListener { e ->
                 Log.w(

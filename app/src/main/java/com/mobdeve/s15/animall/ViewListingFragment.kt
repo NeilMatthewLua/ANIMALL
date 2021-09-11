@@ -98,56 +98,61 @@ class ViewListingFragment : Fragment() {
                 if(user != null) {
                     listingSellerTv.text = user!!.name
                 }
-            }
+                adapterListing.renewItems(it.photos)
 
-            adapterListing.renewItems(it.photos)
+                if (loggedUser.email!! != user!!.email) {
+                    listingContactBtn.setOnClickListener { view ->
+                        lifecycleScope.launch {
+                            val convoInit = async(Dispatchers.IO) {
+                                conversation = DatabaseManager.getConversation(it.id, loggedUser.email!!)
+                            }
+                            convoInit.await()
 
-            listingContactBtn.setOnClickListener { view ->
-                lifecycleScope.launch {
-                    val convoInit = async(Dispatchers.IO) {
-                        conversation = DatabaseManager.getConversation(it.id, loggedUser.email!!)
-                    }
-                    convoInit.await()
+                            //If no conversation has been made yet
+                            if (conversation == null) {
+                                val db = DatabaseManager.getInstance()
 
-                    //If no conversation has been made yet
-                    if (conversation == null) {
-                        val db = DatabaseManager.getInstance()
+                                db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                    .add(
+                                        ConversationModel(
+                                            user!!.email,
+                                            loggedUser.email!!,
+                                            listing.id,
+                                            listing.name,
+                                            listing.photos[0]
+                                        )
+                                    )
+                                    .addOnSuccessListener {
+                                        val viewModel : MessageSharedViewModel by activityViewModels()
+                                        viewModel.setListingData(ConversationModel(
+                                            user!!.email,
+                                            loggedUser.email!!,
+                                            listing.id,
+                                            listing.name,
+                                            listing.photos[0],
+                                            it.id
+                                        ))
 
-                        db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
-                            .add(
-                                ConversationModel(
-                                    user!!.email,
-                                    loggedUser.email!!,
-                                    listing.id,
-                                    listing.name,
-                                    listing.photos[0]
-                                )
-                            )
-                            .addOnSuccessListener {
+                                        view.findNavController().navigate(R.id.messageFragment)
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.i("ViewListingFragment", e.toString())
+                                    }
+                            }
+                            else {
                                 val viewModel : MessageSharedViewModel by activityViewModels()
-                                viewModel.setListingData(ConversationModel(
-                                    user!!.email,
-                                    loggedUser.email!!,
-                                    listing.id,
-                                    listing.name,
-                                    listing.photos[0],
-                                    it.id
-                                ))
+                                viewModel.setListingData(conversation!!)
 
                                 view.findNavController().navigate(R.id.messageFragment)
                             }
-                            .addOnFailureListener { e ->
-                                Log.i("ViewListingFragment", e.toString())
-                            }
-                    }
-                    else {
-                        val viewModel : MessageSharedViewModel by activityViewModels()
-                        viewModel.setListingData(conversation!!)
-
-                        view.findNavController().navigate(R.id.messageFragment)
+                        }
                     }
                 }
+                else {
+                    listingContactBtn.visibility = View.GONE
+                }
             }
+
         })
 
     }
