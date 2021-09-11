@@ -1,32 +1,41 @@
 package com.mobdeve.s15.animall
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_message.*
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MessageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MessageFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    // Replacement of the base adapter view
+    private lateinit var myFirestoreRecyclerAdapter: MessageAdapter
+
+    // DB reference
+    private var db: FirebaseFirestore? = null
+
+    private val viewModel: MessageSharedViewModel by activityViewModels()
+    private lateinit var loggedUser: FirebaseUser
+    private lateinit var convoModel: ConversationModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -37,23 +46,120 @@ class MessageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_message, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MessageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MessageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(itemView, savedInstanceState)
+        Log.d("MessageFragment ", "OnViewWCreated")
+        viewModel.getListingData().observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                val convoInit = async(Dispatchers.IO) {
+                    Log.d("MessageFragment ", it.listingName)
+                    db = DatabaseManager.getInstance()
+
+                    //TODO Get ConvoID From viewHolder,for now we query it here
+                    val query = db!!
+                        .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                        .whereEqualTo(
+                            MyFirestoreReferences.MESSAGE_CONVO_FIELD,
+                            it.id
+                        )
+                        .orderBy(MyFirestoreReferences.TIME_FIELD)
+
+                    convoModel = it
+                    loggedUser = Firebase.auth.currentUser!!
+
+                    val options: FirestoreRecyclerOptions<MessageModel> =
+                        FirestoreRecyclerOptions.Builder<MessageModel>()
+                            .setQuery(query, MessageModel::class.java)
+                            .build()
+
+                    //TODO username here is the logged user email, but now we'll use carlos_shi
+                    myFirestoreRecyclerAdapter = MessageAdapter(options, loggedUser!!.email!!)
+                    Log.i("MessageFragment", "Adapter Adapted")
+                    val linearLayoutManager = LinearLayoutManager(requireContext())
+                    messageRecyclerView!!.layoutManager = linearLayoutManager
+
+                    myFirestoreRecyclerAdapter.registerAdapterDataObserver(
+                        MyScrollToBottomObserver(messageRecyclerView, myFirestoreRecyclerAdapter)
+                    )
+
+                    Log.d("MessageFragment ", "OnViewWCreated2")
+                    messageRecyclerView.adapter = myFirestoreRecyclerAdapter
+                    Log.d("MessageFragment ", "OnViewWCreated3")
+                    sendMessageBtn.setOnClickListener { view ->
+                        Log.i("Messages", "sending a message")
+                        if (messageEtv!!.text.toString().isNotEmpty()) {
+                            sendMessage(it.id)
+                        }
+                    }
+
+                    //TODO Possible faulty thing here
+                    //This adapater is supposely for the onStart(), but I
+                    //placed it here it seems like the onStart calls first
+                    //before the initialization of myadapter finishes
+                    //Im not sure just yet how to fix that tho, so I placed it here
+                    //to make sure the function calls after initialization
+                    myFirestoreRecyclerAdapter!!.startListening()
                 }
+                convoInit.await()
             }
+        })
+    }
+
+    fun sendMessage(id: String) {
+        val message = messageEtv!!.text.toString()
+
+        val timeNow = Date()
+
+        // Ready the values of the message
+        val data: MutableMap<String, Any?> = HashMap()
+        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = id
+        //TODO change username to logged user, for now use carlos_shi
+        data[MyFirestoreReferences.MESSAGE_SENDER_FIELD] = loggedUser.email
+        //TODO hardcoded convoId
+        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoModel.id
+        data[MyFirestoreReferences.MESSAGE_FIELD] = message
+        data[MyFirestoreReferences.TIME_FIELD] = timeNow
+
+        val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+
+        messageRef
+            .add(data)
+            .addOnSuccessListener {
+                Log.d(
+                    "DB SUCCESS",
+                    "DocumentSnapshot updated"
+                )
+                // "Reset" the message in the EditText
+                messageEtv!!.setText("")
+
+                //Update conversation timestamp
+                val convoRef = db!!.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION).document(id)
+
+                convoRef.update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+            }
+            .addOnFailureListener { e ->
+                Log.w(
+                    "DB FAIL",
+                    "Error adding document",
+                    e
+                )
+            }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        Log.i("MessageFragment", "onResume")
+        // When our app is open, we need to have the adapter listening for any changes in the data.
+        // To do so, we'd want to turn on the listening using the appropriate method in the onStart
+        // or onResume (basically before the start but within the loop)
+//        myFirestoreRecyclerAdapter!!.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // We want to eventually stop the listening when we're about to exit an app as we don't need
+        // something listening all the time in the background.
+        myFirestoreRecyclerAdapter!!.stopListening()
     }
 }

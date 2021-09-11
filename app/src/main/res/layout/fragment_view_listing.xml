@@ -256,30 +256,46 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/listingOrderBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:elevation="10dp"
-            android:outlineProvider="background"
-            android:stateListAnimator="@null"
-            android:text="@string/listing_order"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingSellerCv" />
-
-        <Button
-            android:id="@+id/listingContactBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/listingActionLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:elevation="10dp"
-            android:outlineProvider="background"
-            android:stateListAnimator="@null"
-            android:text="@string/listing_contact"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/listingSellerCv" />
+            app:layout_constraintTop_toBottomOf="@+id/listingSellerCv"
+            tools:layout_editor_absoluteY="55dp">
+
+            <Button
+                android:id="@+id/listingContactBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:elevation="10dp"
+                android:outlineProvider="background"
+                android:stateListAnimator="@null"
+                android:text="@string/listing_contact" />
+
+            <Button
+                android:id="@+id/listingOrderBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_weight="1"
+                android:elevation="10dp"
+                android:outlineProvider="background"
+                android:stateListAnimator="@null"
+                android:text="@string/listing_order" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
