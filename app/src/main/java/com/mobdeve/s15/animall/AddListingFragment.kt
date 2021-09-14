@@ -94,11 +94,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
             dataInit.await()
 
-            // Set up cancel button
-            cancelBtn.setOnClickListener{
-                (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
-            }
-
             // Set up add listing
             addListingBtn.setOnClickListener{
                 var valid: Boolean = validateInformation()
