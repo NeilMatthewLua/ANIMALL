@@ -60,6 +60,70 @@ object DatabaseManager {
         data
     }
 
+    suspend fun filteredListingData(filterOption: String, sortOption: String, searchOption: String): ArrayList<ListingModel> = coroutineScope {
+        val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+        var data = ArrayList<ListingModel>()
+        Log.d(TAG, searchOption)
+        try {
+            var job : Query? = null
+            if (filterOption.isNotBlank()) {
+                job = listingRef.whereEqualTo(MyFirestoreReferences.CATEGORY_FIELD, filterOption)
+            }
+//            if (searchOption.isNotBlank()) {
+//                if (job != null) {
+//                    job = job.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
+//                             .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
+//                } else {
+//                    job = listingRef.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
+//                                    .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
+//                }
+//            }
+            if (job == null) {
+                job = listingRef
+            }
+            val result = job.get().await()
+            for (document in result.documents) {
+                if (document["isOpen"] as Boolean) {
+                    var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
+                    // Convert to Long
+                    var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
+                    if (unitPrice is Long)
+                        unitPrice = unitPrice.toDouble()
+                    data.add(ListingModel(
+                        document.reference.id,
+                        true,
+                        document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
+                        document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
+                        document[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
+                        document[MyFirestoreReferences.LOCATION_FIELD].toString(),
+                        document[MyFirestoreReferences.SELLER_FIELD].toString(),
+                        document[MyFirestoreReferences.STOCK_FIELD] as Long,
+                        unitPrice as Double,
+                        photoArray,
+                        document.id
+                    ))
+                }
+            }
+
+            // Filter the data based on search options
+            if (searchOption.isNotBlank()) {
+                data = ArrayList(data.filter {
+                    searchOption.lowercase() in it.name.lowercase()
+                })
+            }
+
+            if (sortOption == MyFirestoreReferences.SORT_UNIT_PRICE_ASC) {
+                data.sortBy { it.unitPrice }
+            } else if (sortOption == MyFirestoreReferences.SORT_UNIT_PRICE_DSC) {
+                data.sortByDescending { it.unitPrice }
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
+        }
+
+        data
+    }
+
     suspend fun initializeConversationData(email: String): ArrayList<ConversationModel> = coroutineScope {
         val conversationRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
         val data = ArrayList<ConversationModel>()

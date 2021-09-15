@@ -18,6 +18,8 @@ object MyFirestoreReferences {
     const val STOCK_FIELD = "stock"
     const val PRICE_FIELD = "unitPrice"
     const val PHOTOS_FIELD = "photos"
+    const val SORT_UNIT_PRICE_ASC = "Price: Low to High"
+    const val SORT_UNIT_PRICE_DSC = "Price: High to Low"
 
     //Order Model
     const val ORDER_ID_FIELD = "orderId"
