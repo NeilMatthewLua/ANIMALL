@@ -99,19 +99,19 @@
         android:padding="4dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sortSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBarLayout" />
 
     <Spinner
         android:id="@+id/sortSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/curved_rectangle"
         android:elevation="10dp"
         android:padding="4dp"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBarLayout" />
 
     <com.google.android.material.chip.Chip
