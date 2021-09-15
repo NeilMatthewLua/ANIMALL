@@ -123,6 +123,7 @@
         android:background="#FDFDFD"
         android:fontFamily="@font/futura_light_bt"
         android:outlineProvider="bounds"
+        android:text="@string/sort_clear"
         android:textSize="12sp"
         android:visibility="gone"
         app:chipBackgroundColor="#FFFFFF"

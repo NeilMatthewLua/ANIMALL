@@ -12,6 +12,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/futura_light_bt"
         android:textColor="@color/black"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/futura_light_bt"
             android:textColor="@color/black"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,6 +75,7 @@
             android:fontFamily="@font/futura_light_bt"
             android:text="@string/profile_new_stock_count"
             android:textColor="@color/black"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/currentStockCountTv" />
 
@@ -88,6 +92,7 @@
             android:fontFamily="@font/futura_light_bt"
             android:inputType="number"
             android:textColor="@color/black"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/editListingUpdatedTv"
