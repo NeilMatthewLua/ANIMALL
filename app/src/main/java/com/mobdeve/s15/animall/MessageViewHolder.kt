@@ -1,5 +1,6 @@
 package com.mobdeve.s15.animall
 
+import android.graphics.Color
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -48,6 +49,14 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 //        Log.i("R Viewholder", messageTv.text.toString())
 //        Log.i("R ViewHolder this message was set to ", messageTimeTv.gravity.toString())
+    }
+
+    fun makeRed(){
+        messageTv.setTextColor(Color.parseColor("#E32323"))
+    }
+
+    fun makeGreen(){
+        messageTv.setTextColor(Color.parseColor("#287C26"))
     }
 
     init {

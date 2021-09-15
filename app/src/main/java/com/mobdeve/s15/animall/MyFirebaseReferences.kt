@@ -48,4 +48,5 @@ object MyFirestoreReferences {
     const val MESSAGE_FIELD = "message"
     const val MESSAGE_SENDER_FIELD = "sender"
     const val MESSAGE_CONVO_FIELD = "convoId"
+    const val MESSAGE_OFFER_FIELD = "isOffer"
 }

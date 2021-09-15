@@ -89,18 +89,18 @@ class MessageFragment : Fragment() {
 
                         Log.d("MessageFragment ", "OnViewWCreated3")
                         sendMessageBtn.setOnClickListener { view ->
-                            Log.i("Messages", "sending a message")
+                            Log.i("Messages", "sending a message ON 1")
                             if (messageEtv!!.text.toString().isNotEmpty()) {
-                                sendMessage(it, viewModel.getIsFirst())
+                                sendMessage(it, viewModel.getIsFirst(), false)
+                            }
+                        }
+                        sendMessageBtn2.setOnClickListener { view ->
+                            Log.i("Messages", "sending a message ON 2")
+                            if (messageEtv!!.text.toString().isNotEmpty()) {
+                                sendMessage(it, viewModel.getIsFirst(), true)
                             }
                         }
 
-                        //TODO Possible faulty thing here
-                        //This adapater is supposely for the onStart(), but I
-                        //placed it here it seems like the onStart calls first
-                        //before the initialization of myadapter finishes
-                        //Im not sure just yet how to fix that tho, so I placed it here
-                        //to make sure the function calls after initialization
                         myFirestoreRecyclerAdapter!!.startListening()
                     }
 
@@ -110,18 +110,31 @@ class MessageFragment : Fragment() {
         })
     }
 
-    fun sendMessage(convo: ConversationModel, isFirst: Boolean) {
+    fun sendMessage(convo: ConversationModel, isFirst: Boolean, isOffer: Boolean) {
         val message = messageEtv!!.text.toString()
 
         val timeNow = Date()
-
+        Log.i("SENDMESSAGE", "${isOffer}")
         // Ready the values of the message
-        val data: MutableMap<String, Any?> = HashMap()
-        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convo.id
-        data[MyFirestoreReferences.MESSAGE_SENDER_FIELD] = loggedUser.email
-        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoModel.id
-        data[MyFirestoreReferences.MESSAGE_FIELD] = message
-        data[MyFirestoreReferences.TIME_FIELD] = timeNow
+//        val data: MutableMap<String, Any?> = HashMap()
+//        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convo.id
+//        data[MyFirestoreReferences.MESSAGE_SENDER_FIELD] = loggedUser.email
+//        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoModel.id
+//        data[MyFirestoreReferences.MESSAGE_FIELD] = message
+//        data[MyFirestoreReferences.TIME_FIELD] = timeNow
+//        Log.i("SENDMESSAGE2", "${isOffer}")
+//        data[MyFirestoreReferences.MESSAGE_OFFER_FIELD] = isOffer
+//        Log.i("SENDMESSAGE3", "${isOffer}")
+
+        val data = hashMapOf(
+            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convo.id,
+            MyFirestoreReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
+            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convoModel.id,
+            MyFirestoreReferences.MESSAGE_FIELD to message,
+            MyFirestoreReferences.TIME_FIELD to timeNow,
+            MyFirestoreReferences.MESSAGE_OFFER_FIELD to isOffer,
+
+        )
 
         if (isFirst) {
 //            val convoID = UUID.randomUUID().toString()
@@ -137,7 +150,6 @@ class MessageFragment : Fragment() {
                 MyFirestoreReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, convo.recipientEmail)
             )
 
-            //TODO Check value of the listing ID and Convo ID
             for ((key, value) in convoHash.entries) {
                 Log.i("ViewListingFragment", "${key} => ${value}")
             }

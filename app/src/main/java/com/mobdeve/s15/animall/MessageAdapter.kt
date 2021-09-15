@@ -47,6 +47,16 @@ class MessageAdapter(
         // Change alignment depending on whether the message is of the current user or not
         if (model.sender.equals(sender)) { // Right align
             holder.rightAlignText()
+            Log.i("MessageAdapter isOffer:", "${model.isOffer}" )
+            if(model.isOffer) {
+                Log.i("MessageAdapter isOffer:", "${model.isOffer}" )
+                holder.makeRed()
+            }
+            else {
+                Log.i("MessageAdapter isOffer:", "${model.isOffer}" )
+                holder.makeGreen()
+            }
+
         } else { // Left align
             holder.leftAlignText()
         }

@@ -261,7 +261,7 @@ object DatabaseManager {
                         var sender = document[MyFirestoreReferences.MESSAGE_SENDER_FIELD] as String
                         var message = document[MyFirestoreReferences.MESSAGE_FIELD] as String
 
-                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message)
+                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message, false)
                     }
                 }
                 .addOnFailureListener {
