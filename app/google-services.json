@@ -14,6 +14,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "340958678333-49ir2dsbol2oagq3haire2ec1r7ekb2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobdeve.s15.animall",
+            "certificate_hash": "4460f58daa9db6738aa5a52c99d820da1d50f8b8"
+          }
+        },
+        {
+          "client_id": "340958678333-p5tdtufta5o2d23mals8e4mkuojpc8ig.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobdeve.s15.animall",
+            "certificate_hash": "d88b3fe3ebc95270753422c955d73539ce370cea"
+          }
+        },
+        {
+          "client_id": "340958678333-sjf6qa0tlig5ihjk3fgte8i8harq649t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobdeve.s15.animall",
+            "certificate_hash": "692acfe60c8b91789eab39f1566a32eb69ac3d82"
+          }
+        },
+        {
           "client_id": "340958678333-d92lfpkk0m3p1c9i74itaj1gri8j1kfa.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -27,7 +51,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "340958678333-d92lfpkk0m3p1c9i74itaj1gri8j1kfa.apps.googleusercontent.com",
+              "client_id": "340958678333-5719a01js4bp86i7nvhla4t2egsdffe4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
