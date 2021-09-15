@@ -6,12 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
+import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
 import kotlinx.android.synthetic.main.fragment_messages.landingPb
@@ -25,32 +30,17 @@ class ConversationFragment : Fragment() {
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
     var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
+
     // RecyclerView components
     lateinit var myAdapter: ConversationAdapter
+    // Replacement of the base adapter view
+    private lateinit var myFirestoreRecyclerAdapter: ConversationAdapter
+
+    // DB reference
+    private var db: FirebaseFirestore? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            val loggedUser = Firebase.auth.currentUser
-            val dataInit = async(Dispatchers.IO) {
-                data = DatabaseManager.initializeConversationData(loggedUser?.email!!)
-//                message_data = DatabaseManager.initializeLatestMessageData()
-            }
-            dataInit.await()
-
-            // Layout manager
-            val linearLayoutManager = LinearLayoutManager(activity)
-            linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-            conversationRecyclerView!!.layoutManager = linearLayoutManager
-
-            // Adapter
-            myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
-            conversationRecyclerView!!.adapter = myAdapter
-            myAdapter.notifyDataSetChanged()
-            hasRetrieved = true
-            dimBackgroundV.visibility = View.GONE
-            landingPb.visibility = View.GONE
-        }
     }
 
     override fun onCreateView(
@@ -69,18 +59,59 @@ class ConversationFragment : Fragment() {
             landingPb.visibility = View.GONE
         }
 
-        // Layout manager
-        val linearLayoutManager = LinearLayoutManager(activity)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        conversationRecyclerView!!.layoutManager = linearLayoutManager
+        lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
+            val dataInit = async(Dispatchers.IO) {
+                db = DatabaseManager.getInstance()
 
-        data.sortByDescending { it.timestamp }
+                val query = db!!
+                    .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                    .whereArrayContains("users", loggedUser?.email!!)
+                    .orderBy(MyFirestoreReferences.TIME_FIELD, Query.Direction.DESCENDING)
 
-        data.forEach {
-            Log.i("ConvoFragment Got a conversation", "Sender: ${it.senderEmail}: ${it.timestamp}")
+                val options: FirestoreRecyclerOptions<ConversationModel> =
+                    FirestoreRecyclerOptions.Builder<ConversationModel>()
+                        .setQuery(query, ConversationModel::class.java)
+                        .build()
+                Log.i("ConvoFragment", "I will try getting some conversations")
+                db!!
+                    .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                    .whereArrayContains("users", loggedUser?.email!!)
+                    .orderBy(MyFirestoreReferences.TIME_FIELD, Query.Direction.DESCENDING)
+                    .get()
+                    .addOnSuccessListener {
+                        it.forEach {
+                            Log.i("ConvoFragment", "${it.id} => ${it.data}")
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.i("ConvoFragment", "Failed Milord")
+                    }
+                myFirestoreRecyclerAdapter = ConversationAdapter(options, this@ConversationFragment)
+                Log.i("ConversationFragment", "Adapter Made")
+
+                myFirestoreRecyclerAdapter!!.startListening()
+
+                getActivity()?.runOnUiThread {
+                    hasRetrieved = true
+                    dimBackgroundV.visibility = View.GONE
+                    landingPb.visibility = View.GONE
+
+                    val linearLayoutManager = LinearLayoutManager(requireContext())
+                    conversationRecyclerView!!.layoutManager = linearLayoutManager
+                    conversationRecyclerView.adapter = myFirestoreRecyclerAdapter
+                    Log.i("ConversationFragment", "Adapter Assigned")
+                }
+            }
+            dataInit.await()
+
         }
-        // Adapter
-        myAdapter = ConversationAdapter(data!!, this@ConversationFragment, lifecycleScope)
-        conversationRecyclerView!!.adapter = myAdapter
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // We want to eventually stop the listening when we're about to exit an app as we don't need
+        // something listening all the time in the background.
+        myFirestoreRecyclerAdapter!!.stopListening()
     }
 }

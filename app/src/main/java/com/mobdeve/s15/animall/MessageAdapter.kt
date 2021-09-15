@@ -32,7 +32,8 @@ class MessageAdapter(
     // Good old onCreateViewHolder. Nothing different here.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val v: View =
-            LayoutInflater.from(parent.context).inflate(R.layout.message_bubble_layout, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.message_bubble_layout, parent, false)
         return MyViewHolder(v)
     }
 

@@ -75,7 +75,7 @@ object DatabaseManager {
                 val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
                 val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
                 val listingPhoto = document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String
-                val id = document.id
+                val id = document[MyFirestoreReferences.CONVO_ID_FIELD] as String
 
                 var message = getLatestMessage(id)
 
@@ -93,7 +93,6 @@ object DatabaseManager {
                     )
                 }
             }
-
 
             data.sortByDescending { it.timestamp }
 
@@ -274,7 +273,6 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING LATEST MESSAGE")
         }
 
-//        Log.i("Done", "${latestMessage == null}")
         latestMessage
     }
 }
