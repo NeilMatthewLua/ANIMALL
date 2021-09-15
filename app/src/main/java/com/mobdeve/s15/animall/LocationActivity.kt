@@ -105,7 +105,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             builder.setTitle(R.string.location_dialog_title)
             val str = "Your selected location is $address.\nPlease confirm your selection."
             builder.setMessage(str)
-            builder.setIcon(android.R.drawable.ic_dialog_alert)
+//            builder.setIcon(android.R.drawable.ic_dialog_alert)
 
             builder.setPositiveButton("Confirm"){ _, _ ->
                 val returnIntent = Intent()

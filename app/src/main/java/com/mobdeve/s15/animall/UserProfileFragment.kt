@@ -1,5 +1,6 @@
 package com.mobdeve.s15.animall
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,6 +80,10 @@ class UserProfileFragment : Fragment() {
                 profileOrderAdapter.notifyDataSetChanged()
             }
 
+            profileEditLocationBtn.setOnClickListener {
+                getLocation.launch(Intent(context, LocationActivity::class.java))
+            }
+
             hasRetrieved = true
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE
@@ -86,6 +93,26 @@ class UserProfileFragment : Fragment() {
             profileOrderBtn.visibility = View.VISIBLE
             profileLogoutBtn.visibility = View.VISIBLE
             profileImageContainerCv.visibility = View.VISIBLE
+        }
+    }
+
+    private val getLocation = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            val value = intent?.getStringExtra("PREF_LOC")
+
+            val userRef = Firebase.auth.currentUser?.let {
+                DatabaseManager.getInstance().collection("users").document(it.uid)
+            }
+            userRef?.get()?.addOnCompleteListener { documentTask ->
+                if (documentTask.isSuccessful) {
+                    if (documentTask.result.data != null) {
+                        userRef.update("preferredLocation", value)
+                    }
+                }
+            }
         }
     }
 
