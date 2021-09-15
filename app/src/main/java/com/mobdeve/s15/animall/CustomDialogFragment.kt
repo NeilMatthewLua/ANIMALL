@@ -38,9 +38,9 @@ class CustomDialogFragment: DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-//        val width = (resources.displayMetrics.widthPixels * 0.85).toInt()
+        val width = (resources.displayMetrics.widthPixels * 0.85).toInt()
 //        val height = (resources.displayMetrics.heightPixels * 0.40).toInt()
-//        dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
         editListingCl.visibility = View.GONE
         if (modalType == MODAL_ORDER_CONFIRM) {
             confirmationTextTv.text = "Are you sure you have received: \n" + orderName
