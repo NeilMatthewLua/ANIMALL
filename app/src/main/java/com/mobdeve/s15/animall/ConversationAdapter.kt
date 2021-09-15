@@ -8,6 +8,8 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.lifecycle.lifecycleScope
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -15,11 +17,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ConversationAdapter(
-    private val data: ArrayList<ConversationModel>,
+    options: FirestoreRecyclerOptions<ConversationModel>,
     private val fragment: ConversationFragment,
-    private val lifestyleScope: LifecycleCoroutineScope
     ) :
-    RecyclerView.Adapter<ConversationViewHolder>() {
+    FirestoreRecyclerAdapter<ConversationModel, ConversationViewHolder?>(options) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConversationViewHolder {
         val v =
             LayoutInflater.from(parent.context)
@@ -27,29 +28,28 @@ class ConversationAdapter(
         return ConversationViewHolder(v)
     }
 
-    override fun onBindViewHolder(holder: ConversationViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ConversationViewHolder, position: Int, model: ConversationModel) {
         var message: MessageModel? = null
 
         Log.i("ConvoAdapter", "will be getting their latest messages")
-        fragment.lifecycleScope.launch {
-            Log.i("ConvoAdapter", "getting latest message")
-            val dataGet = async(Dispatchers.IO) {
-//                TODO query for the latest message for each present convoId
-                message = DatabaseManager.getLatestMessage(data[position].id)!!
-            }
-            dataGet.await()
+        Log.i("ConvoAdapter", "${model.id}")
 
-            holder.bindData(data[position], message!!)
-        }
+//        if (model.id.equals("0")) {
+            Log.i("ConvoAdapter", "getting latest message ${model.id}")
+            fragment.lifecycleScope.launch {
+                val dataGet = async(Dispatchers.IO) {
+                    message = DatabaseManager.getLatestMessage(model.id)!!
+                }
+                dataGet.await()
+
+                holder.bindData(model, message!!)
+            }
+//        }
 
         holder.conversationLayout.setOnClickListener {
             val viewModel : MessageSharedViewModel by fragment.activityViewModels()
-            viewModel.setListingData(data[position])
+            viewModel.setListingData(model, false)
             it.findNavController().navigate(R.id.messageFragment)
         }
-    }
-
-    override fun getItemCount(): Int {
-        return data.size
     }
 }

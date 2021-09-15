@@ -64,7 +64,7 @@ object DatabaseManager {
         val data = ArrayList<ConversationModel>()
         try {
             val receive_job = conversationRef
-                        .whereEqualTo(MyFirestoreReferences.RECIPIENT_FIELD, email)
+                        .whereArrayContains("users", email)
                         .get()
                         .await()
             Log.i("`DatabaseManager`", "Getting conversations")
@@ -75,40 +75,7 @@ object DatabaseManager {
                 val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
                 val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
                 val listingPhoto = document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String
-                val id = document.id
-
-                var message = getLatestMessage(id)
-
-                if (message != null) {
-                    data.add(
-                        ConversationModel(
-                            recipientEmail,
-                            senderEmail,
-                            listingId,
-                            listingName,
-                            listingPhoto,
-                            id,
-                            message!!.timestamp
-                        )
-                    )
-                }
-            }
-
-            val sent_job = conversationRef
-                .whereEqualTo(MyFirestoreReferences.SENDER_FIELD, email)
-                .get()
-                .await()
-            Log.i("`DatabaseManager`", "Getting conversations")
-            for (document in sent_job.documents) {
-                Log.i("`DatabaseManager`", "Got one as sender")
-                var recipientEmail = document[MyFirestoreReferences.RECIPIENT_FIELD] as String
-                var senderEmail = document[MyFirestoreReferences.SENDER_FIELD] as String
-                val listingId =  document[MyFirestoreReferences.LISTING_ID_FIELD] as String
-                Log.i("DBManager", listingId)
-                val listingName =  document[MyFirestoreReferences.LISTING_NAME_FIELD] as String
-                val listingPhoto = document[MyFirestoreReferences.LISTING_PHOTO_FIELD] as String
-                val id = document.id
-                Log.i("DBManager", id)
+                val id = document[MyFirestoreReferences.CONVO_ID_FIELD] as String
 
                 var message = getLatestMessage(id)
 
@@ -306,7 +273,6 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING LATEST MESSAGE")
         }
 
-//        Log.i("Done", "${latestMessage == null}")
         latestMessage
     }
 }
