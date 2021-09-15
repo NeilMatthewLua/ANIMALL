@@ -18,6 +18,7 @@ object MyFirestoreReferences {
     const val STOCK_FIELD = "stock"
     const val PRICE_FIELD = "unitPrice"
     const val PHOTOS_FIELD = "photos"
+    const val LISTING_TIME = "timestamp"
 
     //Order Model
     const val ORDER_ID_FIELD = "orderId"

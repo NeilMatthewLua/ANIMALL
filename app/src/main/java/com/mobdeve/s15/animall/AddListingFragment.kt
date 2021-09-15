@@ -467,7 +467,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             MyFirestoreReferences.SELLER_FIELD to currentUser.email,
             MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
             MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
-            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
+            MyFirestoreReferences.PHOTOS_FIELD to photoURLs,
+            MyFirestoreReferences.LISTING_TIME to Date()
         )
 
         db.collection("listings").document(listingID)

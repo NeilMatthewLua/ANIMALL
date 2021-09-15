@@ -38,6 +38,8 @@ object DatabaseManager {
                     var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
                     if (unitPrice is Long)
                         unitPrice = unitPrice.toDouble()
+
+                    val listingTime = document[MyFirestoreReferences.LISTING_TIME] as Timestamp
                     data.add(ListingModel(
                         document.reference.id,
                         true,
@@ -49,13 +51,16 @@ object DatabaseManager {
                         document[MyFirestoreReferences.STOCK_FIELD] as Long,
                         unitPrice as Double,
                         photoArray,
-                        document.id
+                        document.id,
+                        listingTime.toDate()
                     ))
                 }
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
+
+        data.sortByDescending { it.timestamp }
 
         data
     }
@@ -168,6 +173,9 @@ object DatabaseManager {
                 var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
                 if (unitPrice is Long)
                     unitPrice = unitPrice.toDouble()
+
+                val listingTime = document[MyFirestoreReferences.LISTING_TIME] as Timestamp
+
                 data.add(ListingModel(
                     document.reference.id,
                     document[MyFirestoreReferences.LISTING_IS_OPEN] as Boolean,
@@ -179,13 +187,17 @@ object DatabaseManager {
                     document[MyFirestoreReferences.STOCK_FIELD] as Long,
                     unitPrice as Double,
                     photoArray,
-                    document.id
+                    document.id,
+                    listingTime.toDate()
                 ))
             }
             Log.d("FIREBASE:", job.documents.size.toString())
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
+
+        data.sortByDescending { it.timestamp }
+
         data
     }
 
