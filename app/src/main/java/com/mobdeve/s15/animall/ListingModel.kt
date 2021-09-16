@@ -11,5 +11,6 @@ class ListingModel(
     var stock: Long,
     val unitPrice: Double,
     val photos: ArrayList<String>,
-    val id: String = ""
+    val id: String = "",
+    val distanceFromUser: Double = Double.MAX_VALUE
 )

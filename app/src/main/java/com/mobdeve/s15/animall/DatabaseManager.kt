@@ -1,5 +1,9 @@
 package com.mobdeve.s15.animall
 
+import android.content.Context
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -13,7 +17,9 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_listing.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,6 +27,10 @@ import kotlin.collections.ArrayList
 object DatabaseManager {
     const val TAG = "FIRESTORE"
     val db = Firebase.firestore
+    val PH_UPPER_LON: Double = 126.537423944
+    val PH_UPPER_LAT: Double = 18.5052273625
+    val PH_LOWER_LON: Double = 117.17427453
+    val PH_LOWER_LAT: Double = 5.58100332277
 
     fun getInstance(): FirebaseFirestore {
         return db
@@ -60,7 +70,7 @@ object DatabaseManager {
         data
     }
 
-    suspend fun filteredListingData(filterOption: String, sortOption: String, searchOption: String): ArrayList<ListingModel> = coroutineScope {
+    suspend fun filteredListingData(filterOption: String, sortOption: String, searchOption: String, userCity: String, context: Context): ArrayList<ListingModel> = coroutineScope {
         val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         var data = ArrayList<ListingModel>()
         Log.d(TAG, searchOption)
@@ -69,15 +79,15 @@ object DatabaseManager {
             if (filterOption.isNotBlank()) {
                 job = listingRef.whereEqualTo(MyFirestoreReferences.CATEGORY_FIELD, filterOption)
             }
-//            if (searchOption.isNotBlank()) {
-//                if (job != null) {
-//                    job = job.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
-//                             .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
-//                } else {
-//                    job = listingRef.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
-//                                    .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
-//                }
-//            }
+            if (searchOption.isNotBlank()) {
+                if (job != null) {
+                    job = job.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
+                             .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
+                } else {
+                    job = listingRef.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
+                                    .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
+                }
+            }
             if (job == null) {
                 job = listingRef
             }
@@ -89,6 +99,59 @@ object DatabaseManager {
                     var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
                     if (unitPrice is Long)
                         unitPrice = unitPrice.toDouble()
+
+                    var distanceFromUser: Double = Double.MAX_VALUE
+                    val getLocationDistances = launch (Dispatchers.IO) {
+                        var geocoderObj = Geocoder(context)
+//                        var cityNameUser = "$userCity, Philippines"
+                        var cityNameUser = userCity
+//                        var cityNameListing = document[MyFirestoreReferences.LOCATION_FIELD] as String + ", Philippines"
+                        var cityNameListing = document[MyFirestoreReferences.LOCATION_FIELD] as String
+                        var addressResultUser = geocoderObj.getFromLocationName(
+                            cityNameUser,
+                            1,
+                            PH_LOWER_LAT,
+                            PH_LOWER_LON,
+                            PH_UPPER_LAT,
+                            PH_UPPER_LON
+                        )
+
+                        var addressResultListing = geocoderObj.getFromLocationName(
+                            cityNameListing,
+                            1,
+                            PH_LOWER_LAT,
+                            PH_LOWER_LON,
+                            PH_UPPER_LAT,
+                            PH_UPPER_LON
+                        )
+//                        Log.d(TAG, addressResultListing.toString())
+
+                        if (addressResultUser.size == 0 || addressResultListing.size == 0) {
+                            Log.d(TAG, "Address not found")
+                        } else {
+                            val locationResultUser = addressResultUser.get(0)
+                            val locationResultListing = addressResultListing.get(0)
+
+                            var locationObjUser = Location("User")
+                            locationObjUser.latitude = locationResultUser.latitude
+                            locationObjUser.longitude = locationResultUser.longitude
+
+                            var locationObjListing = Location("Listing")
+                            locationObjListing.latitude = locationResultListing.latitude
+                            locationObjListing.longitude = locationResultListing.longitude
+
+                            distanceFromUser = locationObjUser.distanceTo(locationObjListing).toDouble()
+//                            Log.d(TAG+"DISTANCE:", distanceFromUser.toString())
+//                            latitude = locationResult.latitude
+//                            longitude = locationResult.longitude
+//                            Log.d(TAG, locationResult.featureName)
+//                            Log.d(TAG, latitude.toString())
+//                            Log.d(TAG, longitude.toString())
+                        }
+                    }
+                    // Wait for distances to be computed
+                    getLocationDistances.join()
+
                     data.add(ListingModel(
                         document.reference.id,
                         true,
@@ -100,22 +163,28 @@ object DatabaseManager {
                         document[MyFirestoreReferences.STOCK_FIELD] as Long,
                         unitPrice as Double,
                         photoArray,
-                        document.id
+                        document.id,
+                        distanceFromUser
                     ))
                 }
             }
 
-            // Filter the data based on search options
-            if (searchOption.isNotBlank()) {
-                data = ArrayList(data.filter {
-                    searchOption.lowercase() in it.name.lowercase()
-                })
-            }
+//            // Filter the data based on search options
+//            if (searchOption.isNotBlank()) {
+//                data = ArrayList(data.filter {
+//                    searchOption.lowercase() in it.name.lowercase()
+//                })
+//            }
 
             if (sortOption == MyFirestoreReferences.SORT_UNIT_PRICE_ASC) {
                 data.sortBy { it.unitPrice }
             } else if (sortOption == MyFirestoreReferences.SORT_UNIT_PRICE_DSC) {
                 data.sortByDescending { it.unitPrice }
+            } else if (sortOption == MyFirestoreReferences.SORT_PROXIMITY) {
+                for (i in data) {
+                    Log.d(TAG, i.distanceFromUser.toString())
+                }
+                data.sortBy { it.distanceFromUser }
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
@@ -219,6 +288,20 @@ object DatabaseManager {
             Log.d("FIREBASE:", "ERROR RETRIEVING USER NAME")
         }
         userName
+    }
+
+    suspend fun getUserCity(userEmail: String): String = coroutineScope {
+        val userRef = db.collection(MyFirestoreReferences.USERS_COLLECTION)
+        var city = ""
+        try {
+            val job = userRef.whereEqualTo(MyFirestoreReferences.EMAIL_FIELD, userEmail).get().await()
+            for (document in job.documents) {
+                city = document[MyFirestoreReferences.PREF_LOCATION_FIELD] as String
+            }
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING USER NAME")
+        }
+        city
     }
 
     suspend fun getUserListings(userEmail: String): ArrayList<ListingModel> = coroutineScope {
@@ -457,7 +540,6 @@ object DatabaseManager {
         result
     }
 
-    // TODO UPDATE THIS AND ADAPTER
     suspend fun editListing(listingId: String, newStock: Long): Boolean = coroutineScope {
         val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         val orderRef = db.collection(MyFirestoreReferences.ORDERS_COLLECTION)

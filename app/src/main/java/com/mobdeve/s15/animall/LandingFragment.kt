@@ -10,6 +10,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -26,13 +28,16 @@ class LandingFragment : Fragment() {
     private var sortChoice: String = ""
     private var filterChoice: String = ""
     private var searchChoice: String = ""
+    private var userCity: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
+            val loggedUser = Firebase.auth.currentUser
             val dataInit = async(Dispatchers.IO) {
                 data = DatabaseManager.initializeListingData()
+                userCity = DatabaseManager.getUserCity(loggedUser?.email!!)
             }
             Log.d(TAG, "ON CREATE")
             dataInit.await()
@@ -69,7 +74,7 @@ class LandingFragment : Fragment() {
                 landingPb.visibility = View.VISIBLE
                 lifecycleScope.launch {
                     val dataInit = async(Dispatchers.IO) {
-                        data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice)
+                        data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
                     }
                     dataInit.await()
 
@@ -133,7 +138,7 @@ class LandingFragment : Fragment() {
                     landingPb.visibility = View.VISIBLE
                     lifecycleScope.launch {
                         val dataInit = async(Dispatchers.IO) {
-                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice)
+                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
                         }
                         dataInit.await()
 
@@ -188,7 +193,7 @@ class LandingFragment : Fragment() {
                     landingPb.visibility = View.VISIBLE
                     lifecycleScope.launch {
                         val dataInit = async(Dispatchers.IO) {
-                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice)
+                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
                         }
                         dataInit.await()
 
