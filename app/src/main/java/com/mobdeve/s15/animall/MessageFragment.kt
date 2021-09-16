@@ -190,7 +190,8 @@ class MessageFragment : Fragment() {
                             Log.i("MssgFrag", "Sending a messagenow")
                             data.forEach { (key, value) -> println("$key = $value") }
                             messageRef
-                                .add(data)
+                                .document(messageId)
+                                .set(data)
                                 .addOnSuccessListener {
                                     Log.d(
                                         "DB SUCCESS",

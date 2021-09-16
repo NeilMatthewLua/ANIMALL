@@ -74,7 +74,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
-        val message = if (accepted) "The order/offer has been accepted" else "The your order/offer has been rejected"
+        val message = if (accepted) "The order/offer has been accepted" else "The your order/offer has been declined"
         var messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
@@ -93,14 +93,18 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             .add(data)
             .addOnSuccessListener {
                 Log.d(
-                    "MessageOfferViewHolder SUCCESS",
-                    "DocumentSnapshot posted"
+                    "MessageOfferViewHolder SUCCESS old message here",
+                    "${model.id}"
                 )
                 val indivMsgRef = db!!
                     .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
-                    .document(it.id)
+                    .document(model.id)
 
-                indivMsgRef.update(MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD, true)
+                indivMsgRef
+                    .update(MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD, true)
+                    .addOnFailureListener {
+                        println("Done Updating")
+                    }
 
                 //Subtract order from listing stock count
                 if (accepted) {
