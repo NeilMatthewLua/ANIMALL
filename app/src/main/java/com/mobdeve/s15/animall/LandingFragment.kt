@@ -35,21 +35,25 @@ class LandingFragment : Fragment() {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         lifecycleScope.launch {
-            val loggedUser = Firebase.auth.currentUser
-            val dataInit = async(Dispatchers.IO) {
-                data = DatabaseManager.initializeListingData()
-                userCity = DatabaseManager.getUserCity(loggedUser?.email!!)
+            try {
+                val loggedUser = Firebase.auth.currentUser
+                val dataInit = async(Dispatchers.IO) {
+                    data = DatabaseManager.initializeListingData()
+                    userCity = DatabaseManager.getUserCity(loggedUser?.email!!)
+                }
+                Log.d(TAG, "ON CREATE")
+                dataInit.await()
+                initializeSpinners()
+                // Adapter
+                landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                landingRecyclerView!!.adapter = landingAdapter
+                landingAdapter.notifyDataSetChanged()
+                hasRetrieved = true
+                landingDimBackgroundV.visibility = View.GONE
+                landingPb.visibility = View.GONE
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            Log.d(TAG, "ON CREATE")
-            dataInit.await()
-            initializeSpinners()
-            // Adapter
-            landingAdapter = LandingAdapter(data!!, this@LandingFragment)
-            landingRecyclerView!!.adapter = landingAdapter
-            landingAdapter.notifyDataSetChanged()
-            hasRetrieved = true
-            landingDimBackgroundV.visibility = View.GONE
-            landingPb.visibility = View.GONE
         }
     }
 
@@ -74,18 +78,23 @@ class LandingFragment : Fragment() {
                 searchChoice = searchBoxTv.text.trim().toString()
                 landingDimBackgroundV.visibility = View.VISIBLE
                 landingPb.visibility = View.VISIBLE
-//                bottomNav.visibility = View.INVISIBLE
+                bottomNav.visibility = View.INVISIBLE
                 lifecycleScope.launch {
-                    val dataInit = async(Dispatchers.IO) {
-                        data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
-                    }
-                    dataInit.await()
+                    try {
+                        val dataInit = async(Dispatchers.IO) {
+                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                        }
+                        dataInit.await()
 
-                    landingAdapter = LandingAdapter(data!!, this@LandingFragment)
-                    landingRecyclerView!!.adapter = landingAdapter
-                    landingAdapter.notifyDataSetChanged()
-                    landingDimBackgroundV.visibility = View.GONE
-                    landingPb.visibility = View.GONE
+                        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                        landingRecyclerView!!.adapter = landingAdapter
+                        landingAdapter.notifyDataSetChanged()
+                        landingDimBackgroundV.visibility = View.GONE
+                        landingPb.visibility = View.GONE
+                        bottomNav.visibility = View.VISIBLE
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
                 true
             }
@@ -111,24 +120,28 @@ class LandingFragment : Fragment() {
 
         loadMoreBtn.setOnClickListener {
             lifecycleScope.launch {
-                landingDimBackgroundV.visibility = View.VISIBLE
-                landingPb.visibility = View.VISIBLE
-                var newData: ArrayList<ListingModel> = ArrayList()
-                var previousSize : Int = data.size
-                val dataInit = async(Dispatchers.IO) {
-                    var lastDocId = data.get(data.size - 1).listingId
-                    newData = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext(), lastDocId)
-                }
-                dataInit.await()
-                if (newData.size == 0) {
-                    Toast.makeText(requireContext(),"No more listings found.", Toast.LENGTH_LONG).show()
-                } else {
-                    data.addAll(newData)
-                }
+                try {
+                    landingDimBackgroundV.visibility = View.VISIBLE
+                    landingPb.visibility = View.VISIBLE
+                    var newData: ArrayList<ListingModel> = ArrayList()
+                    var previousSize : Int = data.size
+                    val dataInit = async(Dispatchers.IO) {
+                        var lastDocId = data.get(data.size - 1).listingId
+                        newData = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext(), lastDocId)
+                    }
+                    dataInit.await()
+                    if (newData.size == 0) {
+                        Toast.makeText(requireContext(),"No more listings found.", Toast.LENGTH_LONG).show()
+                    } else {
+                        data.addAll(newData)
+                    }
 
-                landingAdapter.notifyItemRangeChanged(previousSize, newData.size)
-                landingDimBackgroundV.visibility = View.GONE
-                landingPb.visibility = View.GONE
+                    landingAdapter.notifyItemRangeChanged(previousSize, newData.size)
+                    landingDimBackgroundV.visibility = View.GONE
+                    landingPb.visibility = View.GONE
+                } catch (e : Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -171,16 +184,20 @@ class LandingFragment : Fragment() {
                     landingDimBackgroundV.visibility = View.VISIBLE
                     landingPb.visibility = View.VISIBLE
                     lifecycleScope.launch {
-                        val dataInit = async(Dispatchers.IO) {
-                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
-                        }
-                        dataInit.await()
+                        try {
+                            val dataInit = async(Dispatchers.IO) {
+                                data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                            }
+                            dataInit.await()
 
-                        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
-                        landingRecyclerView!!.adapter = landingAdapter
-                        landingAdapter.notifyDataSetChanged()
-                        landingDimBackgroundV.visibility = View.GONE
-                        landingPb.visibility = View.GONE
+                            landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                            landingRecyclerView!!.adapter = landingAdapter
+                            landingAdapter.notifyDataSetChanged()
+                            landingDimBackgroundV.visibility = View.GONE
+                            landingPb.visibility = View.GONE
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
@@ -224,16 +241,20 @@ class LandingFragment : Fragment() {
                     landingDimBackgroundV.visibility = View.VISIBLE
                     landingPb.visibility = View.VISIBLE
                     lifecycleScope.launch {
-                        val dataInit = async(Dispatchers.IO) {
-                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
-                        }
-                        dataInit.await()
+                        try {
+                            val dataInit = async(Dispatchers.IO) {
+                                data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                            }
+                            dataInit.await()
 
-                        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
-                        landingRecyclerView!!.adapter = landingAdapter
-                        landingAdapter.notifyDataSetChanged()
-                        landingDimBackgroundV.visibility = View.GONE
-                        landingPb.visibility = View.GONE
+                            landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                            landingRecyclerView!!.adapter = landingAdapter
+                            landingAdapter.notifyDataSetChanged()
+                            landingDimBackgroundV.visibility = View.GONE
+                            landingPb.visibility = View.GONE
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             }
@@ -250,19 +271,23 @@ class LandingFragment : Fragment() {
             sortChoice = ""
             searchChoice = ""
             lifecycleScope.launch {
-                val dataInit = async(Dispatchers.IO) {
-                    data = DatabaseManager.initializeListingData()
+                try {
+                    val dataInit = async(Dispatchers.IO) {
+                        data = DatabaseManager.initializeListingData()
+                    }
+                    Log.d(TAG, "ON CREATE")
+                    dataInit.await()
+                    initializeSpinners()
+                    // Adapter
+                    landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                    landingRecyclerView!!.adapter = landingAdapter
+                    landingAdapter.notifyDataSetChanged()
+                    hasRetrieved = true
+                    landingDimBackgroundV.visibility = View.GONE
+                    landingPb.visibility = View.GONE
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                Log.d(TAG, "ON CREATE")
-                dataInit.await()
-                initializeSpinners()
-                // Adapter
-                landingAdapter = LandingAdapter(data!!, this@LandingFragment)
-                landingRecyclerView!!.adapter = landingAdapter
-                landingAdapter.notifyDataSetChanged()
-                hasRetrieved = true
-                landingDimBackgroundV.visibility = View.GONE
-                landingPb.visibility = View.GONE
             }
         }
     }
