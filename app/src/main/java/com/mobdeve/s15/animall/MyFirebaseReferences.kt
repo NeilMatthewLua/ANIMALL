@@ -56,7 +56,7 @@ object MyFirebaseReferences {
     const val MESSAGE_CONVO_FIELD = "convoId"
     const val MESSAGE_OFFER_FIELD = "offer"
     const val MESSAGE_OFFER_QUANTITY_FIELD = "quantity"
-    const val MESSAGE_OFFER_AMOUNT_FIELD = "amount"
+    const val MESSAGE_OFFER_AMOUNT_FIELD = "offerPrice"
     const val MESSAGE_ADDRESSED_FIELD = "addressed"
     const val MESSAGE_ID_FIELD = "id"
 
