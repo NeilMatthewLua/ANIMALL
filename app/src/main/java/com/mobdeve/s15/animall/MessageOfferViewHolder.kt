@@ -150,7 +150,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
                         val orderData = hashMapOf(
                             MyFirebaseReferences.ORDER_ID_FIELD to orderId,
-                            MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD to loggedUser.email,
+                            MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD to model.sender,
                             MyFirebaseReferences.ORDER_LISTING_ID_FIELD to listing!!.listingId,
                             MyFirebaseReferences.ORDER_LISTING_NAME_FIELD to listing!!.name,
                             MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD to listing!!.photos[0],
