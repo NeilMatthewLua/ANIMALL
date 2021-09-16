@@ -8,30 +8,6 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profileDimBackgroundV"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#7A000000"
-        android:translationZ="90dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/profilePb"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -89,6 +65,7 @@
             android:backgroundTint="@color/primary_green"
             android:drawableLeft="@drawable/ic_baseline_edit_24"
             android:elevation="10dp"
+            android:fontFamily="@font/futura_light_bt"
             android:outlineProvider="background"
             android:stateListAnimator="@null"
             android:text="@string/profile_edit_location"
@@ -110,7 +87,7 @@
             android:fontFamily="@font/futura_light_bt"
             android:outlineProvider="background"
             android:stateListAnimator="@null"
-            android:text="Listings"
+            android:text="@string/profile_listings"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:visibility="invisible"
@@ -128,7 +105,7 @@
             android:fontFamily="@font/futura_light_bt"
             android:outlineProvider="background"
             android:stateListAnimator="@null"
-            android:text="Purchases"
+            android:text="@string/profile_orders"
             android:textAllCaps="false"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -160,13 +137,38 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            android:paddingBottom="?attr/actionBarSize"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profileListingBtn"
-            android:paddingBottom="?attr/actionBarSize"
             app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profileDimBackgroundV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#7A000000"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/profilePb"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

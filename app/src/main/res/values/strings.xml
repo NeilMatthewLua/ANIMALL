@@ -46,10 +46,7 @@
     <string name="create_photo">Product Photos</string>
     <string name="create_photo_error">Product photos are required.</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string-array name="category_options">
+     <string-array name="category_options">
         <item>Filter by:</item>
         <item>Clothing</item>
         <item>Food</item>
@@ -74,6 +71,8 @@
         <item>Price: High to Low</item>
         <item>Location: Closer First</item>
     </string-array>
+    <string name="sort_clear">Clear selection</string>
+    <string name="load_more">Load More</string>
 
     <string name="search_icon">Search Icon</string>
     <string name="search_hint">Search for a product</string>
@@ -83,6 +82,8 @@
     <string name="listing_location">Product City</string>
     <string name="listing_category">Product Category</string>
     <string name="listing_image">Listing Image</string>
+    <string name="listing_make_offer">Make Offer</string>
+    <string name="listing_view_profile">View Seller Profile</string>
 
     <string name="message">You: Boi I am tired</string>
     <string name="message_time">August 15, 2021 6:09PM</string>
@@ -107,8 +108,15 @@
     <string name="profile_delete_listing">Delete</string>
     <string name="profile_edit_listing">Edit</string>
     <string name="profile_close_listing">Close</string>
+    <string name="profile_listings">Listings</string>
+    <string name="profile_orders">Orders</string>
     <string name="profile_confirm_order">Confirm Order</string>
+    <string name="profile_order_confirmed">Order Confirmed</string>
+    <string name="profile_curr_stock_count">Current stock count: </string>
+    <string name="profile_new_stock_count">Updated stock count:</string>
 
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="message_bubble_username">username</string>
     <string name="message_bubble_message">message</string>
 

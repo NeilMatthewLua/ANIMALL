@@ -1,5 +1,6 @@
 package com.mobdeve.s15.animall
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.ktx.auth
@@ -31,61 +35,114 @@ class UserProfileFragment : Fragment() {
     lateinit var profileOrderAdapter: ProfileOrderAdapter
 
     var currentUser: String = ""
+    var isOwnProfile: Boolean = true
     var hasRetrieved: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO: Compare firebase user with profile user
         lifecycleScope.launch {
-            val loggedUser = Firebase.auth.currentUser
-            val dataInit = async(Dispatchers.IO) {
-                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
-                listingData = DatabaseManager.getUserListings(loggedUser?.email!!)
-                orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
+            if (arguments?.get(SELLER_EMAIL).toString().isNotBlank()) {
+                val sellerEmail = arguments?.get(SELLER_EMAIL).toString()
+                val dataInit = async(Dispatchers.IO) {
+                    currentUser = DatabaseManager.getUserName(sellerEmail)
+                    listingData = DatabaseManager.getUserListings(sellerEmail, true)
+                }
+                dataInit.await()
+                isOwnProfile = false
+                profileImageIv.visibility = View.GONE
+            } else {
+                val loggedUser = Firebase.auth.currentUser
+                val dataInit = async(Dispatchers.IO) {
+                    currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
+                    listingData = DatabaseManager.getUserListings(loggedUser?.email!!)
+                    orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
+                }
+                dataInit.await()
+                Picasso.get().
+                load(loggedUser?.photoUrl)
+                    .error(R.drawable.ic_error)
+                    .placeholder(R.drawable.progress_animation)
+                    .into(profileImageIv);
             }
-            dataInit.await()
-            Picasso.get().
-            load(loggedUser?.photoUrl)
-                .error(R.drawable.ic_error)
-                .placeholder(R.drawable.progress_animation)
-                .into(profileImageIv);
 
             userProfileTv.text = currentUser
 
-            profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
+            if (!isOwnProfile) {
+                profileListingBtn.visibility = View.GONE
+                profileOrderBtn.visibility = View.GONE
+                profileEditLocationBtn.visibility = View.GONE
+            } else {
+                profileListingBtn.setOnClickListener{
+                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                    profileListingBtn.setTextColor(getResources().getColor(R.color.white))
+                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                    profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+                    profileRecyclerView!!.adapter = profileListingAdapter
+                    profileListingAdapter.notifyDataSetChanged()
+                }
+
+                profileOrderBtn.setOnClickListener{
+                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                    profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
+                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                    profileListingBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
+                    profileRecyclerView!!.adapter = profileOrderAdapter
+                    profileOrderAdapter.notifyDataSetChanged()
+                }
+
+                profileEditLocationBtn.setOnClickListener {
+                    getLocation.launch(Intent(context, LocationActivity::class.java))
+                }
+
+                profileEditLocationBtn.visibility = View.VISIBLE
+                profileListingBtn.visibility = View.VISIBLE
+                profileOrderBtn.visibility = View.VISIBLE
+                profileLogoutBtn.visibility = View.VISIBLE
+                profileImageContainerCv.visibility = View.VISIBLE
+            }
+
+            profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
             profileRecyclerView!!.adapter = profileListingAdapter
             profileListingAdapter.notifyDataSetChanged()
-
-            profileListingBtn.setOnClickListener{
-                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                profileListingBtn.setTextColor(getResources().getColor(R.color.white))
-                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
-                profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
-                profileRecyclerView!!.adapter = profileListingAdapter
-                profileListingAdapter.notifyDataSetChanged()
-            }
-
-            profileOrderBtn.setOnClickListener{
-                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
-                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                profileListingBtn.setTextColor(getResources().getColor(R.color.black))
-                profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
-                profileRecyclerView!!.adapter = profileOrderAdapter
-                profileOrderAdapter.notifyDataSetChanged()
-            }
 
             hasRetrieved = true
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE
-
-            profileEditLocationBtn.visibility = View.VISIBLE
-            profileListingBtn.visibility = View.VISIBLE
-            profileOrderBtn.visibility = View.VISIBLE
-            profileLogoutBtn.visibility = View.VISIBLE
-            profileImageContainerCv.visibility = View.VISIBLE
         }
+    }
+
+    private val getLocation = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+//            profileDimBackgroundV.visibility = View.VISIBLE
+//            profilePb.visibility = View.VISIBLE
+            val intent = result.data
+            val value = intent?.getStringExtra("PREF_LOC")
+
+            val userRef = Firebase.auth.currentUser?.let {
+                DatabaseManager.getInstance().collection("users").document(it.uid)
+            }
+            userRef?.get()?.addOnCompleteListener { documentTask ->
+                if (documentTask.isSuccessful) {
+                    if (documentTask.result.data != null) {
+                        userRef.update("preferredLocation", value)
+                    }
+                }
+            }
+        }
+//        lifecycleScope.launch {
+//            val loggedUser = Firebase.auth.currentUser
+//            val dataInit = async(Dispatchers.IO) {
+//                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
+//            }
+//            dataInit.await()
+//            profileDimBackgroundV.visibility = View.GONE
+//            profilePb.visibility = View.GONE
+//        }
     }
 
     override fun onCreateView(
@@ -114,7 +171,7 @@ class UserProfileFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         profileRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
+        profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
         profileRecyclerView!!.adapter = profileListingAdapter
 
         profileLogoutBtn.setOnClickListener{
@@ -132,5 +189,9 @@ class UserProfileFragment : Fragment() {
             startActivity(intent)
             activity?.finish()
         }
+    }
+
+    companion object {
+        val SELLER_EMAIL = "sellerEmail"
     }
 }

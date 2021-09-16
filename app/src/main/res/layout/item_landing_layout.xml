@@ -81,7 +81,7 @@
         android:adjustViewBounds="true"
         android:background="@drawable/curved_rectangle"
         android:contentDescription="@string/listing_image"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/kato"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

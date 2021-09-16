@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true">
@@ -26,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/cancelBtn"
+            android:id="@+id/dialogCancelBtn"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="58dp"
             android:layout_height="52dp"
@@ -305,8 +304,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productDescriptionErrorTv" />
 
-        <EditText
-            android:id="@+id/productLocationEtv"
+        <AutoCompleteTextView
+            android:id="@+id/productLocationActv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -323,9 +322,9 @@
             android:text="@string/create_location_hint"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productLocationTv" />
+            app:layout_constraintTop_toBottomOf="@+id/productLocationTv"
+            android:selectAllOnFocus="true"/>
 
         <TextView
             android:id="@+id/productLocationErrorTv"
@@ -340,7 +339,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productLocationEtv" />
+            app:layout_constraintTop_toBottomOf="@+id/productLocationActv" />
 
         <TextView
             android:id="@+id/productPhotosTv"
@@ -429,6 +428,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:text="Post Listing"
+            android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"

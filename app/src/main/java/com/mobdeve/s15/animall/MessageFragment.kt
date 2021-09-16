@@ -9,13 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_message.*
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -58,12 +55,12 @@ class MessageFragment : Fragment() {
 
                     //TODO Get ConvoID From viewHolder,for now we query it here
                     val query = db!!
-                        .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                        .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                         .whereEqualTo(
-                            MyFirestoreReferences.MESSAGE_CONVO_FIELD,
+                            MyFirebaseReferences.MESSAGE_CONVO_FIELD,
                             it.id
                         )
-                        .orderBy(MyFirestoreReferences.TIME_FIELD)
+                        .orderBy(MyFirebaseReferences.TIME_FIELD)
 
                     convoModel = it
                     loggedUser = Firebase.auth.currentUser!!
@@ -118,21 +115,21 @@ class MessageFragment : Fragment() {
         if (isFirst) {
 //            val convoID = UUID.randomUUID().toString()
             val convoHash = hashMapOf(
-                MyFirestoreReferences.RECIPIENT_FIELD to convo.recipientEmail,
-                MyFirestoreReferences.SENDER_FIELD to loggedUser.email!!,
-                MyFirestoreReferences.LISTING_ID_FIELD to convo.listingId,
-                MyFirestoreReferences.LISTING_NAME_FIELD to convo.listingName,
-                MyFirestoreReferences.LISTING_PHOTO_FIELD to convo.listingPhoto,
-                MyFirestoreReferences.CONVO_ID_FIELD to convo.id,
-                MyFirestoreReferences.CONVO_TIMESTAMP_FIELD to Date(),
-                MyFirestoreReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, convo.recipientEmail)
+                MyFirebaseReferences.RECIPIENT_FIELD to convo.recipientEmail,
+                MyFirebaseReferences.SENDER_FIELD to loggedUser.email!!,
+                MyFirebaseReferences.LISTING_ID_FIELD to convo.listingId,
+                MyFirebaseReferences.LISTING_NAME_FIELD to convo.listingName,
+                MyFirebaseReferences.LISTING_PHOTO_FIELD to convo.listingPhoto,
+                MyFirebaseReferences.CONVO_ID_FIELD to convo.id,
+                MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to Date(),
+                MyFirebaseReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, convo.recipientEmail)
             )
 
             for ((key, value) in convoHash.entries) {
                 Log.i("ViewListingFragment", "${key} => ${value}")
             }
 
-            db!!.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+            db!!.collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                 .document(convo.id)
                 .set(convoHash)
         }
@@ -141,16 +138,16 @@ class MessageFragment : Fragment() {
         Log.i("MEssageFragment ConvoModel.id", "${convoModel.id}")
         // Ready the values of the message
         val data = hashMapOf(
-            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convo.id,
-            MyFirestoreReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
-            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convoModel.id,
-            MyFirestoreReferences.MESSAGE_FIELD to if (offer) "New Order/Offer" else message,
-            MyFirestoreReferences.TIME_FIELD to timeNow,
-            MyFirestoreReferences.MESSAGE_OFFER_FIELD to offer,
-            MyFirestoreReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) 5 else -1,
-            MyFirestoreReferences.MESSAGE_OFFER_AMOUNT_FIELD to if (offer) 25 else -1,
-            MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD to !offer,
-            MyFirestoreReferences.MESSAGE_ID_FIELD to messageId,
+            MyFirebaseReferences.MESSAGE_CONVO_FIELD to convo.id,
+            MyFirebaseReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
+            MyFirebaseReferences.MESSAGE_CONVO_FIELD to convoModel.id,
+            MyFirebaseReferences.MESSAGE_FIELD to if (offer) "New Order/Offer" else message,
+            MyFirebaseReferences.TIME_FIELD to timeNow,
+            MyFirebaseReferences.MESSAGE_OFFER_FIELD to offer,
+            MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) 5 else -1,
+            MyFirebaseReferences.MESSAGE_OFFER_AMOUNT_FIELD to if (offer) 25 else -1,
+            MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD to !offer,
+            MyFirebaseReferences.MESSAGE_ID_FIELD to messageId,
         )
         lifecycleScope.launch {
             val dataUpdate = async {
@@ -158,23 +155,23 @@ class MessageFragment : Fragment() {
                 //If the new message is an offer, udpate previous offers to addressed = true
                 if (offer) {
                     val msgRef = db!!
-                        .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
-                        .whereEqualTo(MyFirestoreReferences.MESSAGE_CONVO_FIELD, convo.id)
-                        .whereEqualTo(MyFirestoreReferences.MESSAGE_OFFER_FIELD, true)
-                        .whereEqualTo(MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD, false)
+                        .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
+                        .whereEqualTo(MyFirebaseReferences.MESSAGE_CONVO_FIELD, convo.id)
+                        .whereEqualTo(MyFirebaseReferences.MESSAGE_OFFER_FIELD, true)
+                        .whereEqualTo(MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD, false)
 
                     msgRef
                         .get()
                         .addOnSuccessListener { documents ->
                             for (document in documents) {
                                 val indivMsgRef = db!!
-                                    .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                                    .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                                     .document(document.id)
                                 lifecycleScope.launch {
                                     val update = async {
                                         indivMsgRef
                                             .update(
-                                                MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD,
+                                                MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD,
                                                 true
                                             )
                                             .addOnSuccessListener {
@@ -185,7 +182,7 @@ class MessageFragment : Fragment() {
                                 }
                             }
 
-                            val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                            val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
 
                             Log.i("MssgFrag", "Sending a messagenow")
                             data.forEach { (key, value) -> println("$key = $value") }
@@ -203,11 +200,11 @@ class MessageFragment : Fragment() {
 
                                     //Update conversation timestamp
                                     val convoRef = db!!
-                                        .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                        .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                                         .document(convo.id)
 
                                     convoRef
-                                        .update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                        .update(MyFirebaseReferences.CONVO_TIMESTAMP_FIELD, timeNow)
                                         .addOnSuccessListener {
                                             Log.i(
                                                 "DB Updated SUCCESS",
@@ -233,7 +230,7 @@ class MessageFragment : Fragment() {
                     Log.i("DDDDDDDDDDDDDDDDDDDDDDDD", "OUTTA HERE")
                 }
                 else {
-                    val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                    val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
 
                     Log.i("MssgFrag", "Sending a messagenow")
                     data.forEach { (key, value) -> println("$key = $value") }
@@ -250,11 +247,11 @@ class MessageFragment : Fragment() {
 
                             //Update conversation timestamp
                             val convoRef = db!!
-                                .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                                 .document(convo.id)
 
                             convoRef
-                                .update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                .update(MyFirebaseReferences.CONVO_TIMESTAMP_FIELD, timeNow)
                                 .addOnSuccessListener {
                                     Log.i(
                                         "DB Updated SUCCESS",

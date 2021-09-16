@@ -71,22 +71,22 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun sendMessage(model: MessageModel, accepted: Boolean) {
-        val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+        val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
         val message = if (accepted) "The order/offer has been accepted" else "The your order/offer has been declined"
         var messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
-            MyFirestoreReferences.MESSAGE_CONVO_FIELD to model.convoId,
-            MyFirestoreReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
-            MyFirestoreReferences.MESSAGE_FIELD to message,
-            MyFirestoreReferences.TIME_FIELD to timeNow,
-            MyFirestoreReferences.MESSAGE_OFFER_FIELD to false,
-            MyFirestoreReferences.MESSAGE_OFFER_QUANTITY_FIELD to -1,
-            MyFirestoreReferences.MESSAGE_OFFER_AMOUNT_FIELD to -1,
-            MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD to true,
-            MyFirestoreReferences.MESSAGE_ID_FIELD to messageId,
+            MyFirebaseReferences.MESSAGE_CONVO_FIELD to model.convoId,
+            MyFirebaseReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
+            MyFirebaseReferences.MESSAGE_FIELD to message,
+            MyFirebaseReferences.TIME_FIELD to timeNow,
+            MyFirebaseReferences.MESSAGE_OFFER_FIELD to false,
+            MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD to -1,
+            MyFirebaseReferences.MESSAGE_OFFER_AMOUNT_FIELD to -1,
+            MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD to true,
+            MyFirebaseReferences.MESSAGE_ID_FIELD to messageId,
         )
 
         messageRef
@@ -109,10 +109,10 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 //Subtract order from listing stock count
                 if (accepted) {
                         val listingRef = db!!
-                            .collection(MyFirestoreReferences.LISTINGS_COLLECTION)
-                            .document(listing!!.id)
+                            .collection(MyFirebaseReferences.LISTINGS_COLLECTION)
+                            .document(listing!!.listingId)
 
-                        listingRef.update(MyFirestoreReferences.STOCK_FIELD, listing!!.stock - model.quantity)
+                        listingRef.update(MyFirebaseReferences.STOCK_FIELD, listing!!.stock - model.quantity)
                             .addOnSuccessListener {
                                 Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
                             }

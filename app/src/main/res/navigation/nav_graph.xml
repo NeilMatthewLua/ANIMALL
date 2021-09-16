@@ -21,6 +21,10 @@
         <action
             android:id="@+id/action_profileFragment_to_viewListingFragment"
             app:destination="@id/viewListingFragment" />
+        <argument
+            android:name="sellerEmail"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/landingFragment"
@@ -43,6 +47,9 @@
         <action
             android:id="@+id/action_viewListingFragment_to_messageFragment"
             app:destination="@id/messageFragment" />
+        <action
+            android:id="@+id/action_viewListingFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/messageFragment"
