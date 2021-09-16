@@ -494,7 +494,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             MyFirebaseReferences.LISTING_IS_OPEN to true,
             MyFirebaseReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
             MyFirebaseReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
-            MyFirebaseReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirebaseReferences.LOCATION_FIELD to productLocationActv.text.toString(),
             MyFirebaseReferences.SELLER_FIELD to currentUser.email,
             MyFirebaseReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
             MyFirebaseReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),

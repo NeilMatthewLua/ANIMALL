@@ -107,43 +107,6 @@ class LandingFragment : Fragment() {
         // Adapter
         landingAdapter = LandingAdapter(data!!, this@LandingFragment)
         landingRecyclerView!!.adapter = landingAdapter
-        // Add a scroll listener to show load more button when at the end
-        landingRecyclerView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-            if (!landingRecyclerView.canScrollVertically(1) && data.size > 0){
-                loadMoreBtn.visibility = View.VISIBLE
-                loadMoreBtn.animate().alpha(1.0f)
-            } else {
-                loadMoreBtn.animate().alpha(0.0f);
-                loadMoreBtn.visibility = View.GONE
-            }
-        }
-
-        loadMoreBtn.setOnClickListener {
-            lifecycleScope.launch {
-                try {
-                    landingDimBackgroundV.visibility = View.VISIBLE
-                    landingPb.visibility = View.VISIBLE
-                    var newData: ArrayList<ListingModel> = ArrayList()
-                    var previousSize : Int = data.size
-                    val dataInit = async(Dispatchers.IO) {
-                        var lastDocId = data.get(data.size - 1).listingId
-                        newData = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext(), lastDocId)
-                    }
-                    dataInit.await()
-                    if (newData.size == 0) {
-                        Toast.makeText(requireContext(),"No more listings found.", Toast.LENGTH_LONG).show()
-                    } else {
-                        data.addAll(newData)
-                    }
-
-                    landingAdapter.notifyItemRangeChanged(previousSize, newData.size)
-                    landingDimBackgroundV.visibility = View.GONE
-                    landingPb.visibility = View.GONE
-                } catch (e : Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
     }
 
     fun initializeSpinners() {

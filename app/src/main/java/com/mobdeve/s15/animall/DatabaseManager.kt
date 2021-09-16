@@ -19,7 +19,6 @@ import kotlin.collections.ArrayList
 object DatabaseManager {
     const val TAG = "FIRESTORE"
     val db = Firebase.firestore
-    val LISTING_LIMIT: Long = 5
     val PH_UPPER_LON: Double = 126.537423944
     val PH_UPPER_LAT: Double = 18.5052273625
     val PH_LOWER_LON: Double = 117.17427453
@@ -33,7 +32,7 @@ object DatabaseManager {
         val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
         val data = ArrayList<ListingModel>()
         try {
-            val job = listingRef.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).limit(LISTING_LIMIT).get().await()
+            val job = listingRef.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).get().await()
             for (document in job.documents) {
                 var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
                 // Convert to Long
@@ -93,7 +92,7 @@ object DatabaseManager {
                 job = listingRef
             }
             // Only get
-            val result = job.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).limit(LISTING_LIMIT).get().await()
+            val result = job.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).get().await()
             for (document in result.documents) {
                 if (document["isOpen"] as Boolean) {
                     var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
