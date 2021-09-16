@@ -13,7 +13,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_listing.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
@@ -240,6 +243,50 @@ object DatabaseManager {
         conversation
     }
 
+    suspend fun getConversationListing(convoId: String): ListingModel? = coroutineScope {
+        val conversationRef = db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+        var listing: ListingModel? = null
+        Log.i("DBManager convoId", "${convoId}")
+        try {
+            val convo = conversationRef
+                            .document(convoId)
+                            .get()
+                            .await()
+
+            val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
+            val listingId = convo[MyFirestoreReferences.LISTING_ID_FIELD] as String
+
+            val listing_doc = listingRef
+                            .document(listingId)
+                            .get()
+                            .await()
+
+            var photoArray = listing_doc[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
+            // Convert to Long
+            var unitPrice = listing_doc[MyFirestoreReferences.PRICE_FIELD]
+            if (unitPrice is Long)
+                unitPrice = unitPrice.toDouble()
+
+            listing = ListingModel(
+                listing_doc[MyFirestoreReferences.LISTING_IS_OPEN] as Boolean,
+                listing_doc[MyFirestoreReferences.CATEGORY_FIELD].toString(),
+                listing_doc[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
+                listing_doc[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
+                listing_doc[MyFirestoreReferences.LOCATION_FIELD].toString(),
+                listing_doc[MyFirestoreReferences.SELLER_FIELD].toString(),
+                listing_doc[MyFirestoreReferences.STOCK_FIELD] as Long,
+                unitPrice as Double,
+                photoArray,
+                listing_doc.id
+            )
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR RETRIEVING LISTING")
+        }
+
+        println(listing)
+        listing
+    }
+
     suspend fun getLatestMessage(convoId: String): MessageModel? = coroutineScope {
         val messageRef = db.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
         var latestMessage: MessageModel? = null
@@ -260,8 +307,14 @@ object DatabaseManager {
                         var timestamp = document[MyFirestoreReferences.TIME_FIELD] as Timestamp
                         var sender = document[MyFirestoreReferences.MESSAGE_SENDER_FIELD] as String
                         var message = document[MyFirestoreReferences.MESSAGE_FIELD] as String
+                        var offer = document[MyFirestoreReferences.MESSAGE_OFFER_FIELD] as Boolean
+                        var amount = document[MyFirestoreReferences.MESSAGE_OFFER_AMOUNT_FIELD] as Long
+                        var quantity = document[MyFirestoreReferences.MESSAGE_OFFER_QUANTITY_FIELD] as Long
+                        var addressed = document[MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD] as Boolean
+                        var id = document[MyFirestoreReferences.MESSAGE_ID_FIELD] as String
 
-                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message, false)
+
+                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message, offer, amount.toInt(), quantity.toInt(), addressed, id)
                     }
                 }
                 .addOnFailureListener {

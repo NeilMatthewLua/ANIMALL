@@ -8,13 +8,21 @@ class MessageModel(
     val timestamp: Date,
     val sender: String,
     val message: String,
-    val isOffer: Boolean
+    var offer: Boolean,
+    var offerPrice: Int,
+    var quantity: Int,
+    var addressed: Boolean,
+    var id: String
 ) {
     constructor() : this(
         "",
          Date(),
         "",
         "",
-        false
+        false,
+        -1,
+        -1,
+        false,
+        ""
     )
 }

@@ -36,9 +36,6 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         messageTv.gravity = Gravity.LEFT
         messageTimeTv.gravity = Gravity.LEFT
         messageLinearLayout.gravity = Gravity.LEFT
-
-//        Log.i("L Viewholder", messageTv.text.toString())
-//        Log.i("L ViewHolder this message was set to ", messageTimeTv.gravity.toString())
     }
 
     fun rightAlignText() {
@@ -46,18 +43,8 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         messageTv.gravity = Gravity.RIGHT
         messageTimeTv.gravity = Gravity.RIGHT
         messageLinearLayout.gravity = Gravity.RIGHT
-
-//        Log.i("R Viewholder", messageTv.text.toString())
-//        Log.i("R ViewHolder this message was set to ", messageTimeTv.gravity.toString())
     }
 
-    fun makeRed(){
-        messageTv.setTextColor(Color.parseColor("#E32323"))
-    }
-
-    fun makeGreen(){
-        messageTv.setTextColor(Color.parseColor("#287C26"))
-    }
 
     init {
         usernameTv = itemView.findViewById(R.id.messageUsernameTv)

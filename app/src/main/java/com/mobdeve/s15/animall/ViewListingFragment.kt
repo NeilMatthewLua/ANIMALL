@@ -111,44 +111,19 @@ class ViewListingFragment : Fragment() {
 
                             //If no conversation has been made yet
                             if (conversation == null) {
-//                                val db = DatabaseManager.getInstance()
                                 val convoID = UUID.randomUUID().toString()
-//
-//                                val convo = hashMapOf(
-//                                    MyFirestoreReferences.RECIPIENT_FIELD to user!!.email,
-//                                    MyFirestoreReferences.SENDER_FIELD to loggedUser.email!!,
-//                                    MyFirestoreReferences.LISTING_ID_FIELD to listing.id,
-//                                    MyFirestoreReferences.LISTING_NAME_FIELD to listing.name,
-//                                    MyFirestoreReferences.LISTING_PHOTO_FIELD to listing.photos[0],
-//                                    MyFirestoreReferences.CONVO_ID_FIELD to convoID,
-//                                    MyFirestoreReferences.CONVO_TIMESTAMP_FIELD to Date(),
-//                                    MyFirestoreReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, user!!.email)
-//                                )
-//
-//                                for ((key, value) in convo.entries) {
-//                                    Log.i("ViewListingFragment", "${key} => ${value}")
-//                                }
-//
-//                                db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
-//                                    .document(convoID)
-//                                    .set(convo)
-//                                    .addOnSuccessListener {
-                                        val viewModel : MessageSharedViewModel by activityViewModels()
+                                    val viewModel : MessageSharedViewModel by activityViewModels()
 
-                                        viewModel.setListingData(ConversationModel(
-                                            user!!.email,
-                                            loggedUser.email!!,
-                                            listing.id,
-                                            listing.name,
-                                            listing.photos[0],
-                                            convoID
-                                        ), true)
+                                    viewModel.setListingData(ConversationModel(
+                                        user!!.email,
+                                        loggedUser.email!!,
+                                        listing.id,
+                                        listing.name,
+                                        listing.photos[0],
+                                        convoID
+                                    ), true)
 
-                                        view.findNavController().navigate(R.id.messageFragment)
-//                                    }
-//                                    .addOnFailureListener { e ->
-//                                        Log.i("ViewListingFragment", e.toString())
-//                                    }
+                                    view.findNavController().navigate(R.id.messageFragment)
                             }
                             else {
                                 val viewModel : MessageSharedViewModel by activityViewModels()

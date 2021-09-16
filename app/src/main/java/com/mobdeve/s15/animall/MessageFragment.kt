@@ -73,7 +73,7 @@ class MessageFragment : Fragment() {
                             .setQuery(query, MessageModel::class.java)
                             .build()
 
-                    myFirestoreRecyclerAdapter = MessageAdapter(options, loggedUser!!.email!!)
+                    myFirestoreRecyclerAdapter = MessageAdapter(options, requireContext(), loggedUser!!.email!!)
                     Log.i("MessageFragment", "Adapter Adapted")
 
                     withContext(Dispatchers.Main) {
@@ -110,35 +110,13 @@ class MessageFragment : Fragment() {
         })
     }
 
-    fun sendMessage(convo: ConversationModel, isFirst: Boolean, isOffer: Boolean) {
+    fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean) {
         val message = messageEtv!!.text.toString()
-
+        val messageId = UUID.randomUUID().toString()
         val timeNow = Date()
-        Log.i("SENDMESSAGE", "${isOffer}")
-        // Ready the values of the message
-//        val data: MutableMap<String, Any?> = HashMap()
-//        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convo.id
-//        data[MyFirestoreReferences.MESSAGE_SENDER_FIELD] = loggedUser.email
-//        data[MyFirestoreReferences.MESSAGE_CONVO_FIELD] = convoModel.id
-//        data[MyFirestoreReferences.MESSAGE_FIELD] = message
-//        data[MyFirestoreReferences.TIME_FIELD] = timeNow
-//        Log.i("SENDMESSAGE2", "${isOffer}")
-//        data[MyFirestoreReferences.MESSAGE_OFFER_FIELD] = isOffer
-//        Log.i("SENDMESSAGE3", "${isOffer}")
-
-        val data = hashMapOf(
-            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convo.id,
-            MyFirestoreReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
-            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convoModel.id,
-            MyFirestoreReferences.MESSAGE_FIELD to message,
-            MyFirestoreReferences.TIME_FIELD to timeNow,
-            MyFirestoreReferences.MESSAGE_OFFER_FIELD to isOffer,
-
-        )
 
         if (isFirst) {
 //            val convoID = UUID.randomUUID().toString()
-
             val convoHash = hashMapOf(
                 MyFirestoreReferences.RECIPIENT_FIELD to convo.recipientEmail,
                 MyFirestoreReferences.SENDER_FIELD to loggedUser.email!!,
@@ -159,41 +137,148 @@ class MessageFragment : Fragment() {
                 .set(convoHash)
         }
 
-        val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+        Log.i("MEssageFragment Convo.id", "${convo.id}")
+        Log.i("MEssageFragment ConvoModel.id", "${convoModel.id}")
+        // Ready the values of the message
+        val data = hashMapOf(
+            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convo.id,
+            MyFirestoreReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
+            MyFirestoreReferences.MESSAGE_CONVO_FIELD to convoModel.id,
+            MyFirestoreReferences.MESSAGE_FIELD to if (offer) "New Order/Offer" else message,
+            MyFirestoreReferences.TIME_FIELD to timeNow,
+            MyFirestoreReferences.MESSAGE_OFFER_FIELD to offer,
+            MyFirestoreReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) 5 else -1,
+            MyFirestoreReferences.MESSAGE_OFFER_AMOUNT_FIELD to if (offer) 25 else -1,
+            MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD to !offer,
+            MyFirestoreReferences.MESSAGE_ID_FIELD to messageId,
+        )
+        lifecycleScope.launch {
+            val dataUpdate = async {
+                Log.i("MssgFrag", "Looking for messages to update")
+                //If the new message is an offer, udpate previous offers to addressed = true
+                if (offer) {
+                    val msgRef = db!!
+                        .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                        .whereEqualTo(MyFirestoreReferences.MESSAGE_CONVO_FIELD, convo.id)
+                        .whereEqualTo(MyFirestoreReferences.MESSAGE_OFFER_FIELD, true)
+                        .whereEqualTo(MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD, false)
 
-        Log.i("MssgFrag", "Sending a messagenow")
-        messageRef
-            .add(data)
-            .addOnSuccessListener {
-                Log.d(
-                    "DB SUCCESS",
-                    "DocumentSnapshot posted"
-                )
-                // "Reset" the message in the EditText
-                messageEtv!!.setText("")
+                    msgRef
+                        .get()
+                        .addOnSuccessListener { documents ->
+                            for (document in documents) {
+                                val indivMsgRef = db!!
+                                    .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                                    .document(document.id)
+                                lifecycleScope.launch {
+                                    val update = async {
+                                        indivMsgRef
+                                            .update(
+                                                MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD,
+                                                true
+                                            )
+                                            .addOnSuccessListener {
+                                                Log.i("MessageFragment", "Done updating one")
+                                            }
+                                    }
+                                    update.await()
+                                }
+                            }
 
-                //Update conversation timestamp
-                val convoRef = db!!
-                    .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
-                    .document(convo.id)
+                            val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
 
-                convoRef
-                    .update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
-                    .addOnSuccessListener {
-                        Log.i(
-                            "DB Updated SUCCESS",
-                            "DocumentSnapshot updated"
-                        )
-                    }
-                    .addOnFailureListener { e -> Log.w("DB Error", "Error updating document", e) }
+                            Log.i("MssgFrag", "Sending a messagenow")
+                            data.forEach { (key, value) -> println("$key = $value") }
+                            messageRef
+                                .add(data)
+                                .addOnSuccessListener {
+                                    Log.d(
+                                        "DB SUCCESS",
+                                        "DocumentSnapshot posted"
+                                    )
+
+                                    // "Reset" the message in the EditText
+                                    messageEtv!!.setText("")
+
+                                    //Update conversation timestamp
+                                    val convoRef = db!!
+                                        .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                        .document(convo.id)
+
+                                    convoRef
+                                        .update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                        .addOnSuccessListener {
+                                            Log.i(
+                                                "DB Updated SUCCESS",
+                                                "DocumentSnapshot updated"
+                                            )
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.w(
+                                                "DB Error",
+                                                "Error updating document",
+                                                e
+                                            )
+                                        }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(
+                                        "DB FAIL",
+                                        "Error adding document",
+                                        e
+                                    )
+                                }
+                        }
+                    Log.i("DDDDDDDDDDDDDDDDDDDDDDDD", "OUTTA HERE")
+                }
+                else {
+                    val messageRef = db!!.collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+
+                    Log.i("MssgFrag", "Sending a messagenow")
+                    data.forEach { (key, value) -> println("$key = $value") }
+                    messageRef
+                        .add(data)
+                        .addOnSuccessListener {
+                            Log.d(
+                                "DB SUCCESS",
+                                "DocumentSnapshot posted"
+                            )
+
+                            // "Reset" the message in the EditText
+                            messageEtv!!.setText("")
+
+                            //Update conversation timestamp
+                            val convoRef = db!!
+                                .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                                .document(convo.id)
+
+                            convoRef
+                                .update(MyFirestoreReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                .addOnSuccessListener {
+                                    Log.i(
+                                        "DB Updated SUCCESS",
+                                        "DocumentSnapshot updated"
+                                    )
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(
+                                        "DB Error",
+                                        "Error updating document",
+                                        e
+                                    )
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(
+                                "DB FAIL",
+                                "Error adding document",
+                                e
+                            )
+                        }
+                }
             }
-            .addOnFailureListener { e ->
-                Log.w(
-                    "DB FAIL",
-                    "Error adding document",
-                    e
-                )
-            }
+            dataUpdate.await()
+        }
     }
 
     override fun onResume() {

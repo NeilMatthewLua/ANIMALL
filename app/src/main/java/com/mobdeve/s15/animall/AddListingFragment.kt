@@ -243,32 +243,15 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     // Request permissions if not granted before
     private fun requestPermissions() {
-//        // Requesting Permission to access External Storage
-//        ActivityCompat.requestPermissions(
-//            requireContext(),
-//            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-//            EXTERNAL_STORAGE_PERMISSION_CODE
-//        )
-
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
-    }
-
-//    // What must happen when permission is granted
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
-//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                selectImages()
-//            }
+//    private fun checkPermissions(): Boolean {
+//        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            return true
 //        }
+//        return false
 //    }
 
     private val requestPermissionLauncher = registerForActivityResult(

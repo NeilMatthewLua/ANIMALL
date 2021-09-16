@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.coroutines.*
@@ -43,7 +45,8 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
             conversationTimeTv.text = dateString
 
-            if(message!!.sender == "carlos_shi@dlsu.edu.ph") {
+            val loggedUser = Firebase.auth.currentUser!!
+            if(message!!.sender == loggedUser.email) {
                 conversationMessageTv.text = "You: ${message!!.message}"
             }
             else {
