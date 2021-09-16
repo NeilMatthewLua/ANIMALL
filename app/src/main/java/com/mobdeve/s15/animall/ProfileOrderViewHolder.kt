@@ -24,7 +24,6 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var profileOrderId: String = ""
     val USER_PROFILE_FRAGMENT = 1
 
-    // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(order: OrderModel) {
         orderData = order
         profileOrderId = order.orderId

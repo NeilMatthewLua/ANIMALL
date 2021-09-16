@@ -26,9 +26,7 @@ import java.util.*
 
 class ViewListingFragment : Fragment() {
     val TAG = "ViewListingActivity"
-    // TODO: Add in a close listing functionality
-    // TODO: Update location
-    // TODO: Make order/contact seller
+
     private val viewModel: ListingSharedViewModel by activityViewModels()
     lateinit var sliderView: SliderView
     lateinit var adapterListing: ListingSliderAdapter

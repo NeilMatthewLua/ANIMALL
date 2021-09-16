@@ -24,7 +24,6 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     var profileCloseListingBtn: Button
     var profileEditListingBtn: Button
 
-    // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(listing: ListingModel) {
         listingData = listing
         profileListingNameTv.text = listing.name

@@ -97,11 +97,11 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                     "${model.id}"
                 )
                 val indivMsgRef = db!!
-                    .collection(MyFirestoreReferences.MESSAGES_COLLECTION)
+                    .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                     .document(model.id)
 
                 indivMsgRef
-                    .update(MyFirestoreReferences.MESSAGE_ADDRESSED_FIELD, true)
+                    .update(MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD, true)
                     .addOnFailureListener {
                         println("Done Updating")
                     }

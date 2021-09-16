@@ -53,7 +53,6 @@ class MessageFragment : Fragment() {
                     Log.d("MessageFragment ", it.listingName)
                     db = DatabaseManager.getInstance()
 
-                    //TODO Get ConvoID From viewHolder,for now we query it here
                     val query = db!!
                         .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                         .whereEqualTo(
