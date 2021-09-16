@@ -1,11 +1,17 @@
 package com.mobdeve.s15.animall
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.location.Geocoder
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +31,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -40,6 +46,16 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+import android.location.LocationManager
+import android.os.Looper
+import androidx.core.content.ContextCompat
+
+import androidx.core.content.ContextCompat.getSystemService
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.CoroutineScope
 
 
 class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -67,6 +83,10 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     lateinit var currentUser: UserModel
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var gcd: Geocoder
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setup database
@@ -78,8 +98,12 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         status = ArrayList()
         byteArrayUpload = ArrayList()
         photoURLs = ArrayList()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        gcd = Geocoder(requireContext())
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -111,11 +135,11 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
 
 
-        // Photo upload button
-        productUploadBtn.setOnClickListener {
-//            selectImages()
-            requestPermissions()
-        }
+            // Photo upload button
+            productUploadBtn.setOnClickListener {
+    //            selectImages()
+                requestPermissions()
+            }
 
             loadCategories()
             sliderView = activity?.findViewById(R.id.imageSlider)!!
@@ -127,6 +151,19 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
             sliderView.indicatorSelectedColor = Color.WHITE
             sliderView.indicatorUnselectedColor = Color.GRAY
+
+            val cityData = CityDataHelper.initializeCityData()
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, cityData)
+
+            productLocationActv.setAdapter(adapter)
+            productLocationActv.threshold = 1
+
+            productLocationActv.setText(currentUser.preferredLocation, false)
+
+            productLocationActv.setOnItemClickListener { parent, _, _, _ ->
+                val imm: InputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(parent.applicationWindowToken, 0)
+            }
         }
     }
 
@@ -235,6 +272,19 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
         else {
             productUploadErrorTv.visibility = View.GONE
+        }
+
+        if (productLocationActv.text.isNullOrBlank()) {
+            productLocationErrorTv.visibility = View.VISIBLE
+            invalid += 1
+        } else if (productLocationActv.text.isNotEmpty() && productLocationActv.text.isNotBlank()) {
+            val cityData = CityDataHelper.initializeCityData()
+            if (productLocationActv.text.toString() in cityData) {
+                productUploadErrorTv.visibility = View.GONE
+            } else {
+                productLocationErrorTv.visibility = View.VISIBLE
+                invalid += 1
+            }
         }
 
         return invalid == 0
@@ -463,7 +513,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             MyFirestoreReferences.LISTING_IS_OPEN to true,
             MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
             MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
-            MyFirestoreReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirestoreReferences.LOCATION_FIELD to productLocationActv.text.toString(),
             MyFirestoreReferences.SELLER_FIELD to currentUser.email,
             MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
             MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),

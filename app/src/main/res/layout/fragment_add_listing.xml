@@ -305,8 +305,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/productDescriptionErrorTv" />
 
-        <EditText
-            android:id="@+id/productLocationEtv"
+        <AutoCompleteTextView
+            android:id="@+id/productLocationActv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -323,9 +323,9 @@
             android:text="@string/create_location_hint"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productLocationTv" />
+            app:layout_constraintTop_toBottomOf="@+id/productLocationTv"
+            android:selectAllOnFocus="true"/>
 
         <TextView
             android:id="@+id/productLocationErrorTv"
@@ -340,7 +340,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/productLocationEtv" />
+            app:layout_constraintTop_toBottomOf="@+id/productLocationActv" />
 
         <TextView
             android:id="@+id/productPhotosTv"
