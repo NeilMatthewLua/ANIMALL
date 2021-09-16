@@ -82,6 +82,8 @@
     <string name="listing_location">Product City</string>
     <string name="listing_category">Product Category</string>
     <string name="listing_image">Listing Image</string>
+    <string name="listing_make_offer">Make Offer</string>
+    <string name="listing_view_profile">View Seller Profile</string>
 
     <string name="message">You: Boi I am tired</string>
     <string name="message_time">August 15, 2021 6:09PM</string>

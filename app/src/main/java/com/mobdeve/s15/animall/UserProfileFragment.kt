@@ -35,64 +35,82 @@ class UserProfileFragment : Fragment() {
     lateinit var profileOrderAdapter: ProfileOrderAdapter
 
     var currentUser: String = ""
+    var isOwnProfile: Boolean = true
     var hasRetrieved: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO: Compare firebase user with profile user
         lifecycleScope.launch {
-            val loggedUser = Firebase.auth.currentUser
-            val dataInit = async(Dispatchers.IO) {
-                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
-                listingData = DatabaseManager.getUserListings(loggedUser?.email!!)
-                orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
+            if (arguments?.get(SELLER_EMAIL).toString().isNotBlank()) {
+                val sellerEmail = arguments?.get(SELLER_EMAIL).toString()
+                val dataInit = async(Dispatchers.IO) {
+                    currentUser = DatabaseManager.getUserName(sellerEmail)
+                    listingData = DatabaseManager.getUserListings(sellerEmail, true)
+                }
+                dataInit.await()
+                isOwnProfile = false
+                profileImageIv.visibility = View.GONE
+            } else {
+                val loggedUser = Firebase.auth.currentUser
+                val dataInit = async(Dispatchers.IO) {
+                    currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
+                    listingData = DatabaseManager.getUserListings(loggedUser?.email!!)
+                    orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
+                }
+                dataInit.await()
+                Picasso.get().
+                load(loggedUser?.photoUrl)
+                    .error(R.drawable.ic_error)
+                    .placeholder(R.drawable.progress_animation)
+                    .into(profileImageIv);
             }
-            dataInit.await()
-            Picasso.get().
-            load(loggedUser?.photoUrl)
-                .error(R.drawable.ic_error)
-                .placeholder(R.drawable.progress_animation)
-                .into(profileImageIv);
 
             userProfileTv.text = currentUser
 
-            profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
+            if (!isOwnProfile) {
+                profileListingBtn.visibility = View.GONE
+                profileOrderBtn.visibility = View.GONE
+                profileEditLocationBtn.visibility = View.GONE
+            } else {
+                profileListingBtn.setOnClickListener{
+                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                    profileListingBtn.setTextColor(getResources().getColor(R.color.white))
+                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                    profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+                    profileRecyclerView!!.adapter = profileListingAdapter
+                    profileListingAdapter.notifyDataSetChanged()
+                }
+
+                profileOrderBtn.setOnClickListener{
+                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
+                    profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
+                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
+                    profileListingBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
+                    profileRecyclerView!!.adapter = profileOrderAdapter
+                    profileOrderAdapter.notifyDataSetChanged()
+                }
+
+                profileEditLocationBtn.setOnClickListener {
+                    getLocation.launch(Intent(context, LocationActivity::class.java))
+                }
+
+                profileEditLocationBtn.visibility = View.VISIBLE
+                profileListingBtn.visibility = View.VISIBLE
+                profileOrderBtn.visibility = View.VISIBLE
+                profileLogoutBtn.visibility = View.VISIBLE
+                profileImageContainerCv.visibility = View.VISIBLE
+            }
+
+            profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
             profileRecyclerView!!.adapter = profileListingAdapter
             profileListingAdapter.notifyDataSetChanged()
-
-            profileListingBtn.setOnClickListener{
-                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                profileListingBtn.setTextColor(getResources().getColor(R.color.white))
-                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
-                profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
-                profileRecyclerView!!.adapter = profileListingAdapter
-                profileListingAdapter.notifyDataSetChanged()
-            }
-
-            profileOrderBtn.setOnClickListener{
-                profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
-                profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                profileListingBtn.setTextColor(getResources().getColor(R.color.black))
-                profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
-                profileRecyclerView!!.adapter = profileOrderAdapter
-                profileOrderAdapter.notifyDataSetChanged()
-            }
-
-            profileEditLocationBtn.setOnClickListener {
-                getLocation.launch(Intent(context, LocationActivity::class.java))
-            }
 
             hasRetrieved = true
             profileDimBackgroundV.visibility = View.GONE
             profilePb.visibility = View.GONE
-
-            profileEditLocationBtn.visibility = View.VISIBLE
-            profileListingBtn.visibility = View.VISIBLE
-            profileOrderBtn.visibility = View.VISIBLE
-            profileLogoutBtn.visibility = View.VISIBLE
-            profileImageContainerCv.visibility = View.VISIBLE
         }
     }
 
@@ -142,7 +160,7 @@ class UserProfileFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         profileRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment)
+        profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
         profileRecyclerView!!.adapter = profileListingAdapter
 
         profileLogoutBtn.setOnClickListener{
@@ -160,5 +178,9 @@ class UserProfileFragment : Fragment() {
             startActivity(intent)
             activity?.finish()
         }
+    }
+
+    companion object {
+        val SELLER_EMAIL = "sellerEmail"
     }
 }

@@ -13,6 +13,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -311,11 +312,19 @@ object DatabaseManager {
         city
     }
 
-    suspend fun getUserListings(userEmail: String): ArrayList<ListingModel> = coroutineScope {
+    suspend fun getUserListings(userEmail: String, openListingsOnly: Boolean = false): ArrayList<ListingModel> = coroutineScope {
         val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         val data = ArrayList<ListingModel>()
         try {
-            val job = listingRef.whereEqualTo(MyFirestoreReferences.SELLER_FIELD, userEmail).get().await()
+            var job : QuerySnapshot? = null
+            if (openListingsOnly) {
+                job = listingRef
+                    .whereEqualTo(MyFirestoreReferences.SELLER_FIELD, userEmail)
+                    .whereEqualTo(MyFirestoreReferences.LISTING_IS_OPEN, true)
+                    .get().await()
+            } else {
+                job = listingRef.whereEqualTo(MyFirestoreReferences.SELLER_FIELD, userEmail).get().await()
+            }
             for (document in job.documents) {
                 var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
                 // Convert to Long

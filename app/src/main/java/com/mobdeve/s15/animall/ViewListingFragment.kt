@@ -98,6 +98,15 @@ class ViewListingFragment : Fragment() {
                 if(user != null) {
                     listingSellerTv.text = user!!.name
                 }
+
+                viewSellerProfileBtn.setOnClickListener {
+                    val sellerProfilePage = UserProfileFragment()
+                    var args = Bundle()
+                    args.putString(UserProfileFragment.SELLER_EMAIL, user!!.email)
+                    sellerProfilePage.arguments = args
+                    it.findNavController().navigate(R.id.profileFragment, args)
+                }
+
                 adapterListing.renewItems(it.photos)
 
                 if (loggedUser.email!! != user!!.email) {

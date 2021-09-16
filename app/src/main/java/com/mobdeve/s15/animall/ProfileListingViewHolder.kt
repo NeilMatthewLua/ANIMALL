@@ -95,6 +95,12 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         }
     }
 
+    fun hideBtns() {
+        profileDeleteListingBtn.visibility = View.GONE
+        profileCloseListingBtn.visibility = View.GONE
+        profileEditListingBtn.visibility = View.GONE
+    }
+
     init {
         profileListingImageIv = itemView.findViewById(R.id.profileListingImageIv)
         profileListingNameTv = itemView.findViewById(R.id.profileListingNameTv)

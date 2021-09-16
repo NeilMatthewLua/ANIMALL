@@ -12,7 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 
-class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private val fragment: UserProfileFragment) :
+class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private val fragment: UserProfileFragment, private val isOwnProfile: Boolean) :
     RecyclerView.Adapter<ProfileListingViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileListingViewHolder {
@@ -129,6 +129,9 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
         holder.setCloseBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
         holder.setDeleteBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
         holder.setEditBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
+        if (!isOwnProfile) {
+            holder.hideBtns()
+        }
     }
 
     override fun getItemCount(): Int {
