@@ -136,6 +136,16 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                                 Log.i("MessageOfferVHolder", "Failed to reduce stock.")
                             }
 
+                        val remainder = listing!!.stock - model.quantity
+                        if(remainder == 0.toLong()) {
+                            listingRef.update(MyFirebaseReferences.LISTING_IS_OPEN, false)
+                                .addOnSuccessListener {
+                                    Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
+                                }
+                                .addOnFailureListener {
+                                    Log.i("MessageOfferVHolder", "Failed to reduce stock.")
+                                }
+                        }
                         val orderId = UUID.randomUUID().toString()
 
                         val orderData = hashMapOf(
@@ -145,7 +155,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                             MyFirebaseReferences.ORDER_LISTING_NAME_FIELD to listing!!.name,
                             MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD to listing!!.photos[0],
                             MyFirebaseReferences.ORDER_QUANTITY_FIELD to model.quantity,
-                            MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offer,
+                            MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offerPrice,
                             MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD to false,
                         )
 
