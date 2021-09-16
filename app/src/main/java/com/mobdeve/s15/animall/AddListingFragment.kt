@@ -2,7 +2,6 @@ package com.mobdeve.s15.animall
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -19,12 +18,10 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -442,15 +439,15 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         Log.i("POSTING", "POSTING")
 
         val listing = hashMapOf(
-            MyFirestoreReferences.CATEGORY_FIELD to categoryId,
-            MyFirestoreReferences.LISTING_IS_OPEN to true,
-            MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
-            MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
-            MyFirestoreReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
-            MyFirestoreReferences.SELLER_FIELD to currentUser.email,
-            MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
-            MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
-            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
+            MyFirebaseReferences.CATEGORY_FIELD to categoryId,
+            MyFirebaseReferences.LISTING_IS_OPEN to true,
+            MyFirebaseReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
+            MyFirebaseReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
+            MyFirebaseReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirebaseReferences.SELLER_FIELD to currentUser.email,
+            MyFirebaseReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
+            MyFirebaseReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
+            MyFirebaseReferences.PHOTOS_FIELD to photoURLs
         )
 
         db.collection("listings").document(listingID)

@@ -6,10 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -65,9 +63,9 @@ class ConversationFragment : Fragment() {
                 db = DatabaseManager.getInstance()
 
                 val query = db!!
-                    .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                    .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                     .whereArrayContains("users", loggedUser?.email!!)
-                    .orderBy(MyFirestoreReferences.TIME_FIELD, Query.Direction.DESCENDING)
+                    .orderBy(MyFirebaseReferences.TIME_FIELD, Query.Direction.DESCENDING)
 
                 val options: FirestoreRecyclerOptions<ConversationModel> =
                     FirestoreRecyclerOptions.Builder<ConversationModel>()
@@ -75,9 +73,9 @@ class ConversationFragment : Fragment() {
                         .build()
                 Log.i("ConvoFragment", "I will try getting some conversations")
                 db!!
-                    .collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
+                    .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                     .whereArrayContains("users", loggedUser?.email!!)
-                    .orderBy(MyFirestoreReferences.TIME_FIELD, Query.Direction.DESCENDING)
+                    .orderBy(MyFirebaseReferences.TIME_FIELD, Query.Direction.DESCENDING)
                     .get()
                     .addOnSuccessListener {
                         it.forEach {

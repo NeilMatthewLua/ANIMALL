@@ -114,7 +114,7 @@ class ViewListingFragment : Fragment() {
                     listingContactBtn.setOnClickListener { view ->
                         lifecycleScope.launch {
                             val convoInit = async(Dispatchers.IO) {
-                                conversation = DatabaseManager.getConversation(it.id, loggedUser.email!!)
+                                conversation = DatabaseManager.getConversation(it.listingId, loggedUser.email!!)
                             }
                             convoInit.await()
 
@@ -126,7 +126,7 @@ class ViewListingFragment : Fragment() {
                                     viewModel.setListingData(ConversationModel(
                                         user!!.email,
                                         loggedUser.email!!,
-                                        listing.id,
+                                        listing.listingId,
                                         listing.name,
                                         listing.photos[0],
                                         convoID

@@ -1,6 +1,6 @@
 package com.mobdeve.s15.animall
 
-object MyFirestoreReferences {
+object MyFirebaseReferences {
     const val USERS_COLLECTION = "users"
     const val CATEGORIES_COLLECTION = "categories"
     const val CONVERSATIONS_COLLECTION = "conversations"
@@ -21,6 +21,7 @@ object MyFirestoreReferences {
     const val SORT_UNIT_PRICE_ASC = "Price: Low to High"
     const val SORT_UNIT_PRICE_DSC = "Price: High to Low"
     const val SORT_PROXIMITY = "Location: Closer First"
+    const val LISTING_LOC = "location"
 
     //Order Model
     const val ORDER_ID_FIELD = "orderId"
@@ -58,4 +59,6 @@ object MyFirestoreReferences {
     const val MESSAGE_OFFER_AMOUNT_FIELD = "amount"
     const val MESSAGE_ADDRESSED_FIELD = "addressed"
     const val MESSAGE_ID_FIELD = "id"
+
+
 }
