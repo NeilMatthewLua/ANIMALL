@@ -7,6 +7,6 @@ class OrderModel(
     val listingName: String,
     val photosId: String,
     val quantity: Long,
-    val soldPrice: Double,
+    val soldPrice: Long,
     var isConfirmed: Boolean
 )

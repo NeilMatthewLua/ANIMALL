@@ -309,7 +309,7 @@ object DatabaseManager {
             val job = orderRef.whereEqualTo(MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
             for (document in job.documents) {
                 // Convert to Long
-                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+                var unitPrice = document[MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD] as Long
 
                 data.add(OrderModel(
                     document.reference.id,
@@ -318,7 +318,7 @@ object DatabaseManager {
                     document[MyFirebaseReferences.ORDER_LISTING_NAME_FIELD] as String,
                     document[MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD] as String,
                     document[MyFirebaseReferences.ORDER_QUANTITY_FIELD] as Long,
-                    unitPrice as Double,
+                    unitPrice,
                     document[MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD] as Boolean
                 ))
             }
