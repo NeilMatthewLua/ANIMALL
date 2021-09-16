@@ -45,10 +45,17 @@ object MyFirestoreReferences {
     const val LISTING_NAME_FIELD = "listingName"
     const val LISTING_PHOTO_FIELD = "listingPhoto"
     const val CONVO_TIMESTAMP_FIELD = "timestamp"
+    const val CONVO_ID_FIELD = "id"
+    const val CONVO_USERS_FIELD = "users"
 
     //Message
     const val TIME_FIELD = "timestamp"
     const val MESSAGE_FIELD = "message"
     const val MESSAGE_SENDER_FIELD = "sender"
     const val MESSAGE_CONVO_FIELD = "convoId"
+    const val MESSAGE_OFFER_FIELD = "offer"
+    const val MESSAGE_OFFER_QUANTITY_FIELD = "quantity"
+    const val MESSAGE_OFFER_AMOUNT_FIELD = "amount"
+    const val MESSAGE_ADDRESSED_FIELD = "addressed"
+    const val MESSAGE_ID_FIELD = "id"
 }

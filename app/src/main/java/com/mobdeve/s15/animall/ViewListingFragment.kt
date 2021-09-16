@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_view_listing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.*
 
 class ViewListingFragment : Fragment() {
     val TAG = "ViewListingActivity"
@@ -119,38 +120,23 @@ class ViewListingFragment : Fragment() {
 
                             //If no conversation has been made yet
                             if (conversation == null) {
-                                val db = DatabaseManager.getInstance()
+                                val convoID = UUID.randomUUID().toString()
+                                    val viewModel : MessageSharedViewModel by activityViewModels()
 
-                                db.collection(MyFirestoreReferences.CONVERSATIONS_COLLECTION)
-                                    .add(
-                                        ConversationModel(
-                                            user!!.email,
-                                            loggedUser.email!!,
-                                            listing.id,
-                                            listing.name,
-                                            listing.photos[0]
-                                        )
-                                    )
-                                    .addOnSuccessListener {
-                                        val viewModel : MessageSharedViewModel by activityViewModels()
-                                        viewModel.setListingData(ConversationModel(
-                                            user!!.email,
-                                            loggedUser.email!!,
-                                            listing.id,
-                                            listing.name,
-                                            listing.photos[0],
-                                            it.id
-                                        ))
+                                    viewModel.setListingData(ConversationModel(
+                                        user!!.email,
+                                        loggedUser.email!!,
+                                        listing.id,
+                                        listing.name,
+                                        listing.photos[0],
+                                        convoID
+                                    ), true)
 
-                                        view.findNavController().navigate(R.id.messageFragment)
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.i("ViewListingFragment", e.toString())
-                                    }
+                                    view.findNavController().navigate(R.id.messageFragment)
                             }
                             else {
                                 val viewModel : MessageSharedViewModel by activityViewModels()
-                                viewModel.setListingData(conversation!!)
+                                viewModel.setListingData(conversation!!, false)
 
                                 view.findNavController().navigate(R.id.messageFragment)
                             }

@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.coroutines.*
@@ -19,7 +21,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var conversationMessageTv: TextView
     var conversationTimeTv: TextView
     var conversationImageIv: ImageView
-    var message: MessageModel? = null
+//    var message: MessageModel? = null
 
     fun bindData(conversation: ConversationModel, message: MessageModel) {
         if (conversation.listingPhoto != null) {
@@ -28,40 +30,29 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 .placeholder(R.drawable.progress_animation)
                 .into(conversationImageIv);
         }
-//        Log.i("CVHolder", "getting latest messageeeee")
-//        lifecycleScope.launch {
-//            Log.i("CVHolder", "getting latest message")
-//            val dataGet = async(Dispatchers.IO) {
-////                TODO query for the latest message for each present convoId
-//                message = DatabaseManager.getLatestMessage(conversation.id)!!
-//            }
-//            dataGet.await()
-//
-//
-//            Log.i("ConvoVHolder", "${message == null}")
-            if (message != null){
-                Log.i("ConvoVHolder", message!!.message)
+        Log.i("ConvoVHolder", "${conversation == null}")
+        conversationNameTv.text = conversation.listingName
+        if (message != null){
+            Log.i("ConvoVHolder", message!!.message)
 
-                var date = message!!.timestamp
+            var date = message!!.timestamp
 
-                val sdf3: SimpleDateFormat =
-                    SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
-                sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
+            val sdf3: SimpleDateFormat =
+                SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
+            sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
-                var dateString = sdf3.format(date)
+            var dateString = sdf3.format(date)
 
-                conversationTimeTv.text = dateString
-                conversationNameTv.text = conversation.listingName
+            conversationTimeTv.text = dateString
 
-                //TODO Compare email with logged user, for now use carlos_shi
-                if(message!!.sender == "carlos_shi@dlsu.edu.ph") {
-                    conversationMessageTv.text = "You: ${message!!.message}"
-                }
-                else {
-                    conversationMessageTv.text = "Seller: ${message!!.message}"
-                }
+            val loggedUser = Firebase.auth.currentUser!!
+            if(message!!.sender == loggedUser.email) {
+                conversationMessageTv.text = "You: ${message!!.message}"
             }
-//        }
+            else {
+                conversationMessageTv.text = "${message!!.sender}: ${message!!.message}"
+            }
+        }
     }
 
     init {

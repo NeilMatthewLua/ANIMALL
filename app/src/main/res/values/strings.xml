@@ -46,7 +46,7 @@
     <string name="create_photo">Product Photos</string>
     <string name="create_photo_error">Product photos are required.</string>
 
-    <string-array name="category_options">
+     <string-array name="category_options">
         <item>Filter by:</item>
         <item>Clothing</item>
         <item>Food</item>
@@ -119,4 +119,10 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="message_bubble_username">username</string>
     <string name="message_bubble_message">message</string>
+
+    <string name="message_new_offer_bubble">New Offer</string>
+    <string name="message_new_offerA_bubble">Amount</string>
+    <string name="message_new_offerQ_bubble">Quantity</string>
+    <string name="message_new_offer_decline">Decline</string>
+    <string name="message_new_offer_accept">Accept</string>
 </resources>
