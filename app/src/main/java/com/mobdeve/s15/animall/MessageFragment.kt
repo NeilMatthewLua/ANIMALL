@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +15,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -73,6 +71,15 @@ class MessageFragment : Fragment() {
                     }
                     getListing.join()
 
+                    withContext(Dispatchers.Main){
+                        // Hide offer/order buttons if recipient
+                        if (convoModel.recipientEmail == loggedUser.email) {
+                            linearLayout2.visibility = View.GONE
+                            makeOfferBtn.visibility = View.GONE
+                            makeOrderBtn.visibility = View.GONE
+                        }
+                    }
+
                     val options: FirestoreRecyclerOptions<MessageModel> =
                         FirestoreRecyclerOptions.Builder<MessageModel>()
                             .setQuery(query, MessageModel::class.java)
@@ -96,15 +103,15 @@ class MessageFragment : Fragment() {
                         sendMessageBtn.setOnClickListener { view ->
                             Log.i("Messages", "sending a message ON 1")
                             if (messageEtv!!.text.toString().isNotEmpty()) {
-                                sendMessage(it, viewModel.getIsFirst(), false)
+                                sendMessage(it, viewModel.getIsFirst(), false, -1, -1)
                             }
                         }
-                        sendMessageBtn2.setOnClickListener { view ->
-                            Log.i("Messages", "sending a message ON 2")
-                            if (messageEtv!!.text.toString().isNotEmpty()) {
-                                sendMessage(it, viewModel.getIsFirst(), true)
-                            }
-                        }
+//                        sendMessageBtn2.setOnClickListener { view ->
+//                            Log.i("Messages", "sending a message ON 2")
+//                            if (messageEtv!!.text.toString().isNotEmpty()) {
+//                                sendMessage(it, viewModel.getIsFirst(), true)
+//                            }
+//                        }
 
                         // Listen to order result
                         requireActivity().supportFragmentManager
@@ -113,13 +120,14 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-                                    lifecycleScope.launch {
-                                        // TODO: replace send order to DB
-                                        val closeListing = async(Dispatchers.IO) {
-//                                            result = DatabaseManager.editListing(id!!, newStock)
-                                        }
-                                        closeListing.await()
-                                    }
+//                                    lifecycleScope.launch {
+//                                        // TODO: replace send order to DB
+//                                        val closeListing = async(Dispatchers.IO) {
+////                                            result = DatabaseManager.editListing(id!!, newStock)
+//                                        }
+//                                        closeListing.await()
+//                                    }
+                                    sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
                                 }
                             }
 
@@ -130,13 +138,14 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-                                    lifecycleScope.launch {
-                                        // TODO: replace send order to DB
-                                        val closeListing = async(Dispatchers.IO) {
-//                                            result = DatabaseManager.editListing(id!!, newStock)
-                                        }
-                                        closeListing.await()
-                                    }
+//                                    lifecycleScope.launch {
+//                                        // TODO: replace send order to DB
+//                                        val closeListing = async(Dispatchers.IO) {
+////                                            result = DatabaseManager.editListing(id!!, newStock)
+//                                        }
+//                                        closeListing.await()
+//                                    }
+                                    sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
                                 }
                             }
 
@@ -171,7 +180,7 @@ class MessageFragment : Fragment() {
         }
     }
 
-    fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean) {
+    fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean, price: Long, quantity: Long) {
         val message = messageEtv!!.text.toString()
         val messageId = UUID.randomUUID().toString()
         val timeNow = Date()
@@ -200,6 +209,9 @@ class MessageFragment : Fragment() {
 
         Log.i("MEssageFragment Convo.id", "${convo.id}")
         Log.i("MEssageFragment ConvoModel.id", "${convoModel.id}")
+
+        println(quantity)
+        println(price)
         // Ready the values of the message
         val data = hashMapOf(
             MyFirebaseReferences.MESSAGE_CONVO_FIELD to convo.id,
@@ -208,8 +220,8 @@ class MessageFragment : Fragment() {
             MyFirebaseReferences.MESSAGE_FIELD to if (offer) "New Order/Offer" else message,
             MyFirebaseReferences.TIME_FIELD to timeNow,
             MyFirebaseReferences.MESSAGE_OFFER_FIELD to offer,
-            MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) 5 else -1,
-            MyFirebaseReferences.MESSAGE_OFFER_AMOUNT_FIELD to if (offer) 25 else -1,
+            MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) quantity else -1,
+            MyFirebaseReferences.MESSAGE_OFFER_AMOUNT_FIELD to if (offer) price else -1,
             MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD to !offer,
             MyFirebaseReferences.MESSAGE_ID_FIELD to messageId,
         )

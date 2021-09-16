@@ -120,7 +120,7 @@
     <string name="message_bubble_username">username</string>
     <string name="message_bubble_message">message</string>
 
-    <string name="message_new_offer_bubble">New Offer</string>
+    <string name="message_new_offer_bubble">New Order / Offer</string>
     <string name="message_new_offerA_bubble">Amount</string>
     <string name="message_new_offerQ_bubble">Quantity</string>
     <string name="message_new_offer_decline">Decline</string>

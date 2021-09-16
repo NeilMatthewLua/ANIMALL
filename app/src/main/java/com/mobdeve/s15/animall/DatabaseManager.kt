@@ -457,8 +457,8 @@ object DatabaseManager {
                         var addressed = document[MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD] as Boolean
                         var id = document[MyFirebaseReferences.MESSAGE_ID_FIELD] as String
 
-
-                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message, offer, amount.toInt(), quantity.toInt(), addressed, id)
+                        Log.i("Database Manager AAAAAAA", "${amount}")
+                        latestMessage = MessageModel(convoId, timestamp.toDate(), sender, message, offer, amount, quantity, addressed, id)
                     }
                 }
                 .addOnFailureListener {

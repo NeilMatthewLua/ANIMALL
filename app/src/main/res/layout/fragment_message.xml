@@ -219,6 +219,7 @@
             android:layout_marginBottom="64dp"
             android:backgroundTint="@android:color/transparent"
             android:src="@drawable/send_btn"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -238,7 +239,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                android:id="@+id/makeOrderBtn"
+                android:id="@+id/makeOfferBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
@@ -246,7 +247,7 @@
                 android:text="@string/message_make_offer" />
 
             <Button
-                android:id="@+id/makeOfferBtn"
+                android:id="@+id/makeOrderBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"

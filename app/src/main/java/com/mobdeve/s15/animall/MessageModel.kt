@@ -9,8 +9,8 @@ class MessageModel(
     val sender: String,
     val message: String,
     var offer: Boolean,
-    var offerPrice: Int,
-    var quantity: Int,
+    var offerPrice: Long,
+    var quantity: Long,
     var addressed: Boolean,
     var id: String
 ) {

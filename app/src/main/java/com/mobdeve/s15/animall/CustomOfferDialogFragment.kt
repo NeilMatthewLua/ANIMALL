@@ -15,7 +15,7 @@ class CustomOfferDialogFragment: DialogFragment() {
     var modalType: String = ""
     var listingId: String = ""
     var listingName: String = ""
-    var listingQuantity: Long = 0
+    var listingQuantity: Long = 1
     var listingPrice: Long = 0
     var listingStock: Long = 0
 
@@ -86,18 +86,25 @@ class CustomOfferDialogFragment: DialogFragment() {
         profileEditListingBtn.setOnClickListener {
             var bundle = Bundle()
             if (modalType == MODAL_ORDER) {
-                bundle.putString(MODAL_SUCCESS_KEY, "ok")
-                bundle.putLong(MODAL_QUANTITY_ORDERED_KEY, listingQuantity)
-                bundle.putLong(MODAL_LISTING_PRICE_KEY, listingPrice)
-                requireActivity().supportFragmentManager
-                    .setFragmentResult(MODAL_ORDER_RESULT, bundle)
+                if (messageQuantityTv.text.toString().toLong() > 0) {
+                    bundle.putString(MODAL_SUCCESS_KEY, "ok")
+                    bundle.putLong(MODAL_QUANTITY_ORDERED_KEY, listingQuantity)
+                    bundle.putLong(MODAL_LISTING_PRICE_KEY, listingPrice)
+                    requireActivity().supportFragmentManager
+                        .setFragmentResult(MODAL_ORDER_RESULT, bundle)
+                    dismiss()
+                } else {
+                    Toast.makeText(requireContext(),"Please input a non-zero quantity.", Toast.LENGTH_LONG).show()
+                }
             } else if(modalType == MODAL_OFFER) {
-                if (productNameEtv2.text.toString().toIntOrNull() != null || productNameEtv2.text.toString().toLong() >= 0) {
+                if (productNameEtv2.text.toString().toIntOrNull() != null && productNameEtv2.text.toString().toLong() > 0
+                    && messageQuantityTv.text.toString().toLong() > 0) {
                     bundle.putString(MODAL_SUCCESS_KEY, "ok")
                     bundle.putLong(MODAL_QUANTITY_ORDERED_KEY, listingQuantity)
                     bundle.putLong(MODAL_LISTING_PRICE_KEY, listingPrice)
                     requireActivity().supportFragmentManager
                         .setFragmentResult(MODAL_OFFER_RESULT, bundle)
+                    dismiss()
                 } else {
                     if (productNameEtv2.text.toString().toIntOrNull() == null)
                         Toast.makeText(requireContext(),"Please input numbers only.", Toast.LENGTH_LONG).show()
@@ -107,7 +114,6 @@ class CustomOfferDialogFragment: DialogFragment() {
                         Toast.makeText(requireContext(),"Please input a non-zero quantity.", Toast.LENGTH_LONG).show()
                 }
             }
-            dismiss()
         }
     }
 

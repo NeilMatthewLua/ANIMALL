@@ -4,40 +4,36 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.20925925925925926" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/drawable/ic_loading_arrow.xml" value="0.2324074074074074" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_landing.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_listing.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_main.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/activity_navbar.xml" value="0.1" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/anime_promotion.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_add_listing.xml" value="0.16576086956521738" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_custom_dialog.xml" value="0.35820894502642775" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_home.xml" value="0.16576086956521738" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_landing.xml" value="0.2364179037174423" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_message.xml" value="0.14492753623188406" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_landing.xml" value="0.11094224924012158" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_messages.xml" value="0.16576086956521738" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_offer_dialog.xml" value="0.4799999863354132" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_order_dialog.xml" value="0.14492753623188406" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_user_profile.xml" value="0.2364179037174423" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/fragment_view_listing.xml" value="0.35820894502642775" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_landing_layout.xml" value="0.16576086956521738" />
         <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_order_listing_layout.xml" value="0.11094224924012158" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_profile_listing_layout.xml" value="0.35820894502642775" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_profile_order_layout.xml" value="0.4799999863354132" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/make_offer_layout.xml" value="0.35820894502642775" />
-        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/make_order_layout.xml" value="0.14492753623188406" />
-        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_add_listing.xml" value="0.22418478260869565" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_profile_listing_layout.xml" value="0.17910447251321387" />
+        <entry key="..\:/Code/MOBDEVE/ANIMALL/app/src/main/res/layout/item_profile_order_layout.xml" value="0.2364179037174423" />
+        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_add_listing.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_message.xml" value="0.22" />
-        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_messages.xml" value="0.1" />
+        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_messages.xml" value="0.22" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_user_profile.xml" value="0.21739130434782608" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/fragment_view_listing.xml" value="0.22" />
+        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/item_landing_layout.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/item_profile_listing_layout.xml" value="0.21739130434782608" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/item_profile_order_layout.xml" value="0.21739130434782608" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/listing_image_display.xml" value="0.1328125" />
+        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/listing_slider_layout.xml" value="0.13722826086956522" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/make_offer_layout.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/make_order_layout.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/message_bubble_layout.xml" value="0.4466666666666667" />
+        <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/message_offer_layout.xml" value="0.13333333333333333" />
         <entry key="..\:/Users/Asus/Desktop/ANIMALL/app/src/main/res/layout/single_message_layout.xml" value="0.22" />
         <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/drawable/rounded_corner.xml" value="0.23378378378378378" />
         <entry key="..\:/Users/holye/Desktop/Codes/AndroidStudioProjects/ANIMALL/app/src/main/res/layout/activity_location.xml" value="0.2" />

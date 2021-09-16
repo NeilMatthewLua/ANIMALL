@@ -23,6 +23,9 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private var usernameTv: TextView
     private var productTv: TextView
     private var messageTimeTv: TextView
+    private var messageQuantityTotalTv: TextView
+    private var messageQuantityTv: TextView
+    private var messageNewAmountTv: TextView
     private var messageBtnDecline: Button
     private var messageBtnAccept: Button
     private var messageLinearLayout: LinearLayout
@@ -41,6 +44,9 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         messageOfferCv = itemView.findViewById(R.id.messageOfferCv)
         cardLayout = itemView.findViewById(R.id.cardLayout)
         actionButtonLayout = itemView.findViewById(R.id.actionButtonLayout)
+        messageQuantityTv = itemView.findViewById(R.id.messageQuantityTv)
+        messageNewAmountTv = itemView.findViewById(R.id.messageNewAmountTv)
+        messageQuantityTotalTv = itemView.findViewById(R.id.messageQuantityTotalTv)
     }
 
     fun bindData(m: MessageModel) {
@@ -54,6 +60,16 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         var dateString = sdf3.format(date)
 
         messageTimeTv.text = dateString
+
+        Log.i("MessageOverVHolder", m.quantity.toString())
+        Log.i("MessageOverVHolder", m.offerPrice.toString())
+
+        messageQuantityTv.text = m.quantity.toString()
+        messageNewAmountTv.text = m.offerPrice.toString()
+
+        val total = m.quantity * m.offerPrice
+        messageQuantityTotalTv.text = "Total: ₱${total}"
+
 
         Log.i("MessegeOfferVHolder", "${m.addressed}")
         try {
@@ -117,7 +133,30 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                                 Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
                             }
                             .addOnFailureListener {
-                                Log.i("MessageOfferVHolder", "Failed to recude stock.")
+                                Log.i("MessageOfferVHolder", "Failed to reduce stock.")
+                            }
+
+                        val orderId = UUID.randomUUID().toString()
+
+                        val orderData = hashMapOf(
+                            MyFirebaseReferences.ORDER_ID_FIELD to orderId,
+                            MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD to loggedUser.email,
+                            MyFirebaseReferences.ORDER_LISTING_ID_FIELD to listing!!.listingId,
+                            MyFirebaseReferences.ORDER_LISTING_NAME_FIELD to listing!!.name,
+                            MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD to listing!!.photos[0],
+                            MyFirebaseReferences.ORDER_QUANTITY_FIELD to model.quantity,
+                            MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offer,
+                            MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD to false,
+                        )
+
+                        val orderRef = db!!
+                            .collection(MyFirebaseReferences.ORDERS_COLLECTION)
+                            .document(orderId)
+
+                        orderRef
+                            .set(orderData)
+                            .addOnSuccessListener {
+                                Log.i("MessageOfferVHolder", "Order made")
                             }
                 }
             }
@@ -149,6 +188,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 actionButtonLayout.visibility = View.GONE
                 sendMessage(m, true)
             }
+
         }
         else {
             actionButtonLayout.visibility = View.GONE
