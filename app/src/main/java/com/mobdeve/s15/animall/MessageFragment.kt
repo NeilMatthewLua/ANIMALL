@@ -67,9 +67,11 @@ class MessageFragment : Fragment() {
                     loggedUser = Firebase.auth.currentUser!!
 
                     val getListing = launch (Dispatchers.IO) {
-                        listing = DatabaseManager.getConversationListing(convoModel.id)
+                        listing = DatabaseManager.getListingFromId(viewModel.getListingData().value!!.listingId)
                     }
                     getListing.join()
+
+                    Log.d("MESSAGE FRAGMENT", listing!!.description)
 
                     withContext(Dispatchers.Main){
                         // Hide offer/order buttons if recipient

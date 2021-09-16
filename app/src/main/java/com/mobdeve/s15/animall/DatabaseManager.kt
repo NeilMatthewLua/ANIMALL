@@ -571,4 +571,34 @@ object DatabaseManager {
 
         result
     }
+
+    suspend fun getListingFromId(listingId: String): ListingModel? = coroutineScope {
+        val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
+        var listing: ListingModel? = null
+        try {
+            val listing_doc = listingRef
+                .document(listingId)
+                .get()
+                .await()
+            var photoArray = listing_doc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
+            // Convert to Long
+            var unitPrice = (listing_doc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+
+            listing = ListingModel(
+                listing_doc.id,
+                listing_doc[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
+                listing_doc[MyFirebaseReferences.CATEGORY_FIELD].toString(),
+                listing_doc[MyFirebaseReferences.DESCRIPTION_FIELD].toString(),
+                listing_doc[MyFirebaseReferences.PRODUCT_NAME_FIELD].toString(),
+                listing_doc[MyFirebaseReferences.LOCATION_FIELD].toString(),
+                listing_doc[MyFirebaseReferences.SELLER_FIELD].toString(),
+                listing_doc[MyFirebaseReferences.STOCK_FIELD] as Long,
+                unitPrice as Long,
+                photoArray
+            )
+        } catch (e: Exception) {
+            Log.d("FIREBASE:", "ERROR EDITING LISTING")
+        }
+       listing
+    }
 }
