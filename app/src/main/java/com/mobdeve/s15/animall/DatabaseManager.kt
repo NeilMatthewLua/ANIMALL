@@ -35,10 +35,7 @@ object DatabaseManager {
             val job = listingRef.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).get().await()
             for (document in job.documents) {
                 var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
-                // Convert to Long
-                var unitPrice = document[MyFirebaseReferences.PRICE_FIELD]
-                if (unitPrice is Long)
-                    unitPrice = unitPrice.toDouble()
+                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
                 data.add(ListingModel(
                     document.reference.id,
                     document[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
@@ -48,11 +45,12 @@ object DatabaseManager {
                     document[MyFirebaseReferences.LOCATION_FIELD].toString(),
                     document[MyFirebaseReferences.SELLER_FIELD].toString(),
                     document[MyFirebaseReferences.STOCK_FIELD] as Long,
-                    unitPrice as Double,
+                    unitPrice as Long,
                     photoArray
                 ))
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
         }
 
@@ -97,9 +95,7 @@ object DatabaseManager {
                 if (document["isOpen"] as Boolean) {
                     var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
                     // Convert to Long
-                    var unitPrice = document[MyFirebaseReferences.PRICE_FIELD]
-                    if (unitPrice is Long)
-                        unitPrice = unitPrice.toDouble()
+                    var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
                     // Default distance is max
                     var distanceFromUser: Double = Double.MAX_VALUE
@@ -158,7 +154,7 @@ object DatabaseManager {
                         document[MyFirebaseReferences.LOCATION_FIELD].toString(),
                         document[MyFirebaseReferences.SELLER_FIELD].toString(),
                         document[MyFirebaseReferences.STOCK_FIELD] as Long,
-                        unitPrice as Double,
+                        unitPrice as Long,
                         photoArray,
                         distanceFromUser
                     ))
@@ -284,9 +280,8 @@ object DatabaseManager {
             for (document in job.documents) {
                 var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
                 // Convert to Long
-                var unitPrice = document[MyFirebaseReferences.PRICE_FIELD]
-                if (unitPrice is Long)
-                    unitPrice = unitPrice.toDouble()
+                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+
                 data.add(ListingModel(
                     document.reference.id,
                     document[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
@@ -296,7 +291,7 @@ object DatabaseManager {
                     document[MyFirebaseReferences.LOCATION_FIELD].toString(),
                     document[MyFirebaseReferences.SELLER_FIELD].toString(),
                     document[MyFirebaseReferences.STOCK_FIELD] as Long,
-                    unitPrice as Double,
+                    unitPrice as Long,
                     photoArray
                 ))
             }
@@ -314,9 +309,8 @@ object DatabaseManager {
             val job = orderRef.whereEqualTo(MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
             for (document in job.documents) {
                 // Convert to Long
-                var unitPrice = document[MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD]
-                if (unitPrice is Long)
-                    unitPrice = unitPrice.toDouble()
+                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+
                 data.add(OrderModel(
                     document.reference.id,
                     document[MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD] as String,
@@ -415,9 +409,7 @@ object DatabaseManager {
 
             var photoArray = listing_doc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
             // Convert to Long
-            var unitPrice = listing_doc[MyFirebaseReferences.PRICE_FIELD]
-            if (unitPrice is Long)
-                unitPrice = unitPrice.toDouble()
+            var unitPrice = (listing_doc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
             listing = ListingModel(
                 listing_doc.id,
@@ -428,7 +420,7 @@ object DatabaseManager {
                 listing_doc[MyFirebaseReferences.LOCATION_FIELD].toString(),
                 listing_doc[MyFirebaseReferences.SELLER_FIELD].toString(),
                 listing_doc[MyFirebaseReferences.STOCK_FIELD] as Long,
-                unitPrice as Double,
+                unitPrice as Long,
                 photoArray
             )
         } catch (e: Exception) {

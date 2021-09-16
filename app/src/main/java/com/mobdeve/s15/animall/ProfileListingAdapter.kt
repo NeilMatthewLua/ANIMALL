@@ -62,10 +62,10 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
                         fragment.profileDimBackgroundV.visibility = View.VISIBLE
                         fragment.profilePb.visibility = View.VISIBLE
                         var result = "false"
-                        val closeListing = async(Dispatchers.IO) {
+                        val deleteListing = async(Dispatchers.IO) {
                             result = DatabaseManager.deleteListing(id!!)
                         }
-                        closeListing.await()
+                        deleteListing.await()
                         fragment.profileDimBackgroundV.visibility = View.GONE
                         fragment.profilePb.visibility = View.GONE
                         if (result == "pending_orders") {
@@ -74,7 +74,7 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
                             for (i in 0..data.size) {
                                 var item = data.get(i)
                                 if (item.listingId == id) {
-                                    data.get(i).isOpen = false
+                                    data.removeAt(i)
                                     break
                                 }
                             }

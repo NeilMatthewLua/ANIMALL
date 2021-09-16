@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/messageProductNameTv"
+        android:id="@+id/dialogProductNameTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -46,7 +46,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/messageProductNameTv">
+        app:layout_constraintTop_toBottomOf="@id/dialogProductNameTv">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/minusCountBtn"

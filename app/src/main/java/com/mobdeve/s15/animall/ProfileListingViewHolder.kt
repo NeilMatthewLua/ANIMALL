@@ -32,8 +32,8 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         profileListingPriceTv.text = "₱" + listing.unitPrice.toString()
 
         if (!listing.isOpen) {
-            profileEditListingBtn.visibility = View.INVISIBLE
-            profileCloseListingBtn.visibility = View.INVISIBLE
+            profileEditListingBtn.visibility = View.GONE
+            profileCloseListingBtn.visibility = View.GONE
         }
 
         if (listing.photos.size > 0) {

@@ -9,7 +9,7 @@ class ListingModel(
     val preferredLocation: String,
     val seller: String,
     var stock: Long,
-    val unitPrice: Double,
+    val unitPrice: Long,
     val photos: ArrayList<String>,
     val distanceFromUser: Double = Double.MAX_VALUE
 )

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ class MessageFragment : Fragment() {
     private var db: FirebaseFirestore? = null
 
     private val viewModel: MessageSharedViewModel by activityViewModels()
+    private var listing: ListingModel? = null
     private lateinit var loggedUser: FirebaseUser
     private lateinit var convoModel: ConversationModel
 
@@ -65,6 +68,11 @@ class MessageFragment : Fragment() {
                     convoModel = it
                     loggedUser = Firebase.auth.currentUser!!
 
+                    val getListing = launch (Dispatchers.IO) {
+                        listing = DatabaseManager.getConversationListing(convoModel.id)
+                    }
+                    getListing.join()
+
                     val options: FirestoreRecyclerOptions<MessageModel> =
                         FirestoreRecyclerOptions.Builder<MessageModel>()
                             .setQuery(query, MessageModel::class.java)
@@ -98,6 +106,40 @@ class MessageFragment : Fragment() {
                             }
                         }
 
+                        // Listen to order result
+                        requireActivity().supportFragmentManager
+                            .setFragmentResultListener(CustomOfferDialogFragment.MODAL_ORDER_RESULT, viewLifecycleOwner) { key, bundle ->
+                                val result = bundle.getString(CustomOfferDialogFragment.MODAL_SUCCESS_KEY)
+                                val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
+                                val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
+                                if (result == "ok") {
+                                    lifecycleScope.launch {
+                                        // TODO: replace send order to DB
+                                        val closeListing = async(Dispatchers.IO) {
+//                                            result = DatabaseManager.editListing(id!!, newStock)
+                                        }
+                                        closeListing.await()
+                                    }
+                                }
+                            }
+
+                        // Listen to offer result
+                        requireActivity().supportFragmentManager
+                            .setFragmentResultListener(CustomOfferDialogFragment.MODAL_OFFER_RESULT, viewLifecycleOwner) { key, bundle ->
+                                val result = bundle.getString(CustomOfferDialogFragment.MODAL_SUCCESS_KEY)
+                                val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
+                                val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
+                                if (result == "ok") {
+                                    lifecycleScope.launch {
+                                        // TODO: replace send order to DB
+                                        val closeListing = async(Dispatchers.IO) {
+//                                            result = DatabaseManager.editListing(id!!, newStock)
+                                        }
+                                        closeListing.await()
+                                    }
+                                }
+                            }
+
                         myFirestoreRecyclerAdapter!!.startListening()
                     }
 
@@ -105,6 +147,28 @@ class MessageFragment : Fragment() {
                 convoInit.await()
             }
         })
+        makeOfferBtn.setOnClickListener {
+            val dialog = CustomOfferDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_OFFER)
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
+            args.putLong(CustomOfferDialogFragment.MODAL_LISTING_STOCK_KEY, listing?.stock!!)
+            dialog.arguments = args
+            dialog.show(requireActivity().supportFragmentManager, "Make Offer")
+        }
+
+        makeOrderBtn.setOnClickListener {
+            val dialog = CustomOfferDialogFragment()
+            // optionally pass arguments to the dialog fragment
+            var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_ORDER)
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
+            args.putLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY, listing?.unitPrice!!)
+            args.putLong(CustomOfferDialogFragment.MODAL_LISTING_STOCK_KEY, listing?.stock!!)
+            dialog.arguments = args
+            dialog.show(requireActivity().supportFragmentManager, "Make Order")
+        }
     }
 
     fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean) {
