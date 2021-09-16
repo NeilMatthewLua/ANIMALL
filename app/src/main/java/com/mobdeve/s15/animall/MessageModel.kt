@@ -7,12 +7,22 @@ class MessageModel(
     val convoId: String,
     val timestamp: Date,
     val sender: String,
-    val message: String
+    val message: String,
+    var offer: Boolean,
+    var offerPrice: Int,
+    var quantity: Int,
+    var addressed: Boolean,
+    var id: String
 ) {
     constructor() : this(
         "",
          Date(),
         "",
+        "",
+        false,
+        -1,
+        -1,
+        false,
         ""
     )
 }

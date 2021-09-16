@@ -34,22 +34,20 @@ class ConversationAdapter(
         Log.i("ConvoAdapter", "will be getting their latest messages")
         Log.i("ConvoAdapter", "${model.id}")
 
-//        if (model.id.equals("0")) {
-            Log.i("ConvoAdapter", "getting latest message ${model.id}")
-            fragment.lifecycleScope.launch {
-                val dataGet = async(Dispatchers.IO) {
-                    message = DatabaseManager.getLatestMessage(model.id)!!
-                }
-                dataGet.await()
-
-                holder.bindData(model, message!!)
+        Log.i("ConvoAdapter", "getting latest message ${model.id}")
+        fragment.lifecycleScope.launch {
+            val dataGet = async(Dispatchers.IO) {
+                message = DatabaseManager.getLatestMessage(model.id)!!
             }
-//        }
+            dataGet.await()
 
-        holder.conversationLayout.setOnClickListener {
-            val viewModel : MessageSharedViewModel by fragment.activityViewModels()
-            viewModel.setListingData(model, false)
-            it.findNavController().navigate(R.id.messageFragment)
+            holder.bindData(model, message!!)
+            holder.conversationLayout.setOnClickListener {
+                val viewModel : MessageSharedViewModel by fragment.activityViewModels()
+                viewModel.setListingData(model, false)
+                it.findNavController().navigate(R.id.messageFragment)
+            }
         }
+
     }
 }

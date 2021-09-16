@@ -1,5 +1,6 @@
 package com.mobdeve.s15.animall
 
+import android.graphics.Color
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -35,9 +36,6 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         messageTv.gravity = Gravity.LEFT
         messageTimeTv.gravity = Gravity.LEFT
         messageLinearLayout.gravity = Gravity.LEFT
-
-//        Log.i("L Viewholder", messageTv.text.toString())
-//        Log.i("L ViewHolder this message was set to ", messageTimeTv.gravity.toString())
     }
 
     fun rightAlignText() {
@@ -45,10 +43,8 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         messageTv.gravity = Gravity.RIGHT
         messageTimeTv.gravity = Gravity.RIGHT
         messageLinearLayout.gravity = Gravity.RIGHT
-
-//        Log.i("R Viewholder", messageTv.text.toString())
-//        Log.i("R ViewHolder this message was set to ", messageTimeTv.gravity.toString())
     }
+
 
     init {
         usernameTv = itemView.findViewById(R.id.messageUsernameTv)
