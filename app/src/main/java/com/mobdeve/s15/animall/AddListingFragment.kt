@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -26,7 +25,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -292,32 +290,15 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     // Request permissions if not granted before
     private fun requestPermissions() {
-//        // Requesting Permission to access External Storage
-//        ActivityCompat.requestPermissions(
-//            requireContext(),
-//            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-//            EXTERNAL_STORAGE_PERMISSION_CODE
-//        )
-
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-    private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return true
-        }
-        return false
-    }
-
-//    // What must happen when permission is granted
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if (requestCode == EXTERNAL_STORAGE_PERMISSION_CODE) {
-//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                selectImages()
-//            }
+//    private fun checkPermissions(): Boolean {
+//        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            return true
 //        }
+//        return false
 //    }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -509,15 +490,15 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         Log.i("POSTING", "POSTING")
 
         val listing = hashMapOf(
-            MyFirestoreReferences.CATEGORY_FIELD to categoryId,
-            MyFirestoreReferences.LISTING_IS_OPEN to true,
-            MyFirestoreReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
-            MyFirestoreReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
-            MyFirestoreReferences.LOCATION_FIELD to productLocationActv.text.toString(),
-            MyFirestoreReferences.SELLER_FIELD to currentUser.email,
-            MyFirestoreReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
-            MyFirestoreReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
-            MyFirestoreReferences.PHOTOS_FIELD to photoURLs
+            MyFirebaseReferences.CATEGORY_FIELD to categoryId,
+            MyFirebaseReferences.LISTING_IS_OPEN to true,
+            MyFirebaseReferences.DESCRIPTION_FIELD to productDescriptionEtv.text.toString(),
+            MyFirebaseReferences.PRODUCT_NAME_FIELD to productNameEtv.text.toString(),
+            MyFirebaseReferences.LOCATION_FIELD to productLocationEtv.text.toString(),
+            MyFirebaseReferences.SELLER_FIELD to currentUser.email,
+            MyFirebaseReferences.STOCK_FIELD to productQuantityEtv.text.toString().toInt(),
+            MyFirebaseReferences.PRICE_FIELD to productPriceEtv.text.toString().toDouble(),
+            MyFirebaseReferences.PHOTOS_FIELD to photoURLs
         )
 
         db.collection("listings").document(listingID)

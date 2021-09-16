@@ -33,6 +33,7 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
         if (!listing.isOpen) {
             profileEditListingBtn.visibility = View.INVISIBLE
+            profileCloseListingBtn.visibility = View.INVISIBLE
         }
 
         if (listing.photos.size > 0) {
@@ -93,6 +94,12 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
             dialog.arguments = args
             dialog.show(manager, "Edit Listing")
         }
+    }
+
+    fun hideBtns() {
+        profileDeleteListingBtn.visibility = View.GONE
+        profileCloseListingBtn.visibility = View.GONE
+        profileEditListingBtn.visibility = View.GONE
     }
 
     init {

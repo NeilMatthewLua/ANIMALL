@@ -428,6 +428,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:text="Post Listing"
+            android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"

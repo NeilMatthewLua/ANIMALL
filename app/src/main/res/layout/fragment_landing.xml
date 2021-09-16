@@ -6,29 +6,6 @@
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/landingDimBackgroundV"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#7A000000"
-        android:translationZ="90dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ProgressBar
-        android:id="@+id/landingPb"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/searchBarLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -99,20 +76,40 @@
         android:padding="4dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sortSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBarLayout" />
 
     <Spinner
         android:id="@+id/sortSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
         android:background="@drawable/curved_rectangle"
         android:elevation="10dp"
         android:padding="4dp"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBarLayout" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/loadMoreBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:fontFamily="@font/futura_light_bt"
+        android:text="@string/load_more"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:chipBackgroundColor="@color/primary_green"
+        app:chipEndPadding="8dp"
+        app:chipIcon="@drawable/ic_loading_arrow"
+        app:chipIconSize="20dp"
+        app:chipMinHeight="36dp"
+        app:chipStartPadding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.chip.Chip
         android:id="@+id/clearSelectionChip"
@@ -131,5 +128,28 @@
         app:chipStrokeWidth="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filterSpinner" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/landingDimBackgroundV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#7A000000"
+        android:translationZ="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/landingPb"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
