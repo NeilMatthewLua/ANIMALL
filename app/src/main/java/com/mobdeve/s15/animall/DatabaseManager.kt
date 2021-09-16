@@ -27,6 +27,7 @@ import kotlin.collections.ArrayList
 object DatabaseManager {
     const val TAG = "FIRESTORE"
     val db = Firebase.firestore
+    val LISTING_LIMIT: Long = 5
     val PH_UPPER_LON: Double = 126.537423944
     val PH_UPPER_LAT: Double = 18.5052273625
     val PH_LOWER_LON: Double = 117.17427453
@@ -40,28 +41,26 @@ object DatabaseManager {
         val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         val data = ArrayList<ListingModel>()
         try {
-            val job = listingRef.get().await()
+            val job = listingRef.whereEqualTo(MyFirestoreReferences.LISTING_IS_OPEN, true).limit(LISTING_LIMIT).get().await()
             for (document in job.documents) {
-                if (document["isOpen"] as Boolean) {
-                    var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
-                    // Convert to Long
-                    var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
-                    if (unitPrice is Long)
-                        unitPrice = unitPrice.toDouble()
-                    data.add(ListingModel(
-                        document.reference.id,
-                        true,
-                        document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
-                        document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
-                        document[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
-                        document[MyFirestoreReferences.LOCATION_FIELD].toString(),
-                        document[MyFirestoreReferences.SELLER_FIELD].toString(),
-                        document[MyFirestoreReferences.STOCK_FIELD] as Long,
-                        unitPrice as Double,
-                        photoArray,
-                        document.id
-                    ))
-                }
+                var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
+                // Convert to Long
+                var unitPrice = document[MyFirestoreReferences.PRICE_FIELD]
+                if (unitPrice is Long)
+                    unitPrice = unitPrice.toDouble()
+                data.add(ListingModel(
+                    document.reference.id,
+                    document[MyFirestoreReferences.LISTING_IS_OPEN] as Boolean,
+                    document[MyFirestoreReferences.CATEGORY_FIELD].toString(),
+                    document[MyFirestoreReferences.DESCRIPTION_FIELD].toString(),
+                    document[MyFirestoreReferences.PRODUCT_NAME_FIELD].toString(),
+                    document[MyFirestoreReferences.LOCATION_FIELD].toString(),
+                    document[MyFirestoreReferences.SELLER_FIELD].toString(),
+                    document[MyFirestoreReferences.STOCK_FIELD] as Long,
+                    unitPrice as Double,
+                    photoArray,
+                    document.id
+                ))
             }
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR RETRIEVING LISTINGS")
@@ -70,15 +69,17 @@ object DatabaseManager {
         data
     }
 
-    suspend fun filteredListingData(filterOption: String, sortOption: String, searchOption: String, userCity: String, context: Context): ArrayList<ListingModel> = coroutineScope {
+    suspend fun filteredListingData(filterOption: String, sortOption: String, searchOption: String, userCity: String, context: Context, lastDocId: String = ""): ArrayList<ListingModel> = coroutineScope {
         val listingRef = db.collection(MyFirestoreReferences.LISTINGS_COLLECTION)
         var data = ArrayList<ListingModel>()
         Log.d(TAG, searchOption)
         try {
             var job : Query? = null
+            // Filter options (e.g. category)
             if (filterOption.isNotBlank()) {
                 job = listingRef.whereEqualTo(MyFirestoreReferences.CATEGORY_FIELD, filterOption)
             }
+            // Search options (e.g. search inputs)
             if (searchOption.isNotBlank()) {
                 if (job != null) {
                     job = job.whereGreaterThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption)
@@ -88,10 +89,20 @@ object DatabaseManager {
                                     .whereLessThanOrEqualTo(MyFirestoreReferences.NAME_FIELD, searchOption+"\uF7FF")
                 }
             }
+            // Last doc (when user clicks load more)
+            if (lastDocId.isNotBlank()) {
+                val lastDocSnapshot = listingRef.document(lastDocId).get().await()
+                if (job != null) {
+                    job = job.startAfter(lastDocSnapshot)
+                } else {
+                    job = listingRef.startAfter(lastDocSnapshot)
+                }
+            }
             if (job == null) {
                 job = listingRef
             }
-            val result = job.get().await()
+            // Only get
+            val result = job.whereEqualTo(MyFirestoreReferences.LISTING_IS_OPEN, true).limit(LISTING_LIMIT).get().await()
             for (document in result.documents) {
                 if (document["isOpen"] as Boolean) {
                     var photoArray = document[MyFirestoreReferences.PHOTOS_FIELD] as ArrayList<String>
@@ -100,13 +111,13 @@ object DatabaseManager {
                     if (unitPrice is Long)
                         unitPrice = unitPrice.toDouble()
 
+                    // Default distance is max
                     var distanceFromUser: Double = Double.MAX_VALUE
                     val getLocationDistances = launch (Dispatchers.IO) {
                         var geocoderObj = Geocoder(context)
-//                        var cityNameUser = "$userCity, Philippines"
                         var cityNameUser = userCity
-//                        var cityNameListing = document[MyFirestoreReferences.LOCATION_FIELD] as String + ", Philippines"
                         var cityNameListing = document[MyFirestoreReferences.LOCATION_FIELD] as String
+                        // Get the addresses objects
                         var addressResultUser = geocoderObj.getFromLocationName(
                             cityNameUser,
                             1,
@@ -124,14 +135,16 @@ object DatabaseManager {
                             PH_UPPER_LAT,
                             PH_UPPER_LON
                         )
-//                        Log.d(TAG, addressResultListing.toString())
 
+                        // If address was not found then distance is set to the max value of double
                         if (addressResultUser.size == 0 || addressResultListing.size == 0) {
                             Log.d(TAG, "Address not found")
                         } else {
+                            // Otherwise get the first result from the addresses
                             val locationResultUser = addressResultUser.get(0)
                             val locationResultListing = addressResultListing.get(0)
 
+                            // Convert into location objects to get distance from each other in meters
                             var locationObjUser = Location("User")
                             locationObjUser.latitude = locationResultUser.latitude
                             locationObjUser.longitude = locationResultUser.longitude
@@ -141,12 +154,6 @@ object DatabaseManager {
                             locationObjListing.longitude = locationResultListing.longitude
 
                             distanceFromUser = locationObjUser.distanceTo(locationObjListing).toDouble()
-//                            Log.d(TAG+"DISTANCE:", distanceFromUser.toString())
-//                            latitude = locationResult.latitude
-//                            longitude = locationResult.longitude
-//                            Log.d(TAG, locationResult.featureName)
-//                            Log.d(TAG, latitude.toString())
-//                            Log.d(TAG, longitude.toString())
                         }
                     }
                     // Wait for distances to be computed

@@ -3,18 +3,17 @@ package com.mobdeve.s15.animall
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.coroutines.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LandingFragment : Fragment() {
     val TAG: String = "LANDING FRAGMENT"
@@ -29,6 +28,8 @@ class LandingFragment : Fragment() {
     private var filterChoice: String = ""
     private var searchChoice: String = ""
     private var userCity: String = ""
+    // Bottom navbar
+    lateinit var bottomNav: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +63,7 @@ class LandingFragment : Fragment() {
 
     override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
         super.onViewCreated(itemView, savedInstanceState)
+        bottomNav = requireActivity().findViewById(R.id.bottom_navigatin_view)
         if (hasRetrieved) {
             initializeSpinners()
             landingDimBackgroundV.visibility = View.GONE
@@ -72,17 +74,16 @@ class LandingFragment : Fragment() {
                 searchChoice = searchBoxTv.text.trim().toString()
                 landingDimBackgroundV.visibility = View.VISIBLE
                 landingPb.visibility = View.VISIBLE
+//                bottomNav.visibility = View.INVISIBLE
                 lifecycleScope.launch {
                     val dataInit = async(Dispatchers.IO) {
                         data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
                     }
                     dataInit.await()
 
-                    // Adapter
                     landingAdapter = LandingAdapter(data!!, this@LandingFragment)
                     landingRecyclerView!!.adapter = landingAdapter
                     landingAdapter.notifyDataSetChanged()
-                    hasRetrieved = true
                     landingDimBackgroundV.visibility = View.GONE
                     landingPb.visibility = View.GONE
                 }
@@ -97,6 +98,39 @@ class LandingFragment : Fragment() {
         // Adapter
         landingAdapter = LandingAdapter(data!!, this@LandingFragment)
         landingRecyclerView!!.adapter = landingAdapter
+        // Add a scroll listener to show load more button when at the end
+        landingRecyclerView.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            if (!landingRecyclerView.canScrollVertically(1) && data.size > 0){
+                loadMoreBtn.visibility = View.VISIBLE
+                loadMoreBtn.animate().alpha(1.0f)
+            } else {
+                loadMoreBtn.animate().alpha(0.0f);
+                loadMoreBtn.visibility = View.GONE
+            }
+        }
+
+        loadMoreBtn.setOnClickListener {
+            lifecycleScope.launch {
+                landingDimBackgroundV.visibility = View.VISIBLE
+                landingPb.visibility = View.VISIBLE
+                var newData: ArrayList<ListingModel> = ArrayList()
+                var previousSize : Int = data.size
+                val dataInit = async(Dispatchers.IO) {
+                    var lastDocId = data.get(data.size - 1).listingId
+                    newData = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext(), lastDocId)
+                }
+                dataInit.await()
+                if (newData.size == 0) {
+                    Toast.makeText(requireContext(),"No more listings found.", Toast.LENGTH_LONG).show()
+                } else {
+                    data.addAll(newData)
+                }
+
+                landingAdapter.notifyItemRangeChanged(previousSize, newData.size)
+                landingDimBackgroundV.visibility = View.GONE
+                landingPb.visibility = View.GONE
+            }
+        }
     }
 
     fun initializeSpinners() {
@@ -142,11 +176,9 @@ class LandingFragment : Fragment() {
                         }
                         dataInit.await()
 
-                        // Adapter
                         landingAdapter = LandingAdapter(data!!, this@LandingFragment)
                         landingRecyclerView!!.adapter = landingAdapter
                         landingAdapter.notifyDataSetChanged()
-                        hasRetrieved = true
                         landingDimBackgroundV.visibility = View.GONE
                         landingPb.visibility = View.GONE
                     }
@@ -197,11 +229,9 @@ class LandingFragment : Fragment() {
                         }
                         dataInit.await()
 
-                        // Adapter
                         landingAdapter = LandingAdapter(data!!, this@LandingFragment)
                         landingRecyclerView!!.adapter = landingAdapter
                         landingAdapter.notifyDataSetChanged()
-                        hasRetrieved = true
                         landingDimBackgroundV.visibility = View.GONE
                         landingPb.visibility = View.GONE
                     }

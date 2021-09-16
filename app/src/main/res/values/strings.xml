@@ -46,9 +46,6 @@
     <string name="create_photo">Product Photos</string>
     <string name="create_photo_error">Product photos are required.</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="category_options">
         <item>Filter by:</item>
         <item>Clothing</item>
@@ -75,6 +72,7 @@
         <item>Location: Closer First</item>
     </string-array>
     <string name="sort_clear">Clear selection</string>
+    <string name="load_more">Load More</string>
 
     <string name="search_icon">Search Icon</string>
     <string name="search_hint">Search for a product</string>
@@ -104,12 +102,12 @@
 
     <string name="profile_logout">Logout</string>
     <string name="profile_name">Name</string>
-    <string name="profile_edit_location">EDIT LOCATION</string>
-    <string name="profile_delete_listing">DELETE</string>
-    <string name="profile_edit_listing">EDIT</string>
-    <string name="profile_close_listing">CLOSE</string>
-    <string name="profile_listings">LISTINGS</string>
-    <string name="profile_orders">ORDERS</string>
+    <string name="profile_edit_location">Edit Location</string>
+    <string name="profile_delete_listing">Delete</string>
+    <string name="profile_edit_listing">Edit</string>
+    <string name="profile_close_listing">Close</string>
+    <string name="profile_listings">Listings</string>
+    <string name="profile_orders">Orders</string>
     <string name="profile_confirm_order">Confirm Order</string>
     <string name="profile_order_confirmed">Order Confirmed</string>
     <string name="profile_curr_stock_count">Current stock count: </string>
