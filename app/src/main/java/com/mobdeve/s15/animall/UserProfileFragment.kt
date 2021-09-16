@@ -118,6 +118,8 @@ class UserProfileFragment : Fragment() {
         ActivityResultContracts.StartActivityForResult()) {
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
+//            profileDimBackgroundV.visibility = View.VISIBLE
+//            profilePb.visibility = View.VISIBLE
             val intent = result.data
             val value = intent?.getStringExtra("PREF_LOC")
 
@@ -132,6 +134,15 @@ class UserProfileFragment : Fragment() {
                 }
             }
         }
+//        lifecycleScope.launch {
+//            val loggedUser = Firebase.auth.currentUser
+//            val dataInit = async(Dispatchers.IO) {
+//                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
+//            }
+//            dataInit.await()
+//            profileDimBackgroundV.visibility = View.GONE
+//            profilePb.visibility = View.GONE
+//        }
     }
 
     override fun onCreateView(
