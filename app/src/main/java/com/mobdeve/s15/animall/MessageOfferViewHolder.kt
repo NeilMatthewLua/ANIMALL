@@ -107,7 +107,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
         val message = if (listing!!.stock - model.quantity >= 0)
                             if (accepted) "The $orderOffer has been accepted"
-                            else "The your $orderOffer has been declined"
+                            else "The $orderOffer has been declined"
                       else "The listing quantity has since then been changed. Please try again"
         var messageId = UUID.randomUUID().toString()
 
