@@ -139,6 +139,32 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                         .addOnFailureListener {
                             println("Done Updating")
                         }
+
+                    //Update conversation timestamp
+                    val convoRef = db!!
+                        .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
+                        .document(model.convoId)
+
+                    convoRef
+                        .update(mapOf(
+                            MyFirebaseReferences.CONVO_MESSAGE_FIELD to message,
+                            MyFirebaseReferences.CONVO_LSENDER_FIELD to loggedUser.email,
+                            MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
+                        ))
+                        .addOnSuccessListener {
+                            Log.i(
+                                "DB Updated SUCCESS",
+                                "DocumentSnapshot updated"
+                            )
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(
+                                "DB Error",
+                                "Error updating document",
+                                e
+                            )
+                        }
+
                     if(listing!!.stock - model.quantity >= 0) {
                         //Subtract order from listing stock count
                         if (accepted) {
