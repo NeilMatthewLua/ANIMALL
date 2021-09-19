@@ -104,7 +104,7 @@ class MessageFragment : Fragment() {
                         sendMessageBtn.setOnClickListener { view ->
                             Log.i("Messages", "sending a message ON 1")
                             if (messageEtv!!.text.toString().isNotEmpty()) {
-                                sendMessage(it, viewModel.getIsFirst(), false, -1, -1)
+                                sendMessage(it, viewModel.getIsFirst(), false, false,-1, -1)
                             }
                         }
 //                        sendMessageBtn2.setOnClickListener { view ->
@@ -121,7 +121,7 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-                                    sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
+                                    sendMessage(it, viewModel.getIsFirst(), true, true, listingPrice, quantityOrdered)
                                 }
                             }
 
@@ -132,7 +132,7 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-                                    sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
+                                    sendMessage(it, viewModel.getIsFirst(), true, false, listingPrice, quantityOrdered)
                                 }
                             }
 
@@ -167,7 +167,7 @@ class MessageFragment : Fragment() {
         }
     }
 
-    fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean, price: Long, quantity: Long) {
+    fun sendMessage(convo: ConversationModel, isFirst: Boolean, offer: Boolean, order: Boolean, price: Long, quantity: Long) {
         val message = messageEtv!!.text.toString()
         val messageId = UUID.randomUUID().toString()
         val timeNow = Date()
@@ -204,7 +204,7 @@ class MessageFragment : Fragment() {
             MyFirebaseReferences.MESSAGE_CONVO_FIELD to convo.id,
             MyFirebaseReferences.MESSAGE_SENDER_FIELD to loggedUser.email,
             MyFirebaseReferences.MESSAGE_CONVO_FIELD to convoModel.id,
-            MyFirebaseReferences.MESSAGE_FIELD to if (offer) "New Order/Offer" else message,
+            MyFirebaseReferences.MESSAGE_FIELD to if (offer) if (order) "New Order" else "New Offer" else message,
             MyFirebaseReferences.TIME_FIELD to timeNow,
             MyFirebaseReferences.MESSAGE_OFFER_FIELD to offer,
             MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD to if (offer) quantity else -1,
