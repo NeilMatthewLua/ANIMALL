@@ -525,11 +525,12 @@ object DatabaseManager {
     suspend fun deleteListing(listingId: String): String = coroutineScope {
         val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
         val orderRef = db.collection(MyFirebaseReferences.ORDERS_COLLECTION)
+        val convoRef = db.collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
         var result = "false"
         try {
             val pendingOrders = orderRef
-                .whereEqualTo("listingId", listingId)
-                .whereEqualTo("isConfirmed", false)
+                .whereEqualTo(MyFirebaseReferences.ORDER_ID_FIELD, listingId)
+                .whereEqualTo(MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD, false)
                 .get()
                 .await()
             if (pendingOrders.documents.size == 0) {
@@ -541,6 +542,14 @@ object DatabaseManager {
                         result = "true"
                     }
                     .await()
+                val deleteConversation = convoRef
+                                    .whereEqualTo(MyFirebaseReferences.LISTING_ID_FIELD, listingId)
+                                    .get()
+                                    .await()
+
+                for (document in deleteConversation.documents) {
+                    document.reference.delete().await()
+                }
             } else if (pendingOrders.documents.size > 0) {
                 result = "pending_orders"
                 Log.d(TAG, "FAILED TO DELETE LISTING WITH PENDING ORDER")
