@@ -45,11 +45,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
     private var address: String = "Manila, Metro Manila"
     private lateinit var cities: Array<String>
 
-    companion object {
-        const val PERMISSION_ID = 42
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set the layout file as the content view.
@@ -256,5 +251,9 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 getLastLocation()
             }
         }
+    }
+
+    companion object {
+        const val PERMISSION_ID = 42
     }
 }

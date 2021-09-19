@@ -45,8 +45,6 @@ import kotlin.collections.ArrayList
 
 
 class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
-    val TAG = "ADD LISTING ACTIVTY"
-
     // Image tryouts
     private lateinit var sliderView: SliderView
     private lateinit var sliderAdapter: SliderAdapter
@@ -515,5 +513,9 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 listingProcessPb.visibility = View.GONE
                 listingDimBackgroundV.visibility = View.GONE
             }
+    }
+
+    companion object {
+        const val TAG = "ADD LISTING ACTIVITY"
     }
 }

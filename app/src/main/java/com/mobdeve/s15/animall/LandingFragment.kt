@@ -16,7 +16,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class LandingFragment : Fragment() {
-    val TAG: String = "LANDING FRAGMENT"
     var data: ArrayList<ListingModel> = ArrayList<ListingModel>()
     var hasRetrieved: Boolean = false
     // RecyclerView components
@@ -250,5 +249,9 @@ class LandingFragment : Fragment() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG: String = "LANDING FRAGMENT"
     }
 }

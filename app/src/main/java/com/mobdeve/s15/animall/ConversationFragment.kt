@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ConversationFragment : Fragment() {
-    val TAG: String = "CONVERSATION FRAGMENT"
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
     var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
@@ -110,5 +109,9 @@ class ConversationFragment : Fragment() {
         // We want to eventually stop the listening when we're about to exit an app as we don't need
         // something listening all the time in the background.
         myFirestoreRecyclerAdapter!!.stopListening()
+    }
+
+    companion object {
+        const val TAG: String = "CONVERSATION FRAGMENT"
     }
 }

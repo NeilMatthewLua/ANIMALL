@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ViewListingFragment : Fragment() {
-    val TAG = "ViewListingActivity"
     private val viewModel: ListingSharedViewModel by activityViewModels()
     lateinit var sliderView: SliderView
     lateinit var adapterListing: ListingSliderAdapter
@@ -145,6 +144,9 @@ class ViewListingFragment : Fragment() {
             }
 
         })
+    }
 
+    companion object {
+        const val TAG = "ViewListingActivity"
     }
 }

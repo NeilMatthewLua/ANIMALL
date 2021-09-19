@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class UserProfileFragment : Fragment() {
-    val TAG: String = "USER PROFILE"
     // Db data
     var listingData: ArrayList<ListingModel> = ArrayList<ListingModel>()
     var orderData: ArrayList<OrderModel> = ArrayList<OrderModel>()
@@ -188,6 +187,7 @@ class UserProfileFragment : Fragment() {
     }
 
     companion object {
-        val SELLER_EMAIL = "sellerEmail"
+        const val SELLER_EMAIL = "sellerEmail"
+        const val TAG: String = "USER PROFILE"
     }
 }

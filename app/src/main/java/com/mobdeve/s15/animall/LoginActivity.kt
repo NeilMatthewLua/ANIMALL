@@ -27,10 +27,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var signInBtn: Button
-    companion object {
-//        const val RC_SIGN_IN = 9001
-        const val TAG ="LGNACT"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,5 +162,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG ="Login Activity"
     }
 }
