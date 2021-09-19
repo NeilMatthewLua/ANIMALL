@@ -534,22 +534,22 @@ object DatabaseManager {
                 .get()
                 .await()
             if (pendingOrders.documents.size == 0) {
-                val job = listingRef
-                    .document(listingId)
-                    .delete()
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Listing deleted")
-                        result = "true"
-                    }
-                    .await()
-                val deleteConversation = convoRef
-                                    .whereEqualTo(MyFirebaseReferences.LISTING_ID_FIELD, listingId)
-                                    .get()
-                                    .await()
+                val job = launch (Dispatchers.IO) {
+                     listingRef
+                        .document(listingId)
+                        .delete()
+                        .await()
+                    val deleteConversation = convoRef
+                        .whereEqualTo(MyFirebaseReferences.LISTING_ID_FIELD, listingId)
+                        .get()
+                        .await()
 
-                for (document in deleteConversation.documents) {
-                    document.reference.delete().await()
+                    for (document in deleteConversation.documents) {
+                        document.reference.delete().await()
+                    }
                 }
+                job.join()
+                result = "true"
             } else if (pendingOrders.documents.size > 0) {
                 result = "pending_orders"
                 Log.d(TAG, "FAILED TO DELETE LISTING WITH PENDING ORDER")
