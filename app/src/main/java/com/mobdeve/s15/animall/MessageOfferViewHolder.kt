@@ -25,6 +25,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private var messageTimeTv: TextView
     private var messageQuantityTotalTv: TextView
     private var messageQuantityTv: TextView
+    private var messageMessageTv: TextView
     private var messageNewAmountTv: TextView
     private var messageBtnDecline: Button
     private var messageBtnAccept: Button
@@ -47,6 +48,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         messageQuantityTv = itemView.findViewById(R.id.messageQuantityTv)
         messageNewAmountTv = itemView.findViewById(R.id.messageNewAmountTv)
         messageQuantityTotalTv = itemView.findViewById(R.id.messageQuantityTotalTv)
+        messageMessageTv = itemView.findViewById(R.id.messageMessageTv)
     }
 
     fun bindData(m: MessageModel) {
@@ -80,6 +82,13 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 job.await()
                 println(listing!!.name)
                 productTv.text = listing!!.name
+
+                if (listing!!.unitPrice != m.offerPrice) {
+                    messageMessageTv.text = "New Offer"
+                }
+                else {
+                    messageMessageTv.text = "New Order"
+                }
             }
         } catch (e: Exception) {
             Log.d("MessageOfferVHolder:", "ERROR RETRIEVING LISTING")

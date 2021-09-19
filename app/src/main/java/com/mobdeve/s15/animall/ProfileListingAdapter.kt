@@ -125,7 +125,7 @@ class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private v
 
     override fun onBindViewHolder(holder: ProfileListingViewHolder, position: Int) {
         holder.bindData(data[position])
-        // TODO: Attach onclick listener to navigate to corresponding listing
+
         holder.setCloseBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
         holder.setDeleteBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
         holder.setEditBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)

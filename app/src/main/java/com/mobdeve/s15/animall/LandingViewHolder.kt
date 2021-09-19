@@ -27,7 +27,6 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var productCategoryChip: Chip
     var productImageIv: ImageView
 
-    // TODO: Update this when hooking to db, also add in linking to listing page when clicked
     fun bindData(listing: ListingModel) {
         listingData = listing
         productNameTv.text = listing.name

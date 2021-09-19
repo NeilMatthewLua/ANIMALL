@@ -54,7 +54,6 @@ class MessageFragment : Fragment() {
                     Log.d("MessageFragment ", it.listingName)
                     db = DatabaseManager.getInstance()
 
-                    //TODO Get ConvoID From viewHolder,for now we query it here
                     val query = db!!
                         .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                         .whereEqualTo(
@@ -122,13 +121,6 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-//                                    lifecycleScope.launch {
-//                                        // TODO: replace send order to DB
-//                                        val closeListing = async(Dispatchers.IO) {
-////                                            result = DatabaseManager.editListing(id!!, newStock)
-//                                        }
-//                                        closeListing.await()
-//                                    }
                                     sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
                                 }
                             }
@@ -140,13 +132,6 @@ class MessageFragment : Fragment() {
                                 val listingPrice = bundle.getLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY)
                                 val quantityOrdered = bundle.getLong(CustomOfferDialogFragment.MODAL_QUANTITY_ORDERED_KEY)
                                 if (result == "ok") {
-//                                    lifecycleScope.launch {
-//                                        // TODO: replace send order to DB
-//                                        val closeListing = async(Dispatchers.IO) {
-////                                            result = DatabaseManager.editListing(id!!, newStock)
-//                                        }
-//                                        closeListing.await()
-//                                    }
                                     sendMessage(it, viewModel.getIsFirst(), true, listingPrice, quantityOrdered)
                                 }
                             }

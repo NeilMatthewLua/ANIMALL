@@ -140,7 +140,6 @@ class LandingFragment : Fragment() {
 
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // TODO: update the listings
                 if (position != 0) {
                     clearSelectionChip.visibility = View.VISIBLE
                     filterChoice = filterOptions.get(position)
@@ -196,10 +195,8 @@ class LandingFragment : Fragment() {
 
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // TODO: update the listings
                 if (position != 0) {
                     clearSelectionChip.visibility = View.VISIBLE
-                    // TODO CHANGE TO REFERENCES
                     sortChoice = sortOptions.get(position)
                     landingDimBackgroundV.visibility = View.VISIBLE
                     landingPb.visibility = View.VISIBLE
