@@ -8,7 +8,6 @@ import com.squareup.picasso.Picasso
 
 class ListingSliderViewHolder(itemView: View, context: Context) : SliderViewAdapter.ViewHolder(itemView)  {
     private val imageViewBackground: ImageView = itemView.findViewById(R.id.imageView3)
-    private var context:Context = context
 
     fun bindData(sliderItem: String) {
         Picasso.get().

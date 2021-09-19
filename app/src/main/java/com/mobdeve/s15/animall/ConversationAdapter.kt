@@ -23,8 +23,6 @@ class ConversationAdapter(
     }
 
     override fun onBindViewHolder(holder: ConversationViewHolder, position: Int, model: ConversationModel) {
-        var message: MessageModel? = null
-
         Log.i("ConvoAdapter", "will be getting their latest messages")
         Log.i("ConvoAdapter", "${model.id}")
 

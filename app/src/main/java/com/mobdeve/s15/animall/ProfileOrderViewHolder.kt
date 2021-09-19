@@ -21,7 +21,6 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var profileOrderConfirmedTv: TextView
     var receivedOrderBtn: Button
     var profileOrderId: String = ""
-    val USER_PROFILE_FRAGMENT = 1
 
     fun bindData(order: OrderModel) {
         orderData = order

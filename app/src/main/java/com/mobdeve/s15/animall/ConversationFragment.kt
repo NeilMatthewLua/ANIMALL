@@ -24,11 +24,8 @@ import java.util.*
 
 class ConversationFragment : Fragment() {
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
-    var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
 
-    // RecyclerView components
-    lateinit var myAdapter: ConversationAdapter
     // Replacement of the base adapter view
     private lateinit var myFirestoreRecyclerAdapter: ConversationAdapter
 

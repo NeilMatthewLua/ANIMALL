@@ -67,10 +67,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     lateinit var currentUser: UserModel
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var gcd: Geocoder
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setup database
@@ -82,9 +78,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         status = ArrayList()
         byteArrayUpload = ArrayList()
         photoURLs = ArrayList()
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        gcd = Geocoder(requireContext())
     }
 
     @SuppressLint("MissingPermission")

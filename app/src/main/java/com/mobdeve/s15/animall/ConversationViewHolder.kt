@@ -18,7 +18,6 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var conversationMessageTv: TextView
     var conversationTimeTv: TextView
     var conversationImageIv: ImageView
-//    var message: MessageModel? = null
 
 //    fun bindData(conversation: ConversationModel, message: MessageModel) {
     fun bindData(conversation: ConversationModel) {

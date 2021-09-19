@@ -9,7 +9,6 @@ import com.smarteist.autoimageslider.SliderViewAdapter
 class SliderViewHolder(itemView: View, context: Context) : SliderViewAdapter.ViewHolder(itemView)  {
     private val imageViewBackground: ImageView = itemView.findViewById(R.id.productImageIv)
     private val deleteBtn: Button = itemView.findViewById(R.id.deleteBtn)
-//    private var context: Context = context
 
     fun bindData(sliderItem: Listing) {
 //        imageViewBackground.setImageURI(sliderItem.imageURI)

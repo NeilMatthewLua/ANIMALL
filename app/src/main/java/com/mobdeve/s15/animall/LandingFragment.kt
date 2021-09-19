@@ -16,7 +16,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class LandingFragment : Fragment() {
-    var data: ArrayList<ListingModel> = ArrayList<ListingModel>()
+    var data: ArrayList<ListingModel> = ArrayList()
     var hasRetrieved: Boolean = false
     // RecyclerView components
     lateinit var landingAdapter: LandingAdapter
