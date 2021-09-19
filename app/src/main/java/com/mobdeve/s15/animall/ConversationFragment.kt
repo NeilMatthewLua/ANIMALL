@@ -40,7 +40,6 @@ class ConversationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater
             .inflate(R.layout.fragment_messages, container, false)
     }
@@ -103,8 +102,6 @@ class ConversationFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        // We want to eventually stop the listening when we're about to exit an app as we don't need
-        // something listening all the time in the background.
         myFirestoreRecyclerAdapter!!.stopListening()
     }
 

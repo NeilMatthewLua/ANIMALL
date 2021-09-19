@@ -100,15 +100,14 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             builder.setTitle(R.string.location_dialog_title)
             val str = "Your selected location is $address.\nPlease confirm your selection."
             builder.setMessage(str)
-//            builder.setIcon(android.R.drawable.ic_dialog_alert)
 
-            builder.setPositiveButton("Confirm"){ _, _ ->
+            builder.setPositiveButton("Confirm") { _, _ ->
                 val returnIntent = Intent()
                 returnIntent.putExtra("PREF_LOC", address)
                 setResult(Activity.RESULT_OK, returnIntent)
                 finish()
             }
-            builder.setNeutralButton("Cancel"){ _, _ -> }
+            builder.setNeutralButton("Cancel") { _, _ -> }
 
             val alertDialog: AlertDialog = builder.create()
             alertDialog.setCancelable(false)
@@ -137,7 +136,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         locationSearchActv.setText(address)
     }
 
-    private fun setAddressString (currentLocation: LatLng) {
+    private fun setAddressString(currentLocation: LatLng) {
         val list = gcd.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1)
         if (list.size > 0) {
             address = when {
@@ -153,7 +152,11 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             if (list[0].countryName != "Philippines") {
-                Toast.makeText(this, "This service is only available for users in the Philippines.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "This service is only available for users in the Philippines.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             locationSearchActv.setText(address, false)
@@ -188,8 +191,7 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // Get current location, if shifted
-    // from previous location
+    // Get current location, if shifted from previous location
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         val mLocationRequest = LocationRequest()
@@ -205,7 +207,6 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
-    // If current location could not be located, use last location
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation: Location = locationResult.lastLocation
@@ -214,36 +215,45 @@ class LocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // function to check if GPS is on
     private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
     }
 
-    // Check if location permissions are
-    // granted to the application
     private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             return true
         }
         return false
     }
 
-    // Request permissions if not granted before
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_ID
         )
     }
 
-    // What must happen when permission is granted
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == PERMISSION_ID) {

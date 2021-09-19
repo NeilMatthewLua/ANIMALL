@@ -10,7 +10,7 @@ class ListingSliderAdapter(context: Context) :
     SliderViewAdapter<ListingSliderViewHolder>() {
 
     private var mSliderItems: MutableList<String> = ArrayList()
-    private var context:Context = context
+    private var context: Context = context
 
     fun renewItems(sliderItems: MutableList<String>) {
         mSliderItems = sliderItems
@@ -37,13 +37,6 @@ class ListingSliderAdapter(context: Context) :
     override fun onBindViewHolder(viewHolder: ListingSliderViewHolder, position: Int) {
         val sliderItem: String = mSliderItems[position]
         viewHolder.bindData(sliderItem)
-//        viewHolder.textViewDescription.setText(sliderItem.getDescription())
-//        viewHolder.textViewDescription.textSize = 16f
-//        viewHolder.textViewDescription.setTextColor(Color.WHITE)
-//        Glide.with(viewHolder.itemView)
-//            .load(sliderItem.getImageUrl)
-//            .fitCenter()
-//            .into(viewHolder.imageViewBackground)
     }
 
     override fun getCount(): Int {

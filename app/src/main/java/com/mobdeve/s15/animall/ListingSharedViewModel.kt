@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ListingSharedViewModel : ViewModel() {
-    var listingData : MutableLiveData<ListingModel> = MutableLiveData()
+    var listingData: MutableLiveData<ListingModel> = MutableLiveData()
 
     fun setListingData(data: ListingModel) {
         listingData.value = data
     }
 
-    fun getListingData() : LiveData<ListingModel> {
+    fun getListingData(): LiveData<ListingModel> {
         return listingData
     }
 

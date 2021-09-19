@@ -33,11 +33,9 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         productCategoryChip.text = listing.category
 
         if (listing.photos.size > 0) {
-//            productImageIv.scaleType = ImageView.ScaleType.FIT_CENTER
-            Picasso.get().
-            load(listing.photos[0])
+            Picasso.get().load(listing.photos[0])
                 .error(R.drawable.ic_error)
-                .placeholder( R.drawable.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .into(productImageIv, object : Callback {
                     override fun onSuccess() {
                         productImageIv.scaleType = ImageView.ScaleType.CENTER_CROP
@@ -46,8 +44,7 @@ class LandingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                     override fun onError(e: Exception?) {
                         Log.d(LANDING_VIEW_HOLDER_TAG, "Error in loading image")
                     }
-                });
-//            productImageIv.scaleType = ImageView.ScaleType.CENTER_CROP
+                })
             // Create rounded bottom image
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val curveRadius = 20F

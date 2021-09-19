@@ -55,11 +55,14 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
     fun setCloseBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
-        profileCloseListingBtn.setOnClickListener{
+        profileCloseListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
-            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_CLOSE)
+            args.putString(
+                CustomDialogFragment.MODAL_TYPE_KEY,
+                CustomDialogFragment.MODAL_LISTING_CLOSE
+            )
             args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
             args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
             dialog.arguments = args
@@ -68,11 +71,14 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
     fun setDeleteBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
-        profileDeleteListingBtn.setOnClickListener{
+        profileDeleteListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
-            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_DELETE)
+            args.putString(
+                CustomDialogFragment.MODAL_TYPE_KEY,
+                CustomDialogFragment.MODAL_LISTING_DELETE
+            )
             args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
             args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
             dialog.arguments = args
@@ -81,11 +87,14 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     }
 
     fun setEditBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
-        profileEditListingBtn.setOnClickListener{
+        profileEditListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
-            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_LISTING_EDIT)
+            args.putString(
+                CustomDialogFragment.MODAL_TYPE_KEY,
+                CustomDialogFragment.MODAL_LISTING_EDIT
+            )
             args.putString(CustomDialogFragment.MODAL_LISTING_ID_KEY, listingData.listingId)
             args.putString(CustomDialogFragment.MODAL_LISTING_NAME_KEY, listingData.name)
             args.putLong(CustomDialogFragment.MODAL_LISTING_STOCK_KEY, listingData.stock)

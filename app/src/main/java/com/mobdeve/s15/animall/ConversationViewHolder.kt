@@ -19,7 +19,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var conversationTimeTv: TextView
     var conversationImageIv: ImageView
 
-//    fun bindData(conversation: ConversationModel, message: MessageModel) {
+    //    fun bindData(conversation: ConversationModel, message: MessageModel) {
     fun bindData(conversation: ConversationModel) {
         if (conversation.listingPhoto != null) {
             Picasso.get().load(conversation.listingPhoto)
@@ -29,27 +29,23 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
         Log.i("ConvoVHolder", "${conversation == null}")
         conversationNameTv.text = conversation.listingName
-//        if (message != null){
-//            Log.i("ConvoVHolder", message!!.message)
+        var date = conversation.timestamp
 
-            var date = conversation.timestamp
+        val sdf3: SimpleDateFormat =
+            SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
+        sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
-            val sdf3: SimpleDateFormat =
-                SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
-            sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
+        var dateString = sdf3.format(date)
 
-            var dateString = sdf3.format(date)
+        conversationTimeTv.text = dateString
 
-            conversationTimeTv.text = dateString
-
-            val loggedUser = Firebase.auth.currentUser!!
-            if(conversation.latestSender == loggedUser.email) {
-                conversationMessageTv.text = "You: ${conversation.latestMessage}"
-            }
-            else {
-                conversationMessageTv.text = "${conversation.latestSender}: ${conversation.latestMessage}"
-            }
-//        }
+        val loggedUser = Firebase.auth.currentUser!!
+        if (conversation.latestSender == loggedUser.email) {
+            conversationMessageTv.text = "You: ${conversation.latestMessage}"
+        } else {
+            conversationMessageTv.text =
+                "${conversation.latestSender}: ${conversation.latestMessage}"
+        }
     }
 
     init {

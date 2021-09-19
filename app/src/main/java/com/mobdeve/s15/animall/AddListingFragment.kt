@@ -7,7 +7,6 @@ import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -83,8 +82,9 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
 
         // Set up cancel button
-        dialogCancelBtn.setOnClickListener{
-            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+        dialogCancelBtn.setOnClickListener {
+            (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId =
+                R.id.landingFragment
         }
         lifecycleScope.launch {
             val loggedUser = Firebase.auth.currentUser
@@ -94,16 +94,18 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             dataInit.await()
 
             // Set up add listing
-            addListingBtn.setOnClickListener{
+            addListingBtn.setOnClickListener {
                 var valid: Boolean = validateInformation()
 
                 Log.i("Valid: ", valid.toString())
 
-                if(valid) {
+                if (valid) {
                     listingDimBackgroundV.visibility = View.VISIBLE
                     listingProcessPb.visibility = View.VISIBLE
-                    getActivity()?.getWindow()?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    getActivity()?.getWindow()?.setFlags(
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                    );
                     uploadPhotos()
                     Log.i(TAG, "Files Uploaded!")
                 }
@@ -112,7 +114,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             // Photo upload button
             productUploadBtn.setOnClickListener {
-    //            selectImages()
+                //            selectImages()
                 requestPermissions()
             }
 
@@ -128,7 +130,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             sliderView.indicatorUnselectedColor = Color.GRAY
 
             val cityData = CityDataHelper.initializeCityData()
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, cityData)
+            val adapter =
+                ArrayAdapter(requireContext(), android.R.layout.select_dialog_item, cityData)
 
             productLocationActv.setAdapter(adapter)
             productLocationActv.threshold = 1
@@ -136,7 +139,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             productLocationActv.setText(currentUser.preferredLocation, false)
 
             productLocationActv.setOnItemClickListener { parent, _, _, _ ->
-                val imm: InputMethodManager = requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm: InputMethodManager =
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(parent.applicationWindowToken, 0)
             }
         }
@@ -182,80 +186,63 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         //XML Rule: Input must be <= 30 characters
         //Validation Rule: Not empty
-        if(TextUtils.isEmpty(productNameEtv.text.toString())) {
+        if (TextUtils.isEmpty(productNameEtv.text.toString())) {
             productNameErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else {
+        } else {
             productNameErrorTv.visibility = View.GONE
         }
 
         //XML Rule: Input must be a positive numberDecimal
         //Validation Rule: Not empty and <= 100,000
-        if(TextUtils.isEmpty(productPriceEtv.text.toString())) {
+        if (TextUtils.isEmpty(productPriceEtv.text.toString())) {
             productPriceErrorTv.text = "Product price is required."
             productPriceErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else if (productQuantityEtv.text.toString().toDouble() < 1) {
+        } else if (productQuantityEtv.text.toString().toDouble() < 1) {
             productPriceErrorTv.text = "Product price must not be less that 1."
             productPriceErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else if (productPriceEtv.text.toString().toDouble() > 100000) {
+        } else if (productPriceEtv.text.toString().toDouble() > 100000) {
             productPriceErrorTv.text = "Product price must not exceed 100,000."
             productPriceErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else {
+        } else {
             productPriceErrorTv.visibility = View.GONE
         }
 
         //XML Rule: Input must be a positive number (Integer)
         //Validation Rule: Not empty and <= 1,000
-        if(TextUtils.isEmpty(productQuantityEtv.text.toString())) {
+        if (TextUtils.isEmpty(productQuantityEtv.text.toString())) {
             productQuantityErrorTv.text = "Product quantity is required."
             productQuantityErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else if (productQuantityEtv.text.toString().toInt() < 1) {
+        } else if (productQuantityEtv.text.toString().toInt() < 1) {
             productQuantityErrorTv.text = "Product quantity must not be less that 1."
             productQuantityErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else if (productQuantityEtv.text.toString().toInt() > 1000) {
+        } else if (productQuantityEtv.text.toString().toInt() > 1000) {
             productQuantityErrorTv.text = "Product quantity must not exceed 1,000."
             productQuantityErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else {
+        } else {
             productQuantityErrorTv.visibility = View.GONE
         }
-//        //Category will always have a preset value on dropdown so cannot be empty
-//        if(TextUtils.isEmpty(productCategorySp.selectedItem.toString())) {
-//            productCategoryErrorTv.visibility = View.VISIBLE
-//            invalid += 1
-//        }
-//        else {
-//            productCategoryErrorTv.visibility = View.GONE
-//        }
 
         //XML Rule: Input must be <= 200 characters
         //Validation Rule: Not empty
-        if(TextUtils.isEmpty(productDescriptionEtv.text.toString())) {
+        if (TextUtils.isEmpty(productDescriptionEtv.text.toString())) {
             productDescriptionErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else {
+        } else {
             productDescriptionErrorTv.visibility = View.GONE
         }
 
         //Validation Rule: Not empty
-        if(byteArrayUpload.size < 1) {
+        if (byteArrayUpload.size < 1) {
             productUploadErrorTv.visibility = View.VISIBLE
             invalid += 1
-        }
-        else {
+        } else {
             productUploadErrorTv.visibility = View.GONE
         }
 
@@ -280,14 +267,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-//    private fun checkPermissions(): Boolean {
-//        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            return true
-//        }
-//        return false
-//    }
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -299,68 +278,68 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private fun selectImages() {
         val intent = Intent()
         intent.type = "image/*"
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         intent.action = Intent.ACTION_GET_CONTENT
 
-        fileUploadLauncher.launch(Intent.createChooser(
-            intent,
-            "Please Select Multiple Files"
-        ))
+        fileUploadLauncher.launch(
+            Intent.createChooser(
+                intent,
+                "Please Select Multiple Files"
+            )
+        )
     }
 
-    var fileUploadLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            mSliderItems.clear()
-            status.clear()
-            var validUpload = true
-            byteArrayUpload = ArrayList<ByteArray>()
+    var fileUploadLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                mSliderItems.clear()
+                status.clear()
+                var validUpload = true
+                byteArrayUpload = ArrayList<ByteArray>()
 
-            if (result.data!!.clipData != null) {
-                Log.i("Total Items:", "${result.data!!.clipData!!.itemCount}")
+                if (result.data!!.clipData != null) {
+                    Log.i("Total Items:", "${result.data!!.clipData!!.itemCount}")
 
-                if (result.data!!.clipData!!.itemCount < 6) {
-                    for (i in 0 until result.data!!.clipData!!.itemCount) {
-                        val fileuri = result.data!!.clipData!!.getItemAt(i).uri
-                        val filename: String = getfilenamefromuri(fileuri)
-                        files.add(filename)
-                        status.add("loading")
-                        val bitImage = checkUpload(filename, fileuri)
+                    if (result.data!!.clipData!!.itemCount < 6) {
+                        for (i in 0 until result.data!!.clipData!!.itemCount) {
+                            val fileuri = result.data!!.clipData!!.getItemAt(i).uri
+                            val filename: String = getfilenamefromuri(fileuri)
+                            files.add(filename)
+                            status.add("loading")
+                            val bitImage = checkUpload(filename, fileuri)
 
-                        if(bitImage != null) {
-                            mSliderItems.add(Listing(filename, fileuri, bitImage))
+                            if (bitImage != null) {
+                                mSliderItems.add(Listing(filename, fileuri, bitImage))
+                            }
                         }
+                    } else {
+                        productUploadErrorTv.text = "Only a maximum of 5 images are allowed"
+                        productUploadErrorTv.visibility = View.VISIBLE
+                        validUpload = false
                     }
                 }
+                // One Image
                 else {
-                    productUploadErrorTv.text = "Only a maximum of 5 images are allowed"
-                    productUploadErrorTv.visibility = View.VISIBLE
-                    validUpload = false
-                }
-            }
-            // One Image
-            else {
-                val single_fileuri = result.data!!.data
-                val filename: String = getfilenamefromuri(single_fileuri!!)
-                files.add(filename)
-                status.add("loading")
-                val bitImage = checkUpload(filename, single_fileuri)
+                    val single_fileuri = result.data!!.data
+                    val filename: String = getfilenamefromuri(single_fileuri!!)
+                    files.add(filename)
+                    status.add("loading")
+                    val bitImage = checkUpload(filename, single_fileuri)
 
-                if(bitImage != null) {
-                    mSliderItems.add(Listing(filename, single_fileuri, bitImage))
+                    if (bitImage != null) {
+                        mSliderItems.add(Listing(filename, single_fileuri, bitImage))
+                    }
                 }
-            }
 
-            if(validUpload) {
-                productUploadErrorTv.visibility = View.GONE
-                sliderAdapter.renewItems(mSliderItems)
-                imageSliderCv.visibility = View.VISIBLE
-            }
-            else {
-                imageSliderCv.visibility = View.GONE
+                if (validUpload) {
+                    productUploadErrorTv.visibility = View.GONE
+                    sliderAdapter.renewItems(mSliderItems)
+                    imageSliderCv.visibility = View.VISIBLE
+                } else {
+                    imageSliderCv.visibility = View.GONE
+                }
             }
         }
-    }
 
     fun getfilenamefromuri(filepath: Uri): String {
         var result: String? = null
@@ -384,7 +363,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         return result
     }
 
-    private fun checkUpload(filename:String, fileuri: Uri): Bitmap? {
+    private fun checkUpload(filename: String, fileuri: Uri): Bitmap? {
         //Calculate size of images
         val fullBitmap =
             MediaStore.Images.Media.getBitmap(activity?.contentResolver, fileuri)
@@ -397,9 +376,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         // if file uploaded is more than 1Mb
         if (lengthbmp > 1024) {
-            // Downsizing image
-            // +500 fattie: https://stackoverflow.com/questions/18573774/how-to-reduce-an-image-file-size-before-uploading-to-a-server
-            // https://stackoverflow.com/questions/40885860/how-to-save-bitmap-to-firebase/40886397#40886397
             try {
                 Log.i("IMAGE fullWidth: ", "${fullBitmap.width}")
                 Log.i("IMAGE fullHeight: ", "${fullBitmap.height}")
@@ -471,7 +447,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     fun postListing(listingID: String) {
         val db = DatabaseManager.getInstance()
 
-        photoURLs.forEach{
+        photoURLs.forEach {
             Log.i(TAG, it.toString())
         }
         Log.i("POSTING", "POSTING")
@@ -494,10 +470,12 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 Log.d(TAG, "Listing added")
                 listingProcessPb.visibility = View.GONE
                 listingDimBackgroundV.visibility = View.GONE
-                getActivity()?.getWindow()?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                getActivity()?.getWindow()
+                    ?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
                 // Redirect back to home
-                (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId = R.id.landingFragment
+                (requireActivity().findViewById<View>(R.id.bottom_navigatin_view) as BottomNavigationView).selectedItemId =
+                    R.id.landingFragment
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)

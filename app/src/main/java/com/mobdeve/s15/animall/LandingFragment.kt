@@ -18,8 +18,10 @@ import kotlin.collections.ArrayList
 class LandingFragment : Fragment() {
     var data: ArrayList<ListingModel> = ArrayList()
     var hasRetrieved: Boolean = false
+
     // RecyclerView components
     lateinit var landingAdapter: LandingAdapter
+
     // Sort/Filter Adapters
     private var filterAdapter: ArrayAdapter<String>? = null
     private var sortAdapter: ArrayAdapter<String>? = null
@@ -27,6 +29,7 @@ class LandingFragment : Fragment() {
     private var filterChoice: String = ""
     private var searchChoice: String = ""
     private var userCity: String = ""
+
     // Bottom navbar
     lateinit var bottomNav: BottomNavigationView
 
@@ -81,7 +84,13 @@ class LandingFragment : Fragment() {
                 lifecycleScope.launch {
                     try {
                         val dataInit = async(Dispatchers.IO) {
-                            data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                            data = DatabaseManager.filteredListingData(
+                                filterChoice,
+                                sortChoice,
+                                searchChoice,
+                                userCity,
+                                requireContext()
+                            )
                         }
                         dataInit.await()
 
@@ -111,20 +120,26 @@ class LandingFragment : Fragment() {
     fun initializeSpinners() {
         // Filter spinner
         val filterOptions = resources.getStringArray(R.array.category_options).toList()
-        filterAdapter = object: ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,filterOptions) {
+        filterAdapter = object : ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            filterOptions
+        ) {
             override fun isEnabled(position: Int): Boolean {
                 // Disable the first item from Spinner
                 // First item will be used for hint
                 return position != 0
             }
+
             override fun getDropDownView(
                 position: Int,
                 convertView: View?,
                 parent: ViewGroup
             ): View {
-                val view: TextView = super.getDropDownView(position, convertView, parent) as TextView
+                val view: TextView =
+                    super.getDropDownView(position, convertView, parent) as TextView
                 //set the color of first item in the drop down list to gray
-                if(position == 0) {
+                if (position == 0) {
                     view.setTextColor(resources.getColor(R.color.primary_gray))
                 }
                 return view
@@ -134,11 +149,17 @@ class LandingFragment : Fragment() {
         filterAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Apply the adapter to the spinner
         filterSpinner.adapter = filterAdapter
-        filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        filterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (position != 0) {
                     clearSelectionChip.visibility = View.VISIBLE
                     filterChoice = filterOptions.get(position)
@@ -147,7 +168,13 @@ class LandingFragment : Fragment() {
                     lifecycleScope.launch {
                         try {
                             val dataInit = async(Dispatchers.IO) {
-                                data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                                data = DatabaseManager.filteredListingData(
+                                    filterChoice,
+                                    sortChoice,
+                                    searchChoice,
+                                    userCity,
+                                    requireContext()
+                                )
                             }
                             dataInit.await()
 
@@ -166,20 +193,26 @@ class LandingFragment : Fragment() {
 
         // Sort spinner
         val sortOptions = resources.getStringArray(R.array.sort_options).toList()
-        sortAdapter = object: ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,sortOptions) {
+        sortAdapter = object : ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            sortOptions
+        ) {
             override fun isEnabled(position: Int): Boolean {
                 // Disable the first item from Spinner
                 // First item will be used for hint
                 return position != 0
             }
+
             override fun getDropDownView(
                 position: Int,
                 convertView: View?,
                 parent: ViewGroup
             ): View {
-                val view: TextView = super.getDropDownView(position, convertView, parent) as TextView
+                val view: TextView =
+                    super.getDropDownView(position, convertView, parent) as TextView
                 //set the color of first item in the drop down list to gray
-                if(position == 0) {
+                if (position == 0) {
                     view.setTextColor(resources.getColor(R.color.primary_gray))
                 }
                 return view
@@ -189,11 +222,17 @@ class LandingFragment : Fragment() {
         sortAdapter?.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Apply the adapter to the spinner
         sortSpinner.adapter = sortAdapter
-        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 if (position != 0) {
                     clearSelectionChip.visibility = View.VISIBLE
                     sortChoice = sortOptions.get(position)
@@ -202,7 +241,13 @@ class LandingFragment : Fragment() {
                     lifecycleScope.launch {
                         try {
                             val dataInit = async(Dispatchers.IO) {
-                                data = DatabaseManager.filteredListingData(filterChoice, sortChoice, searchChoice, userCity, requireContext())
+                                data = DatabaseManager.filteredListingData(
+                                    filterChoice,
+                                    sortChoice,
+                                    searchChoice,
+                                    userCity,
+                                    requireContext()
+                                )
                             }
                             dataInit.await()
 
@@ -220,7 +265,7 @@ class LandingFragment : Fragment() {
         }
 
         // Clear selection button
-        clearSelectionChip.setOnClickListener{
+        clearSelectionChip.setOnClickListener {
             filterSpinner.setSelection(0)
             sortSpinner.setSelection(0)
             clearSelectionChip.visibility = View.GONE
