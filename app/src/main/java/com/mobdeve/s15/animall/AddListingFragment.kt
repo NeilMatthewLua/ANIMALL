@@ -60,8 +60,6 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var byteArrayUpload: ArrayList<ByteArray>
 
     // categories document
-    var categoriesHashMap: HashMap<String, String>
-            = HashMap<String, String> ()
     lateinit var categoryId: String
     lateinit var photoURLs: ArrayList<String>
 
