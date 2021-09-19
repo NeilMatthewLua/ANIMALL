@@ -17,7 +17,6 @@ class ProfileOrderAdapter(
     private val fragment: UserProfileFragment
 ) :
     RecyclerView.Adapter<ProfileOrderViewHolder>() {
-    val TAG: String = "PROFILE ORDER ADAPTER: "
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileOrderViewHolder {
         val v =
             LayoutInflater.from(parent.context)
@@ -76,5 +75,9 @@ class ProfileOrderAdapter(
 
     override fun getItemCount(): Int {
         return data.size
+    }
+
+    companion object {
+        const val TAG: String = "PROFILE ORDER ADAPTER: "
     }
 }
