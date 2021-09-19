@@ -270,8 +270,8 @@ class MessageFragment : Fragment() {
 
                                     convoRef
                                         .update(mapOf(
-                                            MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow,
-                                            MyFirebaseReferences.CONVO_MESSAGE_FIELD to data.get(MyFirebaseReferences.MESSAGE_FIELD)
+                                            MyFirebaseReferences.CONVO_MESSAGE_FIELD to if (offer) if (order) "New Order" else "New Offer" else message,
+                                            MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
                                         ))
                                         .addOnSuccessListener {
                                             Log.i(
@@ -319,7 +319,10 @@ class MessageFragment : Fragment() {
                                 .document(convo.id)
 
                             convoRef
-                                .update(MyFirebaseReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                .update(mapOf(
+                                    MyFirebaseReferences.CONVO_MESSAGE_FIELD to message,
+                                    MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
+                                ))
                                 .addOnSuccessListener {
                                     Log.i(
                                         "DB Updated SUCCESS",
