@@ -47,7 +47,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             conversationTimeTv.text = dateString
 
             val loggedUser = Firebase.auth.currentUser!!
-            if(conversation.senderEmail == loggedUser.email) {
+            if(conversation.latestSender == loggedUser.email) {
                 conversationMessageTv.text = "You: ${conversation.latestMessage}"
             }
             else {
