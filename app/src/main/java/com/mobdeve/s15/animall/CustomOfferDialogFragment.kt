@@ -19,7 +19,7 @@ class CustomOfferDialogFragment: DialogFragment() {
     var modalType: String = ""
     var listingId: String = ""
     var listingName: String = ""
-    var listingQuantity: Long = 1
+    var listingQuantity: Long = 0
     var listingPrice: Long = 0
     var listingStock: Long = 0
 
@@ -41,6 +41,9 @@ class CustomOfferDialogFragment: DialogFragment() {
                 listingStock = DatabaseManager.getListingFromId(listingId)!!.stock
             }
             job.join()
+            if (listingStock > 0) {
+                listingQuantity = 1
+            }
         }
 
         return inflater.inflate(R.layout.fragment_offer_dialog, container, false)
