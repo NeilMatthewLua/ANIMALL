@@ -220,6 +220,11 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             productPriceErrorTv.visibility = View.VISIBLE
             invalid += 1
         }
+        else if (productQuantityEtv.text.toString().toDouble() < 1) {
+            productPriceErrorTv.text = "Product price must not be less that 1."
+            productPriceErrorTv.visibility = View.VISIBLE
+            invalid += 1
+        }
         else if (productPriceEtv.text.toString().toDouble() > 100000) {
             productPriceErrorTv.text = "Product price must not exceed 100,000."
             productPriceErrorTv.visibility = View.VISIBLE
@@ -233,6 +238,11 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         //Validation Rule: Not empty and <= 1,000
         if(TextUtils.isEmpty(productQuantityEtv.text.toString())) {
             productQuantityErrorTv.text = "Product quantity is required."
+            productQuantityErrorTv.visibility = View.VISIBLE
+            invalid += 1
+        }
+        else if (productQuantityEtv.text.toString().toInt() < 1) {
+            productQuantityErrorTv.text = "Product quantity must not be less that 1."
             productQuantityErrorTv.visibility = View.VISIBLE
             invalid += 1
         }
