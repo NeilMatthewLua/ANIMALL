@@ -51,7 +51,7 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 conversationMessageTv.text = "You: ${conversation.latestMessage}"
             }
             else {
-                conversationMessageTv.text = "${conversation.senderEmail}: ${conversation.latestMessage}"
+                conversationMessageTv.text = "${conversation.latestSender}: ${conversation.latestMessage}"
             }
 //        }
     }
