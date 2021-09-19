@@ -278,7 +278,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         } else if (productLocationActv.text.isNotEmpty() && productLocationActv.text.isNotBlank()) {
             val cityData = CityDataHelper.initializeCityData()
             if (productLocationActv.text.toString() in cityData) {
-                productUploadErrorTv.visibility = View.GONE
+                productLocationErrorTv.visibility = View.GONE
             } else {
                 productLocationErrorTv.visibility = View.VISIBLE
                 invalid += 1

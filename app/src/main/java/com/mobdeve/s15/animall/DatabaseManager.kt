@@ -499,11 +499,16 @@ object DatabaseManager {
         try {
             val pendingOrders = orderRef
                 .whereEqualTo(MyFirebaseReferences.ORDER_LISTING_ID_FIELD, listingId)
-                .whereEqualTo(MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD, false)
                 .get()
                 .await()
-            Log.d(TAG, pendingOrders.documents.toString())
-            if (pendingOrders.isEmpty) {
+            var isEmpty = true
+            for (document in pendingOrders.documents) {
+                if (!(document.get(MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD) as Boolean)) {
+                    isEmpty = false
+                    break
+                }
+            }
+            if (isEmpty) {
                 val job = listingRef
                     .document(listingId)
                     .update("isOpen", false)
@@ -531,11 +536,16 @@ object DatabaseManager {
         try {
             val pendingOrders = orderRef
                 .whereEqualTo(MyFirebaseReferences.ORDER_LISTING_ID_FIELD, listingId)
-                .whereEqualTo(MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD, false)
                 .get()
                 .await()
-            Log.d(TAG, pendingOrders.documents.toString())
-            if (pendingOrders.isEmpty) {
+            var isEmpty = true
+            for (document in pendingOrders.documents) {
+                if (!(document.get(MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD) as Boolean)) {
+                    isEmpty = false
+                    break
+                }
+            }
+            if (isEmpty) {
                 Log.d(TAG, listingId)
                 val job = launch (Dispatchers.IO) {
                      listingRef
