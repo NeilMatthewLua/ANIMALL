@@ -58,8 +58,8 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             SimpleDateFormat("hh:mm:ss")
         sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
-        var date = m.timestamp
-        var dateString = sdf3.format(date)
+        val date = m.timestamp
+        val dateString = sdf3.format(date)
 
         messageTimeTv.text = dateString
 
@@ -95,12 +95,12 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun sendMessage(model: MessageModel, accepted: Boolean, order: Boolean) {
-        val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
+        val messageRef = db.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
         val orderOffer = if (order) "order" else "offer"
 
-        val listingRef = db!!
+        val listingRef = db
             .collection(MyFirebaseReferences.LISTINGS_COLLECTION)
             .document(listing!!.listingId)
 
@@ -108,7 +108,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             if (accepted) "The $orderOffer has been accepted"
             else "The $orderOffer has been declined"
         else "The listing quantity has since then been changed. Please try again"
-        var messageId = UUID.randomUUID().toString()
+        val messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
             MyFirebaseReferences.MESSAGE_CONVO_FIELD to model.convoId,
@@ -127,9 +127,9 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             .addOnSuccessListener {
                 Log.d(
                     "MessageOfferViewHolder SUCCESS old message here",
-                    "${model.id}"
+                    model.id
                 )
-                val indivMsgRef = db!!
+                val indivMsgRef = db
                     .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
                     .document(model.id)
 
@@ -140,7 +140,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                     }
 
                 //Update conversation timestamp
-                val convoRef = db!!
+                val convoRef = db
                     .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
                     .document(model.convoId)
 
@@ -210,7 +210,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                             MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to Date()
                         )
 
-                        val orderRef = db!!
+                        val orderRef = db
                             .collection(MyFirebaseReferences.ORDERS_COLLECTION)
                             .document(orderId)
 
@@ -264,7 +264,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
     }
 
-    fun rightAlignText(m: MessageModel) {
+    fun rightAlignText() {
         usernameTv.gravity = Gravity.RIGHT
         messageTimeTv.gravity = Gravity.RIGHT
         messageLinearLayout.gravity = Gravity.RIGHT

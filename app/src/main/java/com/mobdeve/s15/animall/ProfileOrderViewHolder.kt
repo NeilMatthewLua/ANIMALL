@@ -57,7 +57,7 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         receivedOrderBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(
                 CustomDialogFragment.MODAL_TYPE_KEY,
                 CustomDialogFragment.MODAL_ORDER_CONFIRM

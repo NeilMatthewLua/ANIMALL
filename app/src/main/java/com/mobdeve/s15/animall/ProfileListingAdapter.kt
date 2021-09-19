@@ -28,7 +28,7 @@ class ProfileListingAdapter(
             .setFragmentResultListener(
                 CustomDialogFragment.MODAL_LISTING_CLOSE_RESULT,
                 fragment.viewLifecycleOwner
-            ) { key, bundle ->
+            ) { _, bundle ->
                 val result = bundle.getString(CustomDialogFragment.MODAL_SUCCESS_KEY)
                 val id = bundle.getString(CustomDialogFragment.MODAL_LISTING_ID_KEY)
                 if (result == "ok") {
@@ -50,7 +50,7 @@ class ProfileListingAdapter(
                             ).show()
                         } else if (result == "true") {
                             for (i in 0..data.size) {
-                                var item = data.get(i)
+                                val item = data[i]
                                 if (item.listingId == id) {
                                     data.get(i).isOpen = false
                                     break
@@ -99,7 +99,7 @@ class ProfileListingAdapter(
                             ).show()
                         } else if (result == "true") {
                             for (i in 0..data.size) {
-                                var item = data.get(i)
+                                val item = data[i]
                                 if (item.listingId == id) {
                                     data.removeAt(i)
                                     break
@@ -126,7 +126,7 @@ class ProfileListingAdapter(
             .setFragmentResultListener(
                 CustomDialogFragment.MODAL_LISTING_EDIT_RESULT,
                 fragment.viewLifecycleOwner
-            ) { key, bundle ->
+            ) { _, bundle ->
                 val result = bundle.getString(CustomDialogFragment.MODAL_SUCCESS_KEY)
                 val id = bundle.getString(CustomDialogFragment.MODAL_LISTING_ID_KEY)
                 val newStock = bundle.getLong(CustomDialogFragment.MODAL_LISTING_STOCK_KEY)
@@ -143,9 +143,9 @@ class ProfileListingAdapter(
                         fragment.profilePb.visibility = View.GONE
                         if (result) {
                             for (i in 0..data.size) {
-                                var item = data.get(i)
+                                val item = data[i]
                                 if (item.listingId == id) {
-                                    data.get(i).stock = newStock
+                                    data[i].stock = newStock
                                     break
                                 }
                             }
@@ -172,9 +172,9 @@ class ProfileListingAdapter(
     override fun onBindViewHolder(holder: ProfileListingViewHolder, position: Int) {
         holder.bindData(data[position])
 
-        holder.setCloseBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
-        holder.setDeleteBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
-        holder.setEditBtnListener(fragment.requireActivity()!!.supportFragmentManager, fragment)
+        holder.setCloseBtnListener(fragment.requireActivity().supportFragmentManager, fragment)
+        holder.setDeleteBtnListener(fragment.requireActivity().supportFragmentManager, fragment)
+        holder.setEditBtnListener(fragment.requireActivity().supportFragmentManager, fragment)
         if (!isOwnProfile) {
             holder.hideBtns()
         }

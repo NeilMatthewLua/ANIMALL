@@ -48,9 +48,9 @@ class ProfileOrderAdapter(
                             ).show()
                         } else {
                             for (i in 0..data.size) {
-                                var item = data.get(i)
+                                val item = data[i]
                                 if (item.orderId == id) {
-                                    data.get(i).isConfirmed = true
+                                    data[i].isConfirmed = true
                                     break
                                 }
                             }

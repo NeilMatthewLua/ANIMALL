@@ -33,10 +33,6 @@ class MessageFragment : Fragment() {
     private lateinit var loggedUser: FirebaseUser
     private lateinit var convoModel: ConversationModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -88,7 +84,7 @@ class MessageFragment : Fragment() {
                             .build()
 
                     myFirestoreRecyclerAdapter =
-                        MessageAdapter(options, requireContext(), loggedUser!!.email!!)
+                        MessageAdapter(options, requireContext(), loggedUser.email!!)
                     Log.i("MessageFragment", "Adapter Adapted")
 
                     withContext(Dispatchers.Main) {
@@ -106,7 +102,7 @@ class MessageFragment : Fragment() {
                         messageRecyclerView.adapter = myFirestoreRecyclerAdapter
 
                         Log.d("MessageFragment ", "OnViewWCreated3")
-                        sendMessageBtn.setOnClickListener { view ->
+                        sendMessageBtn.setOnClickListener { _ ->
                             Log.i("Messages", "sending a message ON 1")
                             if (messageEtv!!.text.toString().isNotEmpty()) {
                                 sendMessage(it, viewModel.getIsFirst(), false, false, -1, -1)
@@ -161,7 +157,7 @@ class MessageFragment : Fragment() {
                                 }
                             }
 
-                        myFirestoreRecyclerAdapter!!.startListening()
+                        myFirestoreRecyclerAdapter.startListening()
                     }
 
                 }
@@ -171,7 +167,7 @@ class MessageFragment : Fragment() {
         makeOfferBtn.setOnClickListener {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(
                 CustomOfferDialogFragment.MODAL_TYPE_KEY,
@@ -186,7 +182,7 @@ class MessageFragment : Fragment() {
         makeOrderBtn.setOnClickListener {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(
                 CustomOfferDialogFragment.MODAL_TYPE_KEY,
@@ -213,7 +209,6 @@ class MessageFragment : Fragment() {
         val timeNow = Date()
 
         if (isFirst) {
-//            val convoID = UUID.randomUUID().toString()
             val convoHash = hashMapOf(
                 MyFirebaseReferences.RECIPIENT_FIELD to convo.recipientEmail,
                 MyFirebaseReferences.SENDER_FIELD to loggedUser.email!!,
@@ -239,8 +234,8 @@ class MessageFragment : Fragment() {
                 .set(convoHash)
         }
 
-        Log.i("MEssageFragment Convo.id", "${convo.id}")
-        Log.i("MEssageFragment ConvoModel.id", "${convoModel.id}")
+        Log.i("MEssageFragment Convo.id", convo.id)
+        Log.i("MEssageFragment ConvoModel.id", convoModel.id)
 
         println(quantity)
         println(price)
@@ -408,6 +403,6 @@ class MessageFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        myFirestoreRecyclerAdapter!!.stopListening()
+        myFirestoreRecyclerAdapter.stopListening()
     }
 }

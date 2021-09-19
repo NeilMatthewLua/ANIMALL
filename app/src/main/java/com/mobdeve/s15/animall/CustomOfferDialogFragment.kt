@@ -27,7 +27,7 @@ class CustomOfferDialogFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getDialog()!!.getWindow()?.setBackgroundDrawableResource(R.drawable.curved_rectangle)
+        dialog!!.window?.setBackgroundDrawableResource(R.drawable.curved_rectangle)
         // Check the modal type to be displayed
         modalType = arguments?.getString(MODAL_TYPE_KEY, "Modal Type")!!
         listingName = arguments?.getString(MODAL_LISTING_NAME_KEY, "Listing Name")!!
@@ -106,7 +106,7 @@ class CustomOfferDialogFragment : DialogFragment() {
             dismiss()
         }
         profileEditListingBtn.setOnClickListener {
-            var bundle = Bundle()
+            val bundle = Bundle()
             if (modalType == MODAL_ORDER) {
                 if (messageQuantityTv.text.toString().toLong() > 0) {
                     bundle.putString(MODAL_SUCCESS_KEY, "ok")
@@ -165,20 +165,20 @@ class CustomOfferDialogFragment : DialogFragment() {
     }
 
     companion object {
-        val MODAL_TYPE_KEY = "modalType"
+        const val MODAL_TYPE_KEY = "modalType"
 
         // Types of modals
-        val MODAL_ORDER = "modalOrder"
-        val MODAL_OFFER = "modalOffer"
+        const val MODAL_ORDER = "modalOrder"
+        const val MODAL_OFFER = "modalOffer"
 
-        val MODAL_ORDER_RESULT = "modalOrderResult"
-        val MODAL_OFFER_RESULT = "modalOfferResult"
+        const val MODAL_ORDER_RESULT = "modalOrderResult"
+        const val MODAL_OFFER_RESULT = "modalOfferResult"
 
-        val MODAL_LISTING_ID_KEY = "modalListingIdKey"
-        val MODAL_LISTING_NAME_KEY = "modalListingNameKey"
-        val MODAL_LISTING_STOCK_KEY = "modalListingStockKey"
-        val MODAL_LISTING_PRICE_KEY = "modalListingPriceKey"
-        val MODAL_QUANTITY_ORDERED_KEY = "modalQuantityOrderedKey"
-        val MODAL_SUCCESS_KEY = "modalSuccessKey"
+        const val MODAL_LISTING_ID_KEY = "modalListingIdKey"
+        const val MODAL_LISTING_NAME_KEY = "modalListingNameKey"
+        const val MODAL_LISTING_STOCK_KEY = "modalListingStockKey"
+        const val MODAL_LISTING_PRICE_KEY = "modalListingPriceKey"
+        const val MODAL_QUANTITY_ORDERED_KEY = "modalQuantityOrderedKey"
+        const val MODAL_SUCCESS_KEY = "modalSuccessKey"
     }
 }

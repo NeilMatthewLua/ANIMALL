@@ -31,10 +31,6 @@ class ViewListingFragment : Fragment() {
     var conversation: ConversationModel? = null
     lateinit var listing: ListingModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,7 +88,7 @@ class ViewListingFragment : Fragment() {
 
                 viewSellerProfileBtn.setOnClickListener {
                     val sellerProfilePage = UserProfileFragment()
-                    var args = Bundle()
+                    val args = Bundle()
                     args.putString(UserProfileFragment.SELLER_EMAIL, user!!.email)
                     sellerProfilePage.arguments = args
                     it.findNavController().navigate(R.id.profileFragment, args)

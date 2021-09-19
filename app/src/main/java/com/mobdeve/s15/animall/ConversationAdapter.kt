@@ -28,7 +28,7 @@ class ConversationAdapter(
         model: ConversationModel
     ) {
         Log.i("ConvoAdapter", "will be getting their latest messages")
-        Log.i("ConvoAdapter", "${model.id}")
+        Log.i("ConvoAdapter", model.id)
 
         Log.i("ConvoAdapter", "getting latest message ${model.id}")
         fragment.lifecycleScope.launch {

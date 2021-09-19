@@ -29,13 +29,13 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
         Log.i("ConvoVHolder", "${conversation == null}")
         conversationNameTv.text = conversation.listingName
-        var date = conversation.timestamp
+        val date = conversation.timestamp
 
-        val sdf3: SimpleDateFormat =
+        val sdf3 =
             SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
         sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
-        var dateString = sdf3.format(date)
+        val dateString = sdf3.format(date)
 
         conversationTimeTv.text = dateString
 

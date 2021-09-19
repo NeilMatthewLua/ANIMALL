@@ -47,7 +47,7 @@ class LandingFragment : Fragment() {
                 dataInit.await()
                 initializeSpinners()
                 // Adapter
-                landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                landingAdapter = LandingAdapter(data, this@LandingFragment)
                 landingRecyclerView!!.adapter = landingAdapter
                 landingAdapter.notifyDataSetChanged()
                 hasRetrieved = true
@@ -94,7 +94,7 @@ class LandingFragment : Fragment() {
                         }
                         dataInit.await()
 
-                        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                        landingAdapter = LandingAdapter(data, this@LandingFragment)
                         landingRecyclerView!!.adapter = landingAdapter
                         landingAdapter.notifyDataSetChanged()
                         landingDimBackgroundV.visibility = View.GONE
@@ -104,7 +104,6 @@ class LandingFragment : Fragment() {
                         e.printStackTrace()
                     }
                 }
-                true
             }
             false
         }
@@ -113,7 +112,7 @@ class LandingFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         landingRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+        landingAdapter = LandingAdapter(data, this@LandingFragment)
         landingRecyclerView!!.adapter = landingAdapter
     }
 
@@ -251,7 +250,7 @@ class LandingFragment : Fragment() {
                             }
                             dataInit.await()
 
-                            landingAdapter = LandingAdapter(data!!, this@LandingFragment)
+                            landingAdapter = LandingAdapter(data, this@LandingFragment)
                             landingRecyclerView!!.adapter = landingAdapter
                             landingAdapter.notifyDataSetChanged()
                             landingDimBackgroundV.visibility = View.GONE

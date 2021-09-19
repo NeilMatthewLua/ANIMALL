@@ -102,7 +102,7 @@ class ConversationFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        myFirestoreRecyclerAdapter!!.stopListening()
+        myFirestoreRecyclerAdapter.stopListening()
     }
 
     companion object {

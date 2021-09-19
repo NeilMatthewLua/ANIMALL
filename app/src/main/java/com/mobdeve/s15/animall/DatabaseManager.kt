@@ -34,8 +34,8 @@ object DatabaseManager {
             val job =
                 listingRef.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).get().await()
             for (document in job.documents) {
-                var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
-                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+                val photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
+                val unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
                 data.add(
                     ListingModel(
                         document.reference.id,
@@ -68,7 +68,7 @@ object DatabaseManager {
         lastDocId: String = ""
     ): ArrayList<ListingModel> = coroutineScope {
         val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
-        var data = ArrayList<ListingModel>()
+        val data = ArrayList<ListingModel>()
         Log.d(TAG, searchOption)
         try {
             var job: Query? = null
@@ -112,21 +112,20 @@ object DatabaseManager {
             val result = job.whereEqualTo(MyFirebaseReferences.LISTING_IS_OPEN, true).get().await()
             for (document in result.documents) {
                 if (document["isOpen"] as Boolean) {
-                    var photoArray =
+                    val photoArray =
                         document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
                     // Convert to Long
-                    var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+                    val unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
                     // Default distance is max
                     var distanceFromUser: Double = Double.MAX_VALUE
                     val getLocationDistances = launch(Dispatchers.IO) {
-                        var geocoderObj = Geocoder(context)
-                        var cityNameUser = userCity
-                        var cityNameListing =
+                        val geocoderObj = Geocoder(context)
+                        val cityNameListing =
                             document[MyFirebaseReferences.LOCATION_FIELD] as String
                         // Get the addresses objects
-                        var addressResultUser = geocoderObj.getFromLocationName(
-                            cityNameUser,
+                        val addressResultUser = geocoderObj.getFromLocationName(
+                            userCity,
                             1,
                             PH_LOWER_LAT,
                             PH_LOWER_LON,
@@ -134,7 +133,7 @@ object DatabaseManager {
                             PH_UPPER_LON
                         )
 
-                        var addressResultListing = geocoderObj.getFromLocationName(
+                        val addressResultListing = geocoderObj.getFromLocationName(
                             cityNameListing,
                             1,
                             PH_LOWER_LAT,
@@ -152,11 +151,11 @@ object DatabaseManager {
                             val locationResultListing = addressResultListing.get(0)
 
                             // Convert into location objects to get distance from each other in meters
-                            var locationObjUser = Location("User")
+                            val locationObjUser = Location("User")
                             locationObjUser.latitude = locationResultUser.latitude
                             locationObjUser.longitude = locationResultUser.longitude
 
-                            var locationObjListing = Location("Listing")
+                            val locationObjListing = Location("Listing")
                             locationObjListing.latitude = locationResultListing.latitude
                             locationObjListing.longitude = locationResultListing.longitude
 
@@ -207,21 +206,21 @@ object DatabaseManager {
             val conversationRef = db.collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
             val data = ArrayList<ConversationModel>()
             try {
-                val receive_job = conversationRef
+                val receiveJob = conversationRef
                     .whereArrayContains("users", email)
                     .get()
                     .await()
                 Log.i("`DatabaseManager`", "Getting conversations")
-                for (document in receive_job.documents) {
+                for (document in receiveJob.documents) {
                     Log.i("`DatabaseManager`", "Got one as recipient")
-                    var recipientEmail = document[MyFirebaseReferences.RECIPIENT_FIELD] as String
-                    var senderEmail = document[MyFirebaseReferences.SENDER_FIELD] as String
+                    val recipientEmail = document[MyFirebaseReferences.RECIPIENT_FIELD] as String
+                    val senderEmail = document[MyFirebaseReferences.SENDER_FIELD] as String
                     val listingId = document[MyFirebaseReferences.LISTING_ID_FIELD] as String
                     val listingName = document[MyFirebaseReferences.LISTING_NAME_FIELD] as String
                     val listingPhoto = document[MyFirebaseReferences.LISTING_PHOTO_FIELD] as String
                     val id = document[MyFirebaseReferences.CONVO_ID_FIELD] as String
 
-                    var message = getLatestMessage(id)
+                    val message = getLatestMessage(id)
 
                     if (message != null) {
                         data.add(
@@ -232,7 +231,7 @@ object DatabaseManager {
                                 listingName,
                                 listingPhoto,
                                 id,
-                                message!!.timestamp
+                                message.timestamp
                             )
                         )
                     }
@@ -305,9 +304,9 @@ object DatabaseManager {
                     .await()
             }
             for (document in job.documents) {
-                var photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
+                val photoArray = document[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
                 // Convert to Long
-                var unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+                val unitPrice = (document[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
                 data.add(
                     ListingModel(
@@ -342,7 +341,7 @@ object DatabaseManager {
 
             for (document in job.documents) {
                 // Convert to Long
-                var unitPrice = document[MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD] as Long
+                val unitPrice = document[MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD] as Long
 
                 data.add(
                     OrderModel(
@@ -377,9 +376,9 @@ object DatabaseManager {
                 .await()
             Log.i("`DatabaseManager`", "Getting the user")
             for (document in job.documents) {
-                var userEmail = document[MyFirebaseReferences.EMAIL_FIELD] as String
-                var userName = document[MyFirebaseReferences.NAME_FIELD] as String
-                var userPrefLoc = document[MyFirebaseReferences.PREF_LOCATION_FIELD] as String
+                val userEmail = document[MyFirebaseReferences.EMAIL_FIELD] as String
+                val userName = document[MyFirebaseReferences.NAME_FIELD] as String
+                val userPrefLoc = document[MyFirebaseReferences.PREF_LOCATION_FIELD] as String
                 user = UserModel(
                     userEmail,
                     userName,
@@ -428,7 +427,7 @@ object DatabaseManager {
     suspend fun getConversationListing(convoId: String): ListingModel? = coroutineScope {
         val conversationRef = db.collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
         var listing: ListingModel? = null
-        Log.i("DBManager convoId", "${convoId}")
+        Log.i("DBManager convoId", convoId)
         try {
             val convo = conversationRef
                 .document(convoId)
@@ -438,24 +437,24 @@ object DatabaseManager {
             val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
             val listingId = convo[MyFirebaseReferences.LISTING_ID_FIELD] as String
 
-            val listing_doc = listingRef
+            val listingDoc = listingRef
                 .document(listingId)
                 .get()
                 .await()
 
-            var photoArray = listing_doc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
+            val photoArray = listingDoc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
             // Convert to Long
-            var unitPrice = (listing_doc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+            val unitPrice = (listingDoc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
             listing = ListingModel(
-                listing_doc.id,
-                listing_doc[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
-                listing_doc[MyFirebaseReferences.CATEGORY_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.DESCRIPTION_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.PRODUCT_NAME_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.LOCATION_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.SELLER_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.STOCK_FIELD] as Long,
+                listingDoc.id,
+                listingDoc[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
+                listingDoc[MyFirebaseReferences.CATEGORY_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.DESCRIPTION_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.PRODUCT_NAME_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.LOCATION_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.SELLER_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.STOCK_FIELD] as Long,
                 unitPrice as Long,
                 photoArray
             )
@@ -483,20 +482,19 @@ object DatabaseManager {
                     Log.i("DatabaseManager", "Document size: ${documents.size()}")
                     for (document in documents) {
                         Log.d("DatabaseManager", "${document.id} => ${document.data}")
-                        var convoId = document[MyFirebaseReferences.MESSAGE_CONVO_FIELD] as String
-                        var timestamp = document[MyFirebaseReferences.TIME_FIELD] as Timestamp
-                        var sender = document[MyFirebaseReferences.MESSAGE_SENDER_FIELD] as String
-                        var message = document[MyFirebaseReferences.MESSAGE_FIELD] as String
-                        var offer = document[MyFirebaseReferences.MESSAGE_OFFER_FIELD] as Boolean
-                        var amount =
+                        val convoId = document[MyFirebaseReferences.MESSAGE_CONVO_FIELD] as String
+                        val timestamp = document[MyFirebaseReferences.TIME_FIELD] as Timestamp
+                        val sender = document[MyFirebaseReferences.MESSAGE_SENDER_FIELD] as String
+                        val message = document[MyFirebaseReferences.MESSAGE_FIELD] as String
+                        val offer = document[MyFirebaseReferences.MESSAGE_OFFER_FIELD] as Boolean
+                        val amount =
                             document[MyFirebaseReferences.MESSAGE_OFFER_AMOUNT_FIELD] as Long
-                        var quantity =
+                        val quantity =
                             document[MyFirebaseReferences.MESSAGE_OFFER_QUANTITY_FIELD] as Long
-                        var addressed =
+                        val addressed =
                             document[MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD] as Boolean
-                        var id = document[MyFirebaseReferences.MESSAGE_ID_FIELD] as String
+                        val id = document[MyFirebaseReferences.MESSAGE_ID_FIELD] as String
 
-                        Log.i("Database Manager AAAAAAA", "${amount}")
                         latestMessage = MessageModel(
                             convoId,
                             timestamp.toDate(),
@@ -625,7 +623,6 @@ object DatabaseManager {
 
     suspend fun editListing(listingId: String, newStock: Long): Boolean = coroutineScope {
         val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
-        val orderRef = db.collection(MyFirebaseReferences.ORDERS_COLLECTION)
         var result = false
         try {
             val job = listingRef
@@ -647,23 +644,23 @@ object DatabaseManager {
         val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
         var listing: ListingModel? = null
         try {
-            val listing_doc = listingRef
+            val listingDoc = listingRef
                 .document(listingId)
                 .get()
                 .await()
-            var photoArray = listing_doc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
+            val photoArray = listingDoc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
             // Convert to Long
-            var unitPrice = (listing_doc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
+            val unitPrice = (listingDoc[MyFirebaseReferences.PRICE_FIELD] as Double).toLong()
 
             listing = ListingModel(
-                listing_doc.id,
-                listing_doc[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
-                listing_doc[MyFirebaseReferences.CATEGORY_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.DESCRIPTION_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.PRODUCT_NAME_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.LOCATION_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.SELLER_FIELD].toString(),
-                listing_doc[MyFirebaseReferences.STOCK_FIELD] as Long,
+                listingDoc.id,
+                listingDoc[MyFirebaseReferences.LISTING_IS_OPEN] as Boolean,
+                listingDoc[MyFirebaseReferences.CATEGORY_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.DESCRIPTION_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.PRODUCT_NAME_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.LOCATION_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.SELLER_FIELD].toString(),
+                listingDoc[MyFirebaseReferences.STOCK_FIELD] as Long,
                 unitPrice as Long,
                 photoArray
             )

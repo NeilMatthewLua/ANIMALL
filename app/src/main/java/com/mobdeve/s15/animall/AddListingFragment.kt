@@ -23,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -95,7 +94,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
             // Set up add listing
             addListingBtn.setOnClickListener {
-                var valid: Boolean = validateInformation()
+                val valid: Boolean = validateInformation()
 
                 Log.i("Valid: ", valid.toString())
 
@@ -320,14 +319,14 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
                 // One Image
                 else {
-                    val single_fileuri = result.data!!.data
-                    val filename: String = getfilenamefromuri(single_fileuri!!)
+                    val singleFileuri = result.data!!.data
+                    val filename: String = getfilenamefromuri(singleFileuri!!)
                     files.add(filename)
                     status.add("loading")
-                    val bitImage = checkUpload(filename, single_fileuri)
+                    val bitImage = checkUpload(filename, singleFileuri)
 
                     if (bitImage != null) {
-                        mSliderItems.add(Listing(filename, single_fileuri, bitImage))
+                        mSliderItems.add(Listing(filename, singleFileuri, bitImage))
                     }
                 }
 
@@ -382,8 +381,8 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 val scaleDivider = fullBitmap.width.toDouble() / lengthbmp
                 val scaleWidth = fullBitmap.width.toDouble() / scaleDivider
                 val scaleHeight = fullBitmap.height.toDouble() / scaleDivider
-                Log.i("IMAGE scaleWidth: ", "${scaleWidth}")
-                Log.i("IMAGE scaleHeight: ", "${scaleHeight}")
+                Log.i("IMAGE scaleWidth: ", "$scaleWidth")
+                Log.i("IMAGE scaleHeight: ", "$scaleHeight")
 
                 val (downsizedImageBytes, downsizedBitmap) =
                     getDownsizedImageBytes(
@@ -392,7 +391,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                         scaleHeight.toInt()
                     )
 
-                byteArrayUpload.add(downsizedImageBytes!!)
+                byteArrayUpload.add(downsizedImageBytes)
 
                 return downsizedBitmap
             } catch (ioEx: IOException) {

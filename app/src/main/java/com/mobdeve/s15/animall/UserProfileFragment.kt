@@ -84,7 +84,7 @@ class UserProfileFragment : Fragment() {
                     profileOrderBtn.setTextColor(resources.getColor(R.color.white))
                     profileListingBtn.setBackgroundColor(resources.getColor(R.color.white))
                     profileListingBtn.setTextColor(resources.getColor(R.color.black))
-                    profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
+                    profileOrderAdapter = ProfileOrderAdapter(orderData, this@UserProfileFragment)
                     profileRecyclerView!!.adapter = profileOrderAdapter
                     profileOrderAdapter.notifyDataSetChanged()
                 }
@@ -101,7 +101,7 @@ class UserProfileFragment : Fragment() {
             }
 
             profileListingAdapter =
-                ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+                ProfileListingAdapter(listingData, this@UserProfileFragment, isOwnProfile)
             profileRecyclerView!!.adapter = profileListingAdapter
             profileListingAdapter.notifyDataSetChanged()
 
@@ -157,7 +157,7 @@ class UserProfileFragment : Fragment() {
         profileRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
         profileListingAdapter =
-            ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+            ProfileListingAdapter(listingData, this@UserProfileFragment, isOwnProfile)
         profileRecyclerView!!.adapter = profileListingAdapter
 
         profileLogoutBtn.setOnClickListener {
@@ -168,7 +168,7 @@ class UserProfileFragment : Fragment() {
                 .requestEmail()
                 .build()
 
-            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+            val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
             googleSignInClient.signOut()
             // Redirect back to sign up page
             val intent = Intent(context, LoginActivity::class.java)

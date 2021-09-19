@@ -58,7 +58,7 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         profileCloseListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(
                 CustomDialogFragment.MODAL_TYPE_KEY,
                 CustomDialogFragment.MODAL_LISTING_CLOSE
@@ -74,7 +74,7 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         profileDeleteListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(
                 CustomDialogFragment.MODAL_TYPE_KEY,
                 CustomDialogFragment.MODAL_LISTING_DELETE
@@ -90,7 +90,7 @@ class ProfileListingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
         profileEditListingBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
+            val args = Bundle()
             args.putString(
                 CustomDialogFragment.MODAL_TYPE_KEY,
                 CustomDialogFragment.MODAL_LISTING_EDIT
