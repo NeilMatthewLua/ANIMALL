@@ -43,6 +43,7 @@ class CustomOfferDialogFragment: DialogFragment() {
             job.join()
             if (listingStock > 0) {
                 listingQuantity = 1
+                updateDialogCount()
             }
         }
 
