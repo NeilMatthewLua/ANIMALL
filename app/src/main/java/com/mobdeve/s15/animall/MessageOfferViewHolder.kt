@@ -95,11 +95,12 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
     }
 
-    fun sendMessage(model: MessageModel, accepted: Boolean) {
+    fun sendMessage(model: MessageModel, accepted: Boolean, order: Boolean) {
         val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
-        val message = if (accepted) "The order/offer has been accepted" else "The your order/offer has been declined"
+        val orderOffer = if (order) "order" else "offer"
+        val message = if (accepted) "The $orderOffer has been accepted" else "The your $orderOffer has been declined"
         var messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
@@ -200,12 +201,22 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
             messageBtnDecline.setOnClickListener {
                 actionButtonLayout.visibility = View.GONE
-                sendMessage(m, false)
+                if (listing!!.unitPrice != m.offerPrice) {
+                    sendMessage(m, false, false)
+                }
+                else {
+                    sendMessage(m, false, true)
+                }
             }
 
             messageBtnAccept.setOnClickListener {
                 actionButtonLayout.visibility = View.GONE
-                sendMessage(m, true)
+                if (listing!!.unitPrice != m.offerPrice) {
+                    sendMessage(m, true, false)
+                }
+                else {
+                    sendMessage(m, true, true)
+                }
             }
 
         }
