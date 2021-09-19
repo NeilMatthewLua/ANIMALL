@@ -58,8 +58,8 @@ class ViewListingFragment : Fragment() {
             sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 
             sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
-            sliderView.setIndicatorSelectedColor(Color.WHITE)
-            sliderView.setIndicatorUnselectedColor(Color.GRAY)
+            sliderView.indicatorSelectedColor = Color.WHITE
+            sliderView.indicatorUnselectedColor = Color.GRAY
 
             sliderView.setOnIndicatorClickListener {
                 Log.i(
