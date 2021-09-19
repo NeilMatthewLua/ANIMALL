@@ -147,6 +147,7 @@ class MessageFragment : Fragment() {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_OFFER)
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
             args.putLong(CustomOfferDialogFragment.MODAL_LISTING_STOCK_KEY, listing?.stock!!)
@@ -158,6 +159,7 @@ class MessageFragment : Fragment() {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_ORDER)
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
             args.putLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY, listing?.unitPrice!!)

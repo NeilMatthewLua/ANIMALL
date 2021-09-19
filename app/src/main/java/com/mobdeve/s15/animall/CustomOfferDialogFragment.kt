@@ -9,7 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_offer_dialog.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CustomOfferDialogFragment: DialogFragment() {
     var modalType: String = ""
@@ -25,11 +29,18 @@ class CustomOfferDialogFragment: DialogFragment() {
         modalType = arguments?.getString(MODAL_TYPE_KEY, "Modal Type")!!
         listingName = arguments?.getString(MODAL_LISTING_NAME_KEY, "Listing Name")!!
         listingStock = arguments?.getLong(MODAL_LISTING_STOCK_KEY, 0)!!
+        listingId = arguments?.getString(MODAL_LISTING_ID_KEY, "ID")!!
         Log.d("MODAL",listingName)
-        Log.d("MODAL", listingStock.toString())
         if (modalType == MODAL_ORDER) {
             listingPrice = arguments?.getLong(MODAL_LISTING_PRICE_KEY, 0)!!
             Log.d("MODAL", listingPrice.toString())
+        }
+
+        lifecycleScope.launch {
+            val job = launch (Dispatchers.IO) {
+                listingStock = DatabaseManager.getListingFromId(listingId)!!.stock
+            }
+            job.join()
         }
 
         return inflater.inflate(R.layout.fragment_offer_dialog, container, false)
@@ -134,6 +145,7 @@ class CustomOfferDialogFragment: DialogFragment() {
         val MODAL_ORDER_RESULT = "modalOrderResult"
         val MODAL_OFFER_RESULT = "modalOfferResult"
 
+        val MODAL_LISTING_ID_KEY = "modalListingIdKey"
         val MODAL_LISTING_NAME_KEY = "modalListingNameKey"
         val MODAL_LISTING_STOCK_KEY = "modalListingStockKey"
         val MODAL_LISTING_PRICE_KEY = "modalListingPriceKey"
