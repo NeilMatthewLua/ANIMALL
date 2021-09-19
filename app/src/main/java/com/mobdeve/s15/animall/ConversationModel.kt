@@ -9,7 +9,8 @@ class ConversationModel(
     val listingName: String,
     val listingPhoto: String,
     val id: String = "",
-    val timestamp: Date = Date()
+    val timestamp: Date = Date(),
+    val latestMessage: String = ""
 ) {
     constructor() : this(
         "",
@@ -18,6 +19,7 @@ class ConversationModel(
         "",
         "",
         "",
-        Date()
+        Date(),
+        ""
     )
 }

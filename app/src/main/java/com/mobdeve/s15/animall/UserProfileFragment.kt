@@ -40,7 +40,6 @@ class UserProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Compare firebase user with profile user
         lifecycleScope.launch {
             if (arguments?.get(SELLER_EMAIL).toString().isNotBlank()) {
                 val sellerEmail = arguments?.get(SELLER_EMAIL).toString()
@@ -155,7 +154,6 @@ class UserProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // TODO: replace user with firebase auth
 
         if (hasRetrieved) {
             profileDimBackgroundV.visibility = View.GONE

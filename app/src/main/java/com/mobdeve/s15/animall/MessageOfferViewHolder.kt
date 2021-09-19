@@ -25,6 +25,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private var messageTimeTv: TextView
     private var messageQuantityTotalTv: TextView
     private var messageQuantityTv: TextView
+    private var messageMessageTv: TextView
     private var messageNewAmountTv: TextView
     private var messageBtnDecline: Button
     private var messageBtnAccept: Button
@@ -47,6 +48,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         messageQuantityTv = itemView.findViewById(R.id.messageQuantityTv)
         messageNewAmountTv = itemView.findViewById(R.id.messageNewAmountTv)
         messageQuantityTotalTv = itemView.findViewById(R.id.messageQuantityTotalTv)
+        messageMessageTv = itemView.findViewById(R.id.messageMessageTv)
     }
 
     fun bindData(m: MessageModel) {
@@ -80,17 +82,25 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 job.await()
                 println(listing!!.name)
                 productTv.text = listing!!.name
+
+                if (listing!!.unitPrice != m.offerPrice) {
+                    messageMessageTv.text = "New Offer"
+                }
+                else {
+                    messageMessageTv.text = "New Order"
+                }
             }
         } catch (e: Exception) {
             Log.d("MessageOfferVHolder:", "ERROR RETRIEVING LISTING")
         }
     }
 
-    fun sendMessage(model: MessageModel, accepted: Boolean) {
+    fun sendMessage(model: MessageModel, accepted: Boolean, order: Boolean) {
         val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
-        val message = if (accepted) "The order/offer has been accepted" else "The your order/offer has been declined"
+        val orderOffer = if (order) "order" else "offer"
+        val message = if (accepted) "The $orderOffer has been accepted" else "The your $orderOffer has been declined"
         var messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
@@ -191,12 +201,22 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
             messageBtnDecline.setOnClickListener {
                 actionButtonLayout.visibility = View.GONE
-                sendMessage(m, false)
+                if (listing!!.unitPrice != m.offerPrice) {
+                    sendMessage(m, false, false)
+                }
+                else {
+                    sendMessage(m, false, true)
+                }
             }
 
             messageBtnAccept.setOnClickListener {
                 actionButtonLayout.visibility = View.GONE
-                sendMessage(m, true)
+                if (listing!!.unitPrice != m.offerPrice) {
+                    sendMessage(m, true, false)
+                }
+                else {
+                    sendMessage(m, true, true)
+                }
             }
 
         }

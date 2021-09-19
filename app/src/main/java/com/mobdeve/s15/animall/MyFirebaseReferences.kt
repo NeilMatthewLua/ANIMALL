@@ -48,6 +48,7 @@ object MyFirebaseReferences {
     const val CONVO_TIMESTAMP_FIELD = "timestamp"
     const val CONVO_ID_FIELD = "id"
     const val CONVO_USERS_FIELD = "users"
+    const val CONVO_MESSAGE_FIELD = "latestMessage"
 
     //Message
     const val TIME_FIELD = "timestamp"
