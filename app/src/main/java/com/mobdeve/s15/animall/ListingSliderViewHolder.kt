@@ -3,8 +3,6 @@ package com.mobdeve.s15.animall
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.smarteist.autoimageslider.SliderViewAdapter
 import com.squareup.picasso.Picasso
 

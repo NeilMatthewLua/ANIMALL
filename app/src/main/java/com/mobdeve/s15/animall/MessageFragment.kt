@@ -2,19 +2,19 @@ package com.mobdeve.s15.animall
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_message.*
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -147,6 +147,7 @@ class MessageFragment : Fragment() {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_OFFER)
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
             args.putLong(CustomOfferDialogFragment.MODAL_LISTING_STOCK_KEY, listing?.stock!!)
@@ -158,6 +159,7 @@ class MessageFragment : Fragment() {
             val dialog = CustomOfferDialogFragment()
             // optionally pass arguments to the dialog fragment
             var args = Bundle()
+            args.putString(CustomOfferDialogFragment.MODAL_LISTING_ID_KEY, listing?.listingId)
             args.putString(CustomOfferDialogFragment.MODAL_TYPE_KEY, CustomOfferDialogFragment.MODAL_ORDER)
             args.putString(CustomOfferDialogFragment.MODAL_LISTING_NAME_KEY, listing?.name)
             args.putLong(CustomOfferDialogFragment.MODAL_LISTING_PRICE_KEY, listing?.unitPrice!!)
@@ -271,6 +273,7 @@ class MessageFragment : Fragment() {
                                     convoRef
                                         .update(mapOf(
                                             MyFirebaseReferences.CONVO_MESSAGE_FIELD to if (offer) if (order) "New Order" else "New Offer" else message,
+                                            MyFirebaseReferences.CONVO_LSENDER_FIELD to loggedUser.email,
                                             MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
                                         ))
                                         .addOnSuccessListener {
@@ -295,7 +298,7 @@ class MessageFragment : Fragment() {
                                     )
                                 }
                         }
-                    Log.i("DDDDDDDDDDDDDDDDDDDDDDDD", "OUTTA HERE")
+                    Log.i("MessageFragment", "Done Here ")
                 }
                 else {
                     val messageRef = db!!.collection(MyFirebaseReferences.MESSAGES_COLLECTION)
@@ -321,6 +324,7 @@ class MessageFragment : Fragment() {
                             convoRef
                                 .update(mapOf(
                                     MyFirebaseReferences.CONVO_MESSAGE_FIELD to message,
+                                    MyFirebaseReferences.CONVO_LSENDER_FIELD to loggedUser.email,
                                     MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
                                 ))
                                 .addOnSuccessListener {

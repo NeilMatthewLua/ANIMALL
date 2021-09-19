@@ -2,15 +2,9 @@ package com.mobdeve.s15.animall
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import android.util.Log
-import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.ViewModel
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_landing_layout.view.*
 import java.util.*
 
 

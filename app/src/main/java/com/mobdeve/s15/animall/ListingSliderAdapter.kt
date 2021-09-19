@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 class ListingSliderAdapter(context: Context) :
@@ -45,10 +44,6 @@ class ListingSliderAdapter(context: Context) :
 //            .load(sliderItem.getImageUrl)
 //            .fitCenter()
 //            .into(viewHolder.imageViewBackground)
-        viewHolder.itemView.setOnClickListener{
-            Toast.makeText(context,"This is item in position $position", Toast.LENGTH_SHORT)
-                .show()
-        }
     }
 
     override fun getCount(): Int {

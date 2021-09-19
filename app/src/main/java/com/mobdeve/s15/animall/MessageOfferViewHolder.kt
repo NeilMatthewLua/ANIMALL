@@ -100,7 +100,15 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         val timeNow = Date()
         val loggedUser = Firebase.auth.currentUser!!
         val orderOffer = if (order) "order" else "offer"
-        val message = if (accepted) "The $orderOffer has been accepted" else "The your $orderOffer has been declined"
+
+        val listingRef = db!!
+            .collection(MyFirebaseReferences.LISTINGS_COLLECTION)
+            .document(listing!!.listingId)
+
+        val message = if (listing!!.stock - model.quantity >= 0)
+                            if (accepted) "The $orderOffer has been accepted"
+                            else "The $orderOffer has been declined"
+                      else "The listing quantity has since then been changed. Please try again"
         var messageId = UUID.randomUUID().toString()
 
         val data = hashMapOf(
@@ -115,78 +123,102 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             MyFirebaseReferences.MESSAGE_ID_FIELD to messageId,
         )
 
-        messageRef
-            .add(data)
-            .addOnSuccessListener {
-                Log.d(
-                    "MessageOfferViewHolder SUCCESS old message here",
-                    "${model.id}"
-                )
-                val indivMsgRef = db!!
-                    .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
-                    .document(model.id)
+            messageRef
+                .add(data)
+                .addOnSuccessListener {
+                    Log.d(
+                        "MessageOfferViewHolder SUCCESS old message here",
+                        "${model.id}"
+                    )
+                    val indivMsgRef = db!!
+                        .collection(MyFirebaseReferences.MESSAGES_COLLECTION)
+                        .document(model.id)
 
-                indivMsgRef
-                    .update(MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD, true)
-                    .addOnFailureListener {
-                        println("Done Updating")
-                    }
-
-                //Subtract order from listing stock count
-                if (accepted) {
-                        val listingRef = db!!
-                            .collection(MyFirebaseReferences.LISTINGS_COLLECTION)
-                            .document(listing!!.listingId)
-
-                        listingRef.update(MyFirebaseReferences.STOCK_FIELD, listing!!.stock - model.quantity)
-                            .addOnSuccessListener {
-                                Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
-                            }
-                            .addOnFailureListener {
-                                Log.i("MessageOfferVHolder", "Failed to reduce stock.")
-                            }
-
-                        val remainder = listing!!.stock - model.quantity
-                        if(remainder == 0.toLong()) {
-                            listingRef.update(MyFirebaseReferences.LISTING_IS_OPEN, false)
-                                .addOnSuccessListener {
-                                    Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
-                                }
-                                .addOnFailureListener {
-                                    Log.i("MessageOfferVHolder", "Failed to reduce stock.")
-                                }
+                    indivMsgRef
+                        .update(MyFirebaseReferences.MESSAGE_ADDRESSED_FIELD, true)
+                        .addOnFailureListener {
+                            println("Done Updating")
                         }
-                        val orderId = UUID.randomUUID().toString()
 
-                        val orderData = hashMapOf(
-                            MyFirebaseReferences.ORDER_ID_FIELD to orderId,
-                            MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD to model.sender,
-                            MyFirebaseReferences.ORDER_LISTING_ID_FIELD to listing!!.listingId,
-                            MyFirebaseReferences.ORDER_LISTING_NAME_FIELD to listing!!.name,
-                            MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD to listing!!.photos[0],
-                            MyFirebaseReferences.ORDER_QUANTITY_FIELD to model.quantity,
-                            MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offerPrice,
-                            MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD to false,
-                        )
+                    //Update conversation timestamp
+                    val convoRef = db!!
+                        .collection(MyFirebaseReferences.CONVERSATIONS_COLLECTION)
+                        .document(model.convoId)
 
-                        val orderRef = db!!
-                            .collection(MyFirebaseReferences.ORDERS_COLLECTION)
-                            .document(orderId)
+                    convoRef
+                        .update(mapOf(
+                            MyFirebaseReferences.CONVO_MESSAGE_FIELD to message,
+                            MyFirebaseReferences.CONVO_LSENDER_FIELD to loggedUser.email,
+                            MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow
+                        ))
+                        .addOnSuccessListener {
+                            Log.i(
+                                "DB Updated SUCCESS",
+                                "DocumentSnapshot updated"
+                            )
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(
+                                "DB Error",
+                                "Error updating document",
+                                e
+                            )
+                        }
 
-                        orderRef
-                            .set(orderData)
-                            .addOnSuccessListener {
-                                Log.i("MessageOfferVHolder", "Order made")
+                    if(listing!!.stock - model.quantity >= 0) {
+                        //Subtract order from listing stock count
+                        if (accepted) {
+                                listingRef.update(MyFirebaseReferences.STOCK_FIELD, listing!!.stock - model.quantity)
+                                    .addOnSuccessListener {
+                                        Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
+                                    }
+                                    .addOnFailureListener {
+                                        Log.i("MessageOfferVHolder", "Failed to reduce stock.")
+                                    }
+
+                                val remainder = listing!!.stock - model.quantity
+                                if(remainder == 0.toLong()) {
+                                    listingRef.update(MyFirebaseReferences.LISTING_IS_OPEN, false)
+                                        .addOnSuccessListener {
+                                            Log.i("MessageOfferVHolder", "ReducedStock Count by ${model.quantity}")
+                                        }
+                                        .addOnFailureListener {
+                                            Log.i("MessageOfferVHolder", "Failed to reduce stock.")
+                                        }
+                                }
+                                val orderId = UUID.randomUUID().toString()
+
+                                val orderData = hashMapOf(
+                                    MyFirebaseReferences.ORDER_ID_FIELD to orderId,
+                                    MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD to model.sender,
+                                    MyFirebaseReferences.ORDER_LISTING_ID_FIELD to listing!!.listingId,
+                                    MyFirebaseReferences.ORDER_LISTING_NAME_FIELD to listing!!.name,
+                                    MyFirebaseReferences.ORDER_PHOTOS_ID_FIELD to listing!!.photos[0],
+                                    MyFirebaseReferences.ORDER_QUANTITY_FIELD to model.quantity,
+                                    MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offerPrice,
+                                    MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD to false,
+                                    MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to Date()
+                                )
+
+                                val orderRef = db!!
+                                    .collection(MyFirebaseReferences.ORDERS_COLLECTION)
+                                    .document(orderId)
+
+                                orderRef
+                                    .set(orderData)
+                                    .addOnSuccessListener {
+                                        Log.i("MessageOfferVHolder", "Order made")
+                                    }
                             }
+                    }
                 }
-            }
-            .addOnFailureListener { e ->
-                Log.w(
-                    "MessageOfferViewHolder FAIL",
-                    "Error adding document",
-                    e
-                )
-            }
+                .addOnFailureListener { e ->
+                    Log.w(
+                        "MessageOfferViewHolder FAIL",
+                        "Error adding document",
+                        e
+                    )
+                }
     }
 
     fun leftAlignText(m: MessageModel) {

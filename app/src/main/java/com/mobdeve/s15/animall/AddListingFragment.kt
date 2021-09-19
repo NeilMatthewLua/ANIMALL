@@ -2,15 +2,12 @@ package com.mobdeve.s15.animall
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.location.Geocoder
-import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -27,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -44,16 +42,6 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
-import android.location.LocationManager
-import android.os.Looper
-import androidx.core.content.ContextCompat
-
-import androidx.core.content.ContextCompat.getSystemService
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.coroutines.CoroutineScope
 
 
 class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
@@ -220,6 +208,11 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
             productPriceErrorTv.visibility = View.VISIBLE
             invalid += 1
         }
+        else if (productQuantityEtv.text.toString().toDouble() < 1) {
+            productPriceErrorTv.text = "Product price must not be less that 1."
+            productPriceErrorTv.visibility = View.VISIBLE
+            invalid += 1
+        }
         else if (productPriceEtv.text.toString().toDouble() > 100000) {
             productPriceErrorTv.text = "Product price must not exceed 100,000."
             productPriceErrorTv.visibility = View.VISIBLE
@@ -233,6 +226,11 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         //Validation Rule: Not empty and <= 1,000
         if(TextUtils.isEmpty(productQuantityEtv.text.toString())) {
             productQuantityErrorTv.text = "Product quantity is required."
+            productQuantityErrorTv.visibility = View.VISIBLE
+            invalid += 1
+        }
+        else if (productQuantityEtv.text.toString().toInt() < 1) {
+            productQuantityErrorTv.text = "Product quantity must not be less that 1."
             productQuantityErrorTv.visibility = View.VISIBLE
             invalid += 1
         }
@@ -278,7 +276,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
         } else if (productLocationActv.text.isNotEmpty() && productLocationActv.text.isNotBlank()) {
             val cityData = CityDataHelper.initializeCityData()
             if (productLocationActv.text.toString() in cityData) {
-                productUploadErrorTv.visibility = View.GONE
+                productLocationErrorTv.visibility = View.GONE
             } else {
                 productLocationErrorTv.visibility = View.VISIBLE
                 invalid += 1
