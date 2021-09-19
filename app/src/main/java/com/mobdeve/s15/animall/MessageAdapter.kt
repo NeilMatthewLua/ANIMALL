@@ -1,17 +1,13 @@
 package com.mobdeve.s15.animall
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
 
 /*
  * The FirestoreRecyclerAdapter is is a modification of the regular Adapter and is able to integrate

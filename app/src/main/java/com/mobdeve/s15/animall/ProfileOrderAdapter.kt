@@ -1,20 +1,16 @@
 package com.mobdeve.s15.animall
 
-import android.provider.ContactsContract
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class ProfileOrderAdapter(private var data: ArrayList<OrderModel>, private val fragment: UserProfileFragment) :
     RecyclerView.Adapter<ProfileOrderViewHolder>() {

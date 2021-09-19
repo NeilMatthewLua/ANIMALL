@@ -2,10 +2,10 @@ package com.mobdeve.s15.animall
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -16,12 +16,11 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_landing.*
 import kotlinx.android.synthetic.main.fragment_message.*
 import kotlinx.android.synthetic.main.fragment_messages.*
-import kotlinx.android.synthetic.main.fragment_messages.dimBackgroundV
 import kotlinx.android.synthetic.main.fragment_messages.landingPb
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class ConversationFragment : Fragment() {
     val TAG: String = "CONVERSATION FRAGMENT"

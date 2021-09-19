@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.fragment_user_profile.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class ProfileListingAdapter(private val data: ArrayList<ListingModel>, private val fragment: UserProfileFragment, private val isOwnProfile: Boolean) :
     RecyclerView.Adapter<ProfileListingViewHolder>() {

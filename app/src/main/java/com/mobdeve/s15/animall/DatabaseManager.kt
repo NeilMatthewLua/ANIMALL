@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlin.collections.ArrayList
 
 object DatabaseManager {
     const val TAG = "FIRESTORE"

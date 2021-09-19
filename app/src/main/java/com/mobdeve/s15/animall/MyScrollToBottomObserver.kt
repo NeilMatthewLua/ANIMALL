@@ -1,10 +1,7 @@
 package com.mobdeve.s15.animall
 
-import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import kotlinx.android.synthetic.main.fragment_message.*
 
 class MyScrollToBottomObserver(
     private val recycler: RecyclerView,
