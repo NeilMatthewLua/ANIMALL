@@ -70,10 +70,10 @@ object DatabaseManager {
             if (searchOption.isNotBlank()) {
                 if (job != null) {
                     job = job.whereGreaterThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption)
-                             .whereLessThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption+"\uF7FF")
+                        .whereLessThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption+"\uF7FF")
                 } else {
                     job = listingRef.whereGreaterThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption)
-                                    .whereLessThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption+"\uF7FF")
+                        .whereLessThanOrEqualTo(MyFirebaseReferences.NAME_FIELD, searchOption+"\uF7FF")
                 }
             }
             // Last doc (when user clicks load more)
@@ -189,9 +189,9 @@ object DatabaseManager {
         val data = ArrayList<ConversationModel>()
         try {
             val receive_job = conversationRef
-                        .whereArrayContains("users", email)
-                        .get()
-                        .await()
+                .whereArrayContains("users", email)
+                .get()
+                .await()
             Log.i("`DatabaseManager`", "Getting conversations")
             for (document in receive_job.documents) {
                 Log.i("`DatabaseManager`", "Got one as recipient")
@@ -305,7 +305,11 @@ object DatabaseManager {
         val orderRef = db.collection(MyFirebaseReferences.ORDERS_COLLECTION)
         val data = ArrayList<OrderModel>()
         try {
-            val job = orderRef.whereEqualTo(MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail).get().await()
+            val job = orderRef
+                .whereEqualTo(MyFirebaseReferences.ORDER_CUSTOMER_ID_FIELD, customerEmail)
+                .orderBy(MyFirebaseReferences.CONVO_TIMESTAMP_FIELD, Query.Direction.DESCENDING)
+                .get().await()
+
             for (document in job.documents) {
                 // Convert to Long
                 var unitPrice = document[MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD] as Long
@@ -394,17 +398,17 @@ object DatabaseManager {
         Log.i("DBManager convoId", "${convoId}")
         try {
             val convo = conversationRef
-                            .document(convoId)
-                            .get()
-                            .await()
+                .document(convoId)
+                .get()
+                .await()
 
             val listingRef = db.collection(MyFirebaseReferences.LISTINGS_COLLECTION)
             val listingId = convo[MyFirebaseReferences.LISTING_ID_FIELD] as String
 
             val listing_doc = listingRef
-                            .document(listingId)
-                            .get()
-                            .await()
+                .document(listingId)
+                .get()
+                .await()
 
             var photoArray = listing_doc[MyFirebaseReferences.PHOTOS_FIELD] as ArrayList<String>
             // Convert to Long
@@ -547,7 +551,7 @@ object DatabaseManager {
             if (isEmpty) {
                 Log.d(TAG, listingId)
                 val job = launch (Dispatchers.IO) {
-                     listingRef
+                    listingRef
                         .document(listingId)
                         .delete()
                         .await()
@@ -620,6 +624,6 @@ object DatabaseManager {
         } catch (e: Exception) {
             Log.d("FIREBASE:", "ERROR EDITING LISTING")
         }
-       listing
+        listing
     }
 }

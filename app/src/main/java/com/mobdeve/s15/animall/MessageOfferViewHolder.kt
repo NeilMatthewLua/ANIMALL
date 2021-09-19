@@ -197,6 +197,7 @@ class MessageOfferViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                                     MyFirebaseReferences.ORDER_QUANTITY_FIELD to model.quantity,
                                     MyFirebaseReferences.ORDER_SOLD_PRICE_FIELD to model.offerPrice,
                                     MyFirebaseReferences.ORDER_IS_CONFIRMED_FIELD to false,
+                                    MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to Date()
                                 )
 
                                 val orderRef = db!!
