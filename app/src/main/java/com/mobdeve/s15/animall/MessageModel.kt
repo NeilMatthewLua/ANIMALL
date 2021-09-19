@@ -15,7 +15,7 @@ class MessageModel(
 ) {
     constructor() : this(
         "",
-         Date(),
+        Date(),
         "",
         "",
         false,

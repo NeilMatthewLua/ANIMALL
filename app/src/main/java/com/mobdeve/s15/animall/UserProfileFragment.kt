@@ -23,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class UserProfileFragment : Fragment() {
-    val TAG: String = "USER PROFILE"
     // Db data
     var listingData: ArrayList<ListingModel> = ArrayList<ListingModel>()
     var orderData: ArrayList<OrderModel> = ArrayList<OrderModel>()
@@ -56,8 +55,7 @@ class UserProfileFragment : Fragment() {
                     orderData = DatabaseManager.getUserOrders(loggedUser?.email!!)
                 }
                 dataInit.await()
-                Picasso.get().
-                load(loggedUser?.photoUrl)
+                Picasso.get().load(loggedUser?.photoUrl)
                     .error(R.drawable.ic_error)
                     .placeholder(R.drawable.progress_animation)
                     .into(profileImageIv);
@@ -70,22 +68,23 @@ class UserProfileFragment : Fragment() {
                 profileOrderBtn.visibility = View.GONE
                 profileEditLocationBtn.visibility = View.GONE
             } else {
-                profileListingBtn.setOnClickListener{
-                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                    profileListingBtn.setTextColor(getResources().getColor(R.color.white))
-                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                    profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
-                    profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+                profileListingBtn.setOnClickListener {
+                    profileListingBtn.setBackgroundColor(resources.getColor(R.color.primary_green))
+                    profileListingBtn.setTextColor(resources.getColor(R.color.white))
+                    profileOrderBtn.setBackgroundColor(resources.getColor(R.color.white))
+                    profileOrderBtn.setTextColor(resources.getColor(R.color.black))
+                    profileListingAdapter =
+                        ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
                     profileRecyclerView!!.adapter = profileListingAdapter
                     profileListingAdapter.notifyDataSetChanged()
                 }
 
-                profileOrderBtn.setOnClickListener{
-                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                    profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
-                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                    profileListingBtn.setTextColor(getResources().getColor(R.color.black))
-                    profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
+                profileOrderBtn.setOnClickListener {
+                    profileOrderBtn.setBackgroundColor(resources.getColor(R.color.primary_green))
+                    profileOrderBtn.setTextColor(resources.getColor(R.color.white))
+                    profileListingBtn.setBackgroundColor(resources.getColor(R.color.white))
+                    profileListingBtn.setTextColor(resources.getColor(R.color.black))
+                    profileOrderAdapter = ProfileOrderAdapter(orderData, this@UserProfileFragment)
                     profileRecyclerView!!.adapter = profileOrderAdapter
                     profileOrderAdapter.notifyDataSetChanged()
                 }
@@ -101,7 +100,8 @@ class UserProfileFragment : Fragment() {
                 profileImageContainerCv.visibility = View.VISIBLE
             }
 
-            profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+            profileListingAdapter =
+                ProfileListingAdapter(listingData, this@UserProfileFragment, isOwnProfile)
             profileRecyclerView!!.adapter = profileListingAdapter
             profileListingAdapter.notifyDataSetChanged()
 
@@ -112,11 +112,9 @@ class UserProfileFragment : Fragment() {
     }
 
     private val getLocation = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
-//            profileDimBackgroundV.visibility = View.VISIBLE
-//            profilePb.visibility = View.VISIBLE
             val intent = result.data
             val value = intent?.getStringExtra("PREF_LOC")
 
@@ -131,15 +129,6 @@ class UserProfileFragment : Fragment() {
                 }
             }
         }
-//        lifecycleScope.launch {
-//            val loggedUser = Firebase.auth.currentUser
-//            val dataInit = async(Dispatchers.IO) {
-//                currentUser = DatabaseManager.getUserName(loggedUser?.email!!)
-//            }
-//            dataInit.await()
-//            profileDimBackgroundV.visibility = View.GONE
-//            profilePb.visibility = View.GONE
-//        }
     }
 
     override fun onCreateView(
@@ -167,10 +156,11 @@ class UserProfileFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         profileRecyclerView!!.layoutManager = linearLayoutManager
         // Adapter
-        profileListingAdapter = ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
+        profileListingAdapter =
+            ProfileListingAdapter(listingData, this@UserProfileFragment, isOwnProfile)
         profileRecyclerView!!.adapter = profileListingAdapter
 
-        profileLogoutBtn.setOnClickListener{
+        profileLogoutBtn.setOnClickListener {
             // Logout of auth
             Firebase.auth.signOut()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -178,7 +168,7 @@ class UserProfileFragment : Fragment() {
                 .requestEmail()
                 .build()
 
-            val googleSignInClient = GoogleSignIn.getClient(context, gso)
+            val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
             googleSignInClient.signOut()
             // Redirect back to sign up page
             val intent = Intent(context, LoginActivity::class.java)
@@ -188,6 +178,7 @@ class UserProfileFragment : Fragment() {
     }
 
     companion object {
-        val SELLER_EMAIL = "sellerEmail"
+        const val SELLER_EMAIL = "sellerEmail"
+        const val TAG: String = "USER PROFILE"
     }
 }

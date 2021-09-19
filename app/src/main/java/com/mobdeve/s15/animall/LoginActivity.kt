@@ -27,10 +27,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var signInBtn: Button
-    companion object {
-//        const val RC_SIGN_IN = 9001
-        const val TAG ="LGNACT"
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,32 +49,32 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    val account = task.getResult(ApiException::class.java)!!
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
+                    firebaseAuthWithGoogle(account.idToken!!)
+                } catch (e: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    Log.w(TAG, "Google sign in failed", e)
+                }
+            } else {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle(R.string.location_dialog_title)
+                val str = "Please sign in with a valid DLSU account."
+                builder.setMessage(str)
+
+                builder.setPositiveButton("I understand") { _, _ -> }
+
+                val alertDialog: AlertDialog = builder.create()
+                alertDialog.setCancelable(false)
+                alertDialog.show()
             }
-        } else {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle(R.string.location_dialog_title)
-            val str = "Please sign in with a valid DLSU account."
-            builder.setMessage(str)
-//            builder.setIcon(android.R.drawable.ic_dialog_alert)
-
-            builder.setPositiveButton("I understand"){ _, _ ->}
-
-            val alertDialog: AlertDialog = builder.create()
-            alertDialog.setCancelable(false)
-            alertDialog.show()
         }
-    }
 
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
@@ -118,8 +114,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private val getLocation = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val intent = result.data
             val value = intent?.getStringExtra("PREF_LOC")
@@ -141,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
         add them to the db and get their preferred location,
         else redirect them to the landing page.
      */
-    private fun redirectUser(user:FirebaseUser) {
+    private fun redirectUser(user: FirebaseUser) {
         val userRef = db.collection("users").document(user.uid)
         userRef.get().addOnCompleteListener { documentTask ->
             if (documentTask.isSuccessful) {
@@ -166,5 +162,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    companion object {
+        const val TAG = "Login Activity"
     }
 }

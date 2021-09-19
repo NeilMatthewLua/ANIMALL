@@ -12,15 +12,21 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 
-class ProfileOrderAdapter(private var data: ArrayList<OrderModel>, private val fragment: UserProfileFragment) :
+class ProfileOrderAdapter(
+    private var data: ArrayList<OrderModel>,
+    private val fragment: UserProfileFragment
+) :
     RecyclerView.Adapter<ProfileOrderViewHolder>() {
-    val TAG : String = "PROFILE ORDER ADAPTER: "
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileOrderViewHolder {
         val v =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_profile_order_layout, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_profile_order_layout, parent, false)
 
         fragment.requireActivity().supportFragmentManager
-            .setFragmentResultListener(CustomDialogFragment.MODAL_ORDER_CONFIRM_RESULT, fragment.viewLifecycleOwner) { key, bundle ->
+            .setFragmentResultListener(
+                CustomDialogFragment.MODAL_ORDER_CONFIRM_RESULT,
+                fragment.viewLifecycleOwner
+            ) { key, bundle ->
                 val result = bundle.getString(CustomDialogFragment.MODAL_SUCCESS_KEY)
                 val id = bundle.getString(CustomDialogFragment.MODAL_ORDER_ID_KEY)
                 if (result == "ok") {
@@ -35,16 +41,24 @@ class ProfileOrderAdapter(private var data: ArrayList<OrderModel>, private val f
                         fragment.profileDimBackgroundV.visibility = View.GONE
                         fragment.profilePb.visibility = View.GONE
                         if (!success) {
-                            Toast.makeText(fragment.requireContext(),"Failed to confirm error. Please try again.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                fragment.requireContext(),
+                                "Failed to confirm error. Please try again.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             for (i in 0..data.size) {
-                                var item = data.get(i)
+                                val item = data[i]
                                 if (item.orderId == id) {
-                                    data.get(i).isConfirmed = true
+                                    data[i].isConfirmed = true
                                     break
                                 }
                             }
-                            Toast.makeText(fragment.requireContext(),"Order confirmed.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                fragment.requireContext(),
+                                "Order confirmed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             notifyDataSetChanged()
                         }
                     }
@@ -61,5 +75,9 @@ class ProfileOrderAdapter(private var data: ArrayList<OrderModel>, private val f
 
     override fun getItemCount(): Int {
         return data.size
+    }
+
+    companion object {
+        const val TAG: String = "PROFILE ORDER ADAPTER: "
     }
 }

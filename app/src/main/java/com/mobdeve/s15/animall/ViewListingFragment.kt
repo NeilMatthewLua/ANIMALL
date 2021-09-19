@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
-import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController
 import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.fragment_view_listing.*
@@ -24,7 +23,6 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ViewListingFragment : Fragment() {
-    val TAG = "ViewListingActivity"
     private val viewModel: ListingSharedViewModel by activityViewModels()
     lateinit var sliderView: SliderView
     lateinit var adapterListing: ListingSliderAdapter
@@ -32,10 +30,6 @@ class ViewListingFragment : Fragment() {
     var user: UserModel? = null
     var conversation: ConversationModel? = null
     lateinit var listing: ListingModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,19 +54,15 @@ class ViewListingFragment : Fragment() {
             sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM) //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
 
             sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
-//        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH)
-            sliderView.setIndicatorSelectedColor(Color.WHITE)
-            sliderView.setIndicatorUnselectedColor(Color.GRAY)
-//        sliderView.setScrollTimeInSec(3)
-//        sliderView.setAutoCycle(true)
-//        sliderView.startAutoCycle()
+            sliderView.indicatorSelectedColor = Color.WHITE
+            sliderView.indicatorUnselectedColor = Color.GRAY
 
-            sliderView.setOnIndicatorClickListener(DrawController.ClickListener {
+            sliderView.setOnIndicatorClickListener {
                 Log.i(
                     "GGG",
                     "onIndicatorClicked: " + sliderView.getCurrentPagePosition()
                 )
-            })
+            }
 
             // Update details
             listingNameTv.text = it.name
@@ -80,7 +70,7 @@ class ViewListingFragment : Fragment() {
             listingPriceTv.text = it.unitPrice.toString()
             listingCategoryC.text = it.category
             listingLocationTv.text = it.preferredLocation
-            listingClosedC.visibility = if(it.isOpen) View.GONE else View.VISIBLE
+            listingClosedC.visibility = if (it.isOpen) View.GONE else View.VISIBLE
             listingDescriptionTv.text = it.description
 
             listing = it
@@ -92,13 +82,13 @@ class ViewListingFragment : Fragment() {
                 userInit.await()
                 loggedUser = Firebase.auth.currentUser!!
 
-                if(user != null) {
+                if (user != null) {
                     listingSellerTv.text = user!!.name
                 }
 
                 viewSellerProfileBtn.setOnClickListener {
                     val sellerProfilePage = UserProfileFragment()
-                    var args = Bundle()
+                    val args = Bundle()
                     args.putString(UserProfileFragment.SELLER_EMAIL, user!!.email)
                     sellerProfilePage.arguments = args
                     it.findNavController().navigate(R.id.profileFragment, args)
@@ -110,41 +100,47 @@ class ViewListingFragment : Fragment() {
                     listingContactBtn.setOnClickListener { view ->
                         lifecycleScope.launch {
                             val convoInit = async(Dispatchers.IO) {
-                                conversation = DatabaseManager.getConversation(it.listingId, loggedUser.email!!)
+                                conversation = DatabaseManager.getConversation(
+                                    it.listingId,
+                                    loggedUser.email!!
+                                )
                             }
                             convoInit.await()
 
                             //If no conversation has been made yet
                             if (conversation == null) {
                                 val convoID = UUID.randomUUID().toString()
-                                    val viewModel : MessageSharedViewModel by activityViewModels()
+                                val viewModel: MessageSharedViewModel by activityViewModels()
 
-                                    viewModel.setListingData(ConversationModel(
+                                viewModel.setListingData(
+                                    ConversationModel(
                                         user!!.email,
                                         loggedUser.email!!,
                                         listing.listingId,
                                         listing.name,
                                         listing.photos[0],
                                         convoID
-                                    ), true)
+                                    ), true
+                                )
 
-                                    view.findNavController().navigate(R.id.messageFragment)
-                            }
-                            else {
-                                val viewModel : MessageSharedViewModel by activityViewModels()
+                                view.findNavController().navigate(R.id.messageFragment)
+                            } else {
+                                val viewModel: MessageSharedViewModel by activityViewModels()
                                 viewModel.setListingData(conversation!!, false)
 
                                 view.findNavController().navigate(R.id.messageFragment)
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     listingActionLinearLayout.visibility = View.GONE
                 }
             }
 
         })
+    }
 
+    companion object {
+        const val TAG = "ViewListingActivity"
     }
 }

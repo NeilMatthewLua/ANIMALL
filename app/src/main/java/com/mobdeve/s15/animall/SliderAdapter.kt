@@ -10,7 +10,7 @@ class SliderAdapter(context: Context) :
     SliderViewAdapter<SliderViewHolder>() {
 
     private var mSliderItems: MutableList<Listing> = ArrayList()
-    private var context:Context = context
+    private var context: Context = context
 
     fun renewItems(sliderItems: MutableList<Listing>) {
         mSliderItems = sliderItems
@@ -44,17 +44,6 @@ class SliderAdapter(context: Context) :
         viewHolder.setDeleteBtnOnClickListener {
             deleteItem(position)
         }
-//        viewHolder.textViewDescription.setText(sliderItem.getDescription())
-//        viewHolder.textViewDescription.textSize = 16f
-//        viewHolder.textViewDescription.setTextColor(Color.WHITE)
-//        Glide.with(viewHolder.itemView)
-//            .load(sliderItem.getImageUrl)
-//            .fitCenter()
-//            .into(viewHolder.imageViewBackground)
-//        viewHolder.itemView.setOnClickListener{
-//            Toast.makeText(context,"This is item in position $position", Toast.LENGTH_SHORT)
-//                .show()
-//        }
     }
 
     override fun getCount(): Int {

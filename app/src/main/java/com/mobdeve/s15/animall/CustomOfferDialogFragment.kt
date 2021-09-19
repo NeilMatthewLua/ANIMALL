@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_offer_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CustomOfferDialogFragment: DialogFragment() {
+class CustomOfferDialogFragment : DialogFragment() {
     var modalType: String = ""
     var listingId: String = ""
     var listingName: String = ""
@@ -22,21 +22,25 @@ class CustomOfferDialogFragment: DialogFragment() {
     var listingPrice: Long = 0
     var listingStock: Long = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        getDialog()!!.getWindow()?.setBackgroundDrawableResource(R.drawable.curved_rectangle)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        dialog!!.window?.setBackgroundDrawableResource(R.drawable.curved_rectangle)
         // Check the modal type to be displayed
         modalType = arguments?.getString(MODAL_TYPE_KEY, "Modal Type")!!
         listingName = arguments?.getString(MODAL_LISTING_NAME_KEY, "Listing Name")!!
         listingStock = arguments?.getLong(MODAL_LISTING_STOCK_KEY, 0)!!
         listingId = arguments?.getString(MODAL_LISTING_ID_KEY, "ID")!!
-        Log.d("MODAL",listingName)
+        Log.d("MODAL", listingName)
         if (modalType == MODAL_ORDER) {
             listingPrice = arguments?.getLong(MODAL_LISTING_PRICE_KEY, 0)!!
             Log.d("MODAL", listingPrice.toString())
         }
 
         lifecycleScope.launch {
-            val job = launch (Dispatchers.IO) {
+            val job = launch(Dispatchers.IO) {
                 listingStock = DatabaseManager.getListingFromId(listingId)!!.stock
             }
             job.join()
@@ -69,7 +73,11 @@ class CustomOfferDialogFragment: DialogFragment() {
                 listingQuantity += 1
                 updateDialogCount()
             } else {
-                Toast.makeText(requireContext(),"Cannot input more than stock count.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Cannot input more than stock count.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
         minusCountBtn.setOnClickListener {
@@ -80,7 +88,7 @@ class CustomOfferDialogFragment: DialogFragment() {
             }
         }
         updateDialogCount()
-        productNameEtv2.addTextChangedListener (object : TextWatcher {
+        productNameEtv2.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -98,7 +106,7 @@ class CustomOfferDialogFragment: DialogFragment() {
             dismiss()
         }
         profileEditListingBtn.setOnClickListener {
-            var bundle = Bundle()
+            val bundle = Bundle()
             if (modalType == MODAL_ORDER) {
                 if (messageQuantityTv.text.toString().toLong() > 0) {
                     bundle.putString(MODAL_SUCCESS_KEY, "ok")
@@ -108,11 +116,17 @@ class CustomOfferDialogFragment: DialogFragment() {
                         .setFragmentResult(MODAL_ORDER_RESULT, bundle)
                     dismiss()
                 } else {
-                    Toast.makeText(requireContext(),"Please input a non-zero quantity.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Please input a non-zero quantity.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-            } else if(modalType == MODAL_OFFER) {
-                if (productNameEtv2.text.toString().toIntOrNull() != null && productNameEtv2.text.toString().toLong() > 0
-                    && messageQuantityTv.text.toString().toLong() > 0) {
+            } else if (modalType == MODAL_OFFER) {
+                if (productNameEtv2.text.toString()
+                        .toIntOrNull() != null && productNameEtv2.text.toString().toLong() > 0
+                    && messageQuantityTv.text.toString().toLong() > 0
+                ) {
                     bundle.putString(MODAL_SUCCESS_KEY, "ok")
                     bundle.putLong(MODAL_QUANTITY_ORDERED_KEY, listingQuantity)
                     bundle.putLong(MODAL_LISTING_PRICE_KEY, listingPrice)
@@ -121,11 +135,23 @@ class CustomOfferDialogFragment: DialogFragment() {
                     dismiss()
                 } else {
                     if (productNameEtv2.text.toString().toIntOrNull() == null)
-                        Toast.makeText(requireContext(),"Please input numbers only.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please input numbers only.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     else if (productNameEtv2.text.toString().toLong() == 0.toLong())
-                        Toast.makeText(requireContext(),"Please input a non-zero price.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please input a non-zero price.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     else if (listingQuantity == 0.toLong())
-                        Toast.makeText(requireContext(),"Please input a non-zero quantity.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please input a non-zero quantity.",
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
             }
         }
@@ -139,20 +165,20 @@ class CustomOfferDialogFragment: DialogFragment() {
     }
 
     companion object {
-        val MODAL_TYPE_KEY = "modalType"
+        const val MODAL_TYPE_KEY = "modalType"
 
         // Types of modals
-        val MODAL_ORDER = "modalOrder"
-        val MODAL_OFFER = "modalOffer"
+        const val MODAL_ORDER = "modalOrder"
+        const val MODAL_OFFER = "modalOffer"
 
-        val MODAL_ORDER_RESULT = "modalOrderResult"
-        val MODAL_OFFER_RESULT = "modalOfferResult"
+        const val MODAL_ORDER_RESULT = "modalOrderResult"
+        const val MODAL_OFFER_RESULT = "modalOfferResult"
 
-        val MODAL_LISTING_ID_KEY = "modalListingIdKey"
-        val MODAL_LISTING_NAME_KEY = "modalListingNameKey"
-        val MODAL_LISTING_STOCK_KEY = "modalListingStockKey"
-        val MODAL_LISTING_PRICE_KEY = "modalListingPriceKey"
-        val MODAL_QUANTITY_ORDERED_KEY = "modalQuantityOrderedKey"
-        val MODAL_SUCCESS_KEY = "modalSuccessKey"
+        const val MODAL_LISTING_ID_KEY = "modalListingIdKey"
+        const val MODAL_LISTING_NAME_KEY = "modalListingNameKey"
+        const val MODAL_LISTING_STOCK_KEY = "modalListingStockKey"
+        const val MODAL_LISTING_PRICE_KEY = "modalListingPriceKey"
+        const val MODAL_QUANTITY_ORDERED_KEY = "modalQuantityOrderedKey"
+        const val MODAL_SUCCESS_KEY = "modalSuccessKey"
     }
 }

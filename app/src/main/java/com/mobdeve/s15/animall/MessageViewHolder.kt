@@ -20,7 +20,7 @@ class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         messageTv.text = m.message
 
         val sdf3 =
-                SimpleDateFormat("hh:mm:ss")
+            SimpleDateFormat("hh:mm:ss")
         sdf3.timeZone = TimeZone.getTimeZone("Asia/Singapore")
 
         var date = m.timestamp

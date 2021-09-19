@@ -23,13 +23,9 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class ConversationFragment : Fragment() {
-    val TAG: String = "CONVERSATION FRAGMENT"
     var data: ArrayList<ConversationModel> = ArrayList<ConversationModel>()
-    var message_data: ArrayList<MessageModel> = ArrayList<MessageModel>()
     var hasRetrieved: Boolean = false
 
-    // RecyclerView components
-    lateinit var myAdapter: ConversationAdapter
     // Replacement of the base adapter view
     private lateinit var myFirestoreRecyclerAdapter: ConversationAdapter
 
@@ -44,7 +40,6 @@ class ConversationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater
             .inflate(R.layout.fragment_messages, container, false)
     }
@@ -89,7 +84,7 @@ class ConversationFragment : Fragment() {
 
                 myFirestoreRecyclerAdapter!!.startListening()
 
-                getActivity()?.runOnUiThread {
+                activity?.runOnUiThread {
                     hasRetrieved = true
                     dimBackgroundV.visibility = View.GONE
                     landingPb.visibility = View.GONE
@@ -107,8 +102,10 @@ class ConversationFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        // We want to eventually stop the listening when we're about to exit an app as we don't need
-        // something listening all the time in the background.
-        myFirestoreRecyclerAdapter!!.stopListening()
+        myFirestoreRecyclerAdapter.stopListening()
+    }
+
+    companion object {
+        const val TAG: String = "CONVERSATION FRAGMENT"
     }
 }

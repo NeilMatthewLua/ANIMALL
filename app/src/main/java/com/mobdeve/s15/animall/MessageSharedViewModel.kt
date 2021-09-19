@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MessageSharedViewModel : ViewModel() {
-    var conversationData : MutableLiveData<ConversationModel> = MutableLiveData()
+    var conversationData: MutableLiveData<ConversationModel> = MutableLiveData()
     var isFirstData: Boolean = true
 
     fun setListingData(data: ConversationModel, isFirst: Boolean) {
@@ -13,11 +13,11 @@ class MessageSharedViewModel : ViewModel() {
         isFirstData = isFirst
     }
 
-    fun getListingData() : LiveData<ConversationModel> {
+    fun getListingData(): LiveData<ConversationModel> {
         return conversationData
     }
 
-    fun getIsFirst() : Boolean {
+    fun getIsFirst(): Boolean {
         return isFirstData
     }
 }

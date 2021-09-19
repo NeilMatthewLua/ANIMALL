@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_custom_dialog.*
 
-class CustomDialogFragment: DialogFragment() {
+class CustomDialogFragment : DialogFragment() {
     var modalType: String = ""
     var orderId: String = ""
     var orderName: String = ""
@@ -16,7 +16,11 @@ class CustomDialogFragment: DialogFragment() {
     var listingName: String = ""
     var listingStock: Long = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         getDialog()!!.getWindow()?.setBackgroundDrawableResource(R.drawable.curved_rectangle)
         // Check the modal type to be displayed
         modalType = arguments?.getString(MODAL_TYPE_KEY, "Modal Type")!!
@@ -24,7 +28,8 @@ class CustomDialogFragment: DialogFragment() {
             orderId = arguments?.getString(MODAL_ORDER_ID_KEY, "Order ID")!!
             orderName = arguments?.getString(MODAL_ORDER_NAME_KEY, "Order Name")!!
         } else if (modalType == MODAL_LISTING_CLOSE || modalType == MODAL_LISTING_DELETE
-            || modalType == MODAL_LISTING_EDIT) {
+            || modalType == MODAL_LISTING_EDIT
+        ) {
             listingId = arguments?.getString(MODAL_LISTING_ID_KEY, "Listing ID")!!
             listingName = arguments?.getString(MODAL_LISTING_NAME_KEY, "Listing Name")!!
             // Include stock count for edit listing
@@ -38,7 +43,6 @@ class CustomDialogFragment: DialogFragment() {
     override fun onStart() {
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.85).toInt()
-//        val height = (resources.displayMetrics.heightPixels * 0.40).toInt()
         dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
         editListingCl.visibility = View.GONE
         if (modalType == MODAL_ORDER_CONFIRM) {
@@ -62,7 +66,7 @@ class CustomDialogFragment: DialogFragment() {
                 bundle.putString(MODAL_ORDER_ID_KEY, orderId)
                 requireActivity().supportFragmentManager
                     .setFragmentResult(MODAL_ORDER_CONFIRM_RESULT, bundle)
-            } else if(modalType == MODAL_LISTING_CLOSE) {
+            } else if (modalType == MODAL_LISTING_CLOSE) {
                 bundle.putString(MODAL_SUCCESS_KEY, "ok")
                 bundle.putString(MODAL_LISTING_ID_KEY, listingId)
                 requireActivity().supportFragmentManager
@@ -82,15 +86,24 @@ class CustomDialogFragment: DialogFragment() {
                         .setFragmentResult(MODAL_LISTING_EDIT_RESULT, bundle)
                 } else {
                     if (newStockCount.toIntOrNull() == null)
-                        Toast.makeText(requireContext(),"Please input numbers only.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please input numbers only.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     else if (newStockCount.toLong() > 0)
-                        Toast.makeText(requireContext(),"Please input non-negative numbers only.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Please input non-negative numbers only.",
+                            Toast.LENGTH_LONG
+                        ).show()
                 }
 
             }
             dismiss()
         }
     }
+
     companion object {
         val MODAL_TYPE_KEY = "modalType"
 
@@ -99,11 +112,13 @@ class CustomDialogFragment: DialogFragment() {
         val MODAL_LISTING_CLOSE = "modalListingClose"
         val MODAL_LISTING_DELETE = "modalListingDelete"
         val MODAL_LISTING_EDIT = "modalListingEdit"
+
         // Results from modals
         val MODAL_ORDER_CONFIRM_RESULT = "modalOrderConfirmResult"
         val MODAL_LISTING_CLOSE_RESULT = "modalListingCloseResult"
         val MODAL_LISTING_DELETE_RESULT = "modalListingDeleteResult"
         val MODAL_LISTING_EDIT_RESULT = "modalListingEditResult"
+
         // Items to be returned in result
         val MODAL_ORDER_ID_KEY = "modalOrderIDKey"
         val MODAL_ORDER_NAME_KEY = "modalOrderName"

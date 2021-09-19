@@ -21,19 +21,18 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var profileOrderConfirmedTv: TextView
     var receivedOrderBtn: Button
     var profileOrderId: String = ""
-    val USER_PROFILE_FRAGMENT = 1
 
     fun bindData(order: OrderModel) {
         orderData = order
         profileOrderId = order.orderId
         val totalPrice = order.quantity * order.soldPrice
         profileOrderNameTv.text = order.listingName
-        profileOrderQuantityTv.text = "₱" + order.soldPrice.toString() + " x " + order.quantity.toString() + " = " + totalPrice.toString()
+        profileOrderQuantityTv.text =
+            "₱" + order.soldPrice.toString() + " x " + order.quantity.toString() + " = " + totalPrice.toString()
 
-        Picasso.get().
-        load(order.photosId)
+        Picasso.get().load(order.photosId)
             .error(R.drawable.ic_error)
-            .placeholder( R.drawable.progress_animation)
+            .placeholder(R.drawable.progress_animation)
             .into(profileOrderImageIv)
 
         if (order.isConfirmed) {
@@ -55,11 +54,14 @@ class ProfileOrderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun setConfirmBtnListener(manager: FragmentManager, fragment: UserProfileFragment) {
-        receivedOrderBtn.setOnClickListener{
+        receivedOrderBtn.setOnClickListener {
             val dialog = CustomDialogFragment()
             // optionally pass arguments to the dialog fragment
-            var args = Bundle()
-            args.putString(CustomDialogFragment.MODAL_TYPE_KEY, CustomDialogFragment.MODAL_ORDER_CONFIRM)
+            val args = Bundle()
+            args.putString(
+                CustomDialogFragment.MODAL_TYPE_KEY,
+                CustomDialogFragment.MODAL_ORDER_CONFIRM
+            )
             args.putString(CustomDialogFragment.MODAL_ORDER_ID_KEY, orderData.orderId)
             args.putString(CustomDialogFragment.MODAL_ORDER_NAME_KEY, orderData.listingName)
             dialog.arguments = args
