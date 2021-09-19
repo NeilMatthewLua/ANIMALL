@@ -182,7 +182,9 @@ class MessageFragment : Fragment() {
                 MyFirebaseReferences.LISTING_PHOTO_FIELD to convo.listingPhoto,
                 MyFirebaseReferences.CONVO_ID_FIELD to convo.id,
                 MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to Date(),
-                MyFirebaseReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, convo.recipientEmail)
+                MyFirebaseReferences.CONVO_USERS_FIELD to arrayListOf(loggedUser.email!!, convo.recipientEmail),
+                MyFirebaseReferences.CONVO_MESSAGE_FIELD to "",
+
             )
 
             for ((key, value) in convoHash.entries) {
@@ -267,7 +269,10 @@ class MessageFragment : Fragment() {
                                         .document(convo.id)
 
                                     convoRef
-                                        .update(MyFirebaseReferences.CONVO_TIMESTAMP_FIELD, timeNow)
+                                        .update(mapOf(
+                                            MyFirebaseReferences.CONVO_TIMESTAMP_FIELD to timeNow,
+                                            MyFirebaseReferences.CONVO_MESSAGE_FIELD to data.get(MyFirebaseReferences.MESSAGE_FIELD)
+                                        ))
                                         .addOnSuccessListener {
                                             Log.i(
                                                 "DB Updated SUCCESS",

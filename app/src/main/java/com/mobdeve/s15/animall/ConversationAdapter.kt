@@ -36,16 +36,17 @@ class ConversationAdapter(
 
         Log.i("ConvoAdapter", "getting latest message ${model.id}")
         fragment.lifecycleScope.launch {
-            try {
-                val dataGet = async(Dispatchers.IO) {
-                    message = DatabaseManager.getLatestMessage(model.id)!!
-                }
-                dataGet.await()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+//            try {
+//                val dataGet = async(Dispatchers.IO) {
+//                    message = DatabaseManager.getLatestMessage(model.id)!!
+//                }
+//                dataGet.await()
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
 
-            holder.bindData(model, message!!)
+//            holder.bindData(model, message!!)
+            holder.bindData(model)
             holder.conversationLayout.setOnClickListener {
                 val viewModel : MessageSharedViewModel by fragment.activityViewModels()
                 viewModel.setListingData(model, false)

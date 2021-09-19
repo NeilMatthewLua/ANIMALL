@@ -23,7 +23,8 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     var conversationImageIv: ImageView
 //    var message: MessageModel? = null
 
-    fun bindData(conversation: ConversationModel, message: MessageModel) {
+//    fun bindData(conversation: ConversationModel, message: MessageModel) {
+    fun bindData(conversation: ConversationModel) {
         if (conversation.listingPhoto != null) {
             Picasso.get().load(conversation.listingPhoto)
                 .error(R.drawable.ic_error)
@@ -32,10 +33,10 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
         Log.i("ConvoVHolder", "${conversation == null}")
         conversationNameTv.text = conversation.listingName
-        if (message != null){
-            Log.i("ConvoVHolder", message!!.message)
+//        if (message != null){
+//            Log.i("ConvoVHolder", message!!.message)
 
-            var date = message!!.timestamp
+            var date = conversation.timestamp
 
             val sdf3: SimpleDateFormat =
                 SimpleDateFormat("MMM-dd-yyyy hh:mm:ss")
@@ -46,13 +47,13 @@ class ConversationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             conversationTimeTv.text = dateString
 
             val loggedUser = Firebase.auth.currentUser!!
-            if(message!!.sender == loggedUser.email) {
-                conversationMessageTv.text = "You: ${message!!.message}"
+            if(conversation.senderEmail == loggedUser.email) {
+                conversationMessageTv.text = "You: ${conversation.latestMessage}"
             }
             else {
-                conversationMessageTv.text = "${message!!.sender}: ${message!!.message}"
+                conversationMessageTv.text = "${conversation.senderEmail}: ${conversation.latestMessage}"
             }
-        }
+//        }
     }
 
     init {
