@@ -69,10 +69,10 @@ class UserProfileFragment : Fragment() {
                 profileEditLocationBtn.visibility = View.GONE
             } else {
                 profileListingBtn.setOnClickListener {
-                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                    profileListingBtn.setTextColor(getResources().getColor(R.color.white))
-                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                    profileOrderBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileListingBtn.setBackgroundColor(resources.getColor(R.color.primary_green))
+                    profileListingBtn.setTextColor(resources.getColor(R.color.white))
+                    profileOrderBtn.setBackgroundColor(resources.getColor(R.color.white))
+                    profileOrderBtn.setTextColor(resources.getColor(R.color.black))
                     profileListingAdapter =
                         ProfileListingAdapter(listingData!!, this@UserProfileFragment, isOwnProfile)
                     profileRecyclerView!!.adapter = profileListingAdapter
@@ -80,10 +80,10 @@ class UserProfileFragment : Fragment() {
                 }
 
                 profileOrderBtn.setOnClickListener {
-                    profileOrderBtn.setBackgroundColor(getResources().getColor(R.color.primary_green))
-                    profileOrderBtn.setTextColor(getResources().getColor(R.color.white))
-                    profileListingBtn.setBackgroundColor(getResources().getColor(R.color.white))
-                    profileListingBtn.setTextColor(getResources().getColor(R.color.black))
+                    profileOrderBtn.setBackgroundColor(resources.getColor(R.color.primary_green))
+                    profileOrderBtn.setTextColor(resources.getColor(R.color.white))
+                    profileListingBtn.setBackgroundColor(resources.getColor(R.color.white))
+                    profileListingBtn.setTextColor(resources.getColor(R.color.black))
                     profileOrderAdapter = ProfileOrderAdapter(orderData!!, this@UserProfileFragment)
                     profileRecyclerView!!.adapter = profileOrderAdapter
                     profileOrderAdapter.notifyDataSetChanged()

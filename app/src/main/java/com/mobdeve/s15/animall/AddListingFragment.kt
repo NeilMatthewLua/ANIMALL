@@ -102,7 +102,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 if (valid) {
                     listingDimBackgroundV.visibility = View.VISIBLE
                     listingProcessPb.visibility = View.VISIBLE
-                    getActivity()?.getWindow()?.setFlags(
+                    activity?.window?.setFlags(
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                     );
@@ -470,7 +470,7 @@ class AddListingFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 Log.d(TAG, "Listing added")
                 listingProcessPb.visibility = View.GONE
                 listingDimBackgroundV.visibility = View.GONE
-                getActivity()?.getWindow()
+                activity?.window
                     ?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 Toast.makeText(context, "Listing Added", Toast.LENGTH_SHORT).show()
                 // Redirect back to home

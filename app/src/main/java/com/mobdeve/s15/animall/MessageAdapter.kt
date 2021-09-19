@@ -51,7 +51,7 @@ class MessageAdapter(
             (holder as MyViewHolder).bindData(model)
 
             // Change alignment depending on whether the message is of the current user or not
-            if (model.sender.equals(sender)) { // Right align
+            if (model.sender == sender) { // Right align
                 holder.rightAlignText()
                 Log.i("MessageAdapter isOffer:", "${model.offer}")
             } else { // Left align
@@ -61,7 +61,7 @@ class MessageAdapter(
             (holder as MessageOfferViewHolder).bindData(model)
 
             // Change alignment depending on whether the message is of the current user or not
-            if (model.sender.equals(sender)) { // Right align
+            if (model.sender == sender) { // Right align
                 holder.rightAlignText(model)
                 Log.i("MessageAdapter isOffer:", "${model.offer}")
             } else { // Left align

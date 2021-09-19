@@ -84,7 +84,7 @@ class ConversationFragment : Fragment() {
 
                 myFirestoreRecyclerAdapter!!.startListening()
 
-                getActivity()?.runOnUiThread {
+                activity?.runOnUiThread {
                     hasRetrieved = true
                     dimBackgroundV.visibility = View.GONE
                     landingPb.visibility = View.GONE
