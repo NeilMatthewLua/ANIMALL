@@ -45,7 +45,6 @@ class ConversationAdapter(
 //                e.printStackTrace()
 //            }
 
-//            holder.bindData(model, message!!)
             holder.bindData(model)
             holder.conversationLayout.setOnClickListener {
                 val viewModel : MessageSharedViewModel by fragment.activityViewModels()
